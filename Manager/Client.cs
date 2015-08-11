@@ -1,0 +1,294 @@
+﻿using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.WebSockets;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Manager
+{
+    class Client
+    {
+        private WebSocket Socket;
+        private Request Request;
+
+        public Client(WebSocket socket)
+        {
+            Socket = socket;
+            Request = new Request();
+        }
+
+        public async Task Listen()
+        {
+            try
+            {
+                var buffer = new byte[1024];
+                var first = true;
+                while (Socket.State == WebSocketState.Open)
+                {
+                    var payload = await Socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                    if (payload.MessageType != WebSocketMessageType.Text)
+                    {
+                        break;
+                    }
+
+                    if (first)
+                    {
+                        Process(Encoding.UTF8.GetString(buffer, 0, payload.Count));
+                    }
+                    first = payload.EndOfMessage;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
+            }
+            Log.Write(Socket.GetHashCode() + " Dispose");
+            Socket.Dispose();
+        }
+
+        private void Process(string s)
+        {
+            try
+            {
+                Process(JObject.Parse(s));
+            }
+            catch (WebException e)
+            {
+                Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
+                Send("error", "wait");
+            }
+        }
+
+        private async void Process(JObject request)
+        {
+            switch (request["action"].Value<string>())
+            {
+                case "login":
+                {
+                    const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+
+                    var wr = Request.Create(url, true);
+                    var data = request["data"].Value<JObject>();
+                    if (data["sid"] == null)
+                    {
+                        using (var sw = new StreamWriter(await wr.GetRequestStreamAsync()))
+                        {
+                            await sw.WriteAsync(string.Format("login=login&username={0}&password={1}&autologin=on",
+                                Uri.EscapeDataString(data["id"].Value<string>()), Uri.EscapeDataString(data["pw"].Value<string>())));
+                        }
+                    }
+                    else
+                    {
+                        Request.AddCookie(Settings.SessionKey, data["sid"].Value<string>());
+                    }
+                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    {
+                        var sessionGrab = Regex.Match(await sr.ReadToEndAsync(), Settings.SessionExpression);
+                        Send("login", sessionGrab.Success ?
+                            new Dictionary<string, string>
+                            {
+                                { "id", sessionGrab.Groups["id"].Value },
+                                { "name", sessionGrab.Groups["name"].Value },
+                                { "sid", Request.GetCookie(Settings.SessionKey) }
+                            } :
+                            new Dictionary<string, string>
+                            {
+                                { "error", "true" }
+                            });
+                    }
+                    break;
+                }
+                case "logout":
+                {
+                    const string url = "http://osu.ppy.sh/forum/ucp.php?mode=logout&sid=";
+
+                    var session = Request.GetCookie(Settings.SessionKey);
+                    if (session != null)
+                    {
+                        var wr = Request.Create(url + session);
+                        await wr.GetResponseAsync();
+                    }
+                    break;
+                }
+                case "upload":
+                {
+                    var id = request["data"].Value<JObject>()["id"].Value<int>();
+                    Log.Write(Socket.GetHashCode() + " Upload " + id);
+
+                    using (var query = DB.Command)
+                    {
+                        query.CommandText = "SELECT id FROM osu_beatmaps WHERE id = @i";
+                        query.Parameters.AddWithValue("@i", id);
+                        if (await query.ExecuteScalarAsync() != null)
+                        {
+                            Send("upload", new Dictionary<string, string>
+                            {
+                                { "state", "rejected" },
+                                { "detail", "exists" }
+                            });
+                            break;
+                        }
+                    }
+
+                    Send("upload", new Dictionary<string, string>
+                    {
+                        { "state", "fetching" }
+                    });
+
+                    // 맵퍼 본인 확인 절차
+                    string mid, mname;
+                    var wr = Request.Create("http://osu.ppy.sh/s/" + id);
+                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    {
+                        var data = await sr.ReadToEndAsync();
+                        var creatorGrab = Regex.Match(data, Settings.CreatorExpression);
+                        if (!creatorGrab.Success)
+                        {
+                            Send("upload", new Dictionary<string, string>
+                            {
+                                { "state", "rejected" },
+                                { "detail", "nomap" }
+                            });
+                            break;
+                        }
+                        if (Convert.ToInt32(Regex.Match(data, Settings.FavoriteExpression).Groups[1].Value) < Settings.FavoriteMinimum)
+                        {
+                            Send("upload", new Dictionary<string, string>
+                            {
+                                { "state", "rejected" },
+                                { "detail", "favorite" }
+                            });
+                            break;
+                        }
+
+                        mid = creatorGrab.Groups["id"].Value;
+                        mname = creatorGrab.Groups["name"].Value;
+                    }
+                    wr = Request.Create("http://osu.ppy.sh/u/" + mid);
+                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    {
+                        if ((await sr.ReadToEndAsync()).IndexOf(mname) < 0 &&
+                            (mid != "4341397" && mid != "3"))
+                            // 1 맵핑 컨테스트 당선작용 Multiple Creators Id
+                        {
+                            Send("upload", new Dictionary<string, string>
+                            {
+                                { "state", "rejected" },
+                                { "detail", "troll" }
+                            });
+                            break;
+                        }
+                    }
+
+                    // 비로그인 유저는 내가 짬날 때 업로드
+                    if (Request.GetCookie(Settings.SessionKey) == null)
+                    {
+                        using (var query = DB.Command)
+                        {
+                            query.CommandText = "INSERT INTO osu_custom_list SET id = @id " +
+                                "ON DUPLICATE KEY UPDATE id = @id";
+                            query.Parameters.AddWithValue("@id", id);
+                            await query.ExecuteNonQueryAsync();
+                        }
+                        Send("upload", new Dictionary<string, object>
+                        {
+                            { "state", "reserved" }
+                        });
+                        break;
+                    }
+
+                    try
+                    {
+                        var pushed = DateTime.Now;
+                        Request.Download(id, (received, total) =>
+                        {
+                            if (received == 0)
+                            {
+                                Send("upload", new Dictionary<string, object>
+                            {
+                                { "state", "download" },
+                                { "total", total }
+                            });
+                                return;
+                            }
+                            if ((DateTime.Now - pushed).TotalSeconds >= 3)
+                            {
+                                pushed = DateTime.Now;
+                                Send("upload", new Dictionary<string, object>
+                            {
+                                { "state", "downloading" },
+                                { "got", received }
+                            });
+                            }
+                        });
+                        Send("upload", new Dictionary<string, string>
+                        {
+                            { "state", "downloaded" }
+                        });
+
+                        var process = new Process
+                        {
+                            StartInfo =
+                            {
+                                FileName = Path.Combine(
+                                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
+                                Arguments = "-ad " + id,
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                                RedirectStandardOutput = true
+                            }
+                        };
+                        process.Start();
+                        process.WaitForExit();
+
+                        var output = (await process.StandardOutput.ReadToEndAsync()).Trim();
+                        Send("upload", new Dictionary<string, string>
+                        {
+                            { "state", "finished" },
+                            { "output",  output }
+                        });
+                        Log.Write(Socket.GetHashCode() + " " + output);
+                    }
+                    catch (Exception e)
+                    {
+                        Send("upload", new Dictionary<string, string>
+                        {
+                            { "state", "failed" }
+                        });
+                        Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void Send(string action, object data)
+        {
+            Send(JsonConvert.SerializeObject(new Dictionary<string, object>
+            {
+                { "action", action },
+                { "data", data }
+            }));
+        }
+
+        private async void Send(string s)
+        {
+            try
+            {
+                await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(s)), WebSocketMessageType.Text, true, CancellationToken.None);
+                Log.Write(Socket.GetHashCode() + " Send " + s);
+            }
+            catch { }
+        }
+    }
+}
