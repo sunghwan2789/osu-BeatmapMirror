@@ -19,11 +19,13 @@ namespace Manager
     class Client
     {
         private WebSocket Socket;
+        private int Id;
         private Request Request;
 
         public Client(WebSocket socket)
         {
             Socket = socket;
+            Id = Socket.GetHashCode();
             Request = new Request();
         }
 
@@ -50,9 +52,9 @@ namespace Manager
             }
             catch (Exception e)
             {
-                Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
+                Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
             }
-            Log.Write(Socket.GetHashCode() + " Dispose");
+            Log.Write(Id + " Dispose");
             Socket.Dispose();
         }
 
@@ -60,11 +62,12 @@ namespace Manager
         {
             try
             {
+                Log.Write(Id + " RECV " + s);
                 Process(JObject.Parse(s));
             }
             catch (WebException e)
             {
-                Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
+                Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
                 Send("error", "wait");
             }
         }
@@ -123,7 +126,6 @@ namespace Manager
                 case "upload":
                 {
                     var id = request["data"].Value<JObject>()["id"].Value<int>();
-                    Log.Write(Socket.GetHashCode() + " Upload " + id);
 
                     using (var query = DB.Command)
                     {
@@ -257,15 +259,14 @@ namespace Manager
                             { "state", "finished" },
                             { "output",  output }
                         });
-                        Log.Write(Socket.GetHashCode() + " " + output);
                     }
                     catch (Exception e)
                     {
+                        Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
                         Send("upload", new Dictionary<string, string>
                         {
                             { "state", "failed" }
                         });
-                        Log.Write(Socket.GetHashCode() + " " + e.GetBaseException() + ": " + e.Message);
                     }
                     break;
                 }
@@ -285,10 +286,14 @@ namespace Manager
         {
             try
             {
+                Log.Write(Id + " SEND " + s);
                 await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(s)), WebSocketMessageType.Text, true, CancellationToken.None);
-                Log.Write(Socket.GetHashCode() + " Send " + s);
             }
-            catch { }
+            catch (Exception e)
+            {
+                // 비트맵 업로드가 연결이 끊긴 상태에서도 작동하기 위함
+                // Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
+            }
         }
     }
 }

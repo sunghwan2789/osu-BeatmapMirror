@@ -55,13 +55,13 @@ namespace Manager
         /// <exception cref="WebException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException"></exception>
-        public async void Download(int id, Action<int, long> onprogress)
+        public void Download(int id, Action<int, long> onprogress)
         {
             var url = "http://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             var wr = Create(url);
-            using (var rp = (HttpWebResponse) await wr.GetResponseAsync())
+            using (var rp = (HttpWebResponse) wr.GetResponse())
             using (var rs = rp.GetResponseStream())
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             {
@@ -69,9 +69,9 @@ namespace Manager
                 var received = 0;
                 var buffer = new byte[4096];
                 onprogress(received, rp.ContentLength);
-                while ((got = await rs.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                while ((got = rs.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    await fs.WriteAsync(buffer, 0, got);
+                    fs.Write(buffer, 0, got);
                     received += got;
                     onprogress(received, rp.ContentLength);
                 }
