@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Manager
 {
-    class DB
+    public class DB
     {
         private static string ConnectionString = null;
 

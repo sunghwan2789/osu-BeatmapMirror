@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Manager
 {
-    class Request
+    public class Request
     {
         public CookieContainer Cookie;
 

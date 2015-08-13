@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Manager
 {
-    public partial class Server : ServiceBase
+    partial class Server : ServiceBase
     {
         public Server()
         {
@@ -27,7 +27,7 @@ namespace Manager
         {
             // 동기화 봇
             timer1.Interval = Settings.SyncInterval;
-            timer1.Start();
+            //timer1.Start();
 
             // 웹소켓 서버
             Listener = new HttpListener();

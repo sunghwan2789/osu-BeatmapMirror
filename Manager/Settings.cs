@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Manager
 {
-    class Settings
+    public class Settings
     {
-        private static readonly string Path = Assembly.GetExecutingAssembly().Location + ".cfg";
+        private static readonly string Path = System.IO.Path.Combine(
+            System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "osu!BeatmapMirror.cfg");
 
         [DllImport("kernel32.dll")]
         private static extern void GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
@@ -166,7 +167,7 @@ namespace Manager
             {
                 if (_SessionKey == null)
                 {
-                    _SessionKey = Get("KEY", "Session");
+                    _SessionKey = Get("EXP", "SessionKey");
                 }
                 return _SessionKey;
             }
@@ -330,14 +331,54 @@ namespace Manager
             {
                 if (_Session == null)
                 {
-                    _Session = Get("NOEDIT", "Session");
+                    _Session = Get("KEY", "Session");
                 }
                 return _Session;
             }
             set
             {
                 _Session = value;
-                Set("NOEDIT", "Session", value);
+                Set("KEY", "Session", value);
+            }
+        }
+
+        private static string _OsuId = null;
+
+        public static string OsuId
+        {
+            get
+            {
+                if (_OsuId == null)
+                {
+                    _OsuId = Get("KEY", "Id");
+                }
+                return _OsuId;
+            }
+        }
+        private static string _OsuPw = null;
+
+        public static string OsuPw
+        {
+            get
+            {
+                if (_OsuPw == null)
+                {
+                    _OsuPw = Get("KEY", "Pw");
+                }
+                return _OsuPw;
+            }
+        }
+        private static string _APIKey = null;
+
+        public static string APIKey
+        {
+            get
+            {
+                if (_APIKey == null)
+                {
+                    _APIKey = Get("KEY", "API");
+                }
+                return _APIKey;
             }
         }
     }
