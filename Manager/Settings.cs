@@ -224,6 +224,23 @@ namespace Manager
             }
         }
 
+        private static string _ScoreboardExpression = null;
+
+        /// <summary>
+        /// osu! 비트맵 페이지에서 랭크 상태를 긁는 정규식
+        /// </summary>
+        public static string ScoreboardExpression
+        {
+            get
+            {
+                if (_ScoreboardExpression == null)
+                {
+                    _ScoreboardExpression = Get("EXP", "Scoreboard");
+                }
+                return _ScoreboardExpression;
+            }
+        }
+
 
 
         private static string _LogFile = null;

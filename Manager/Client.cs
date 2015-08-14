@@ -172,6 +172,15 @@ namespace Manager
                             });
                             break;
                         }
+                        if (data.IndexOf(Settings.ScoreboardExpression) != -1)
+                        {
+                            Send("upload", new Dictionary<string, string>
+                            {
+                                { "state", "rejected" },
+                                { "detail", "will" }
+                            });
+                            break;
+                        }
 
                         mid = creatorGrab.Groups["id"].Value;
                         mname = creatorGrab.Groups["name"].Value;
@@ -242,8 +251,7 @@ namespace Manager
                         {
                             StartInfo =
                             {
-                                FileName = Path.Combine(
-                                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
+                                FileName = @"D:\sunghwan2789\Develop\C#\osu!BeatmapMirrorBot2\bin\osu!BeatmapMirrorBot2.exe",
                                 Arguments = "-ad " + id,
                                 CreateNoWindow = true,
                                 UseShellExecute = false,
