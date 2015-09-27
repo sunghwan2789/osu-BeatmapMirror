@@ -79,9 +79,13 @@ namespace Manager
                     continue;
                 }
 
-                var wsContext = await context.AcceptWebSocketAsync(null);
-                Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
-                new Client(wsContext.WebSocket).Listen();
+                try
+                {
+                    var wsContext = await context.AcceptWebSocketAsync(null);
+                    Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
+                    new Client(wsContext.WebSocket).Listen();
+                }
+                catch { }
             }
         }
 
