@@ -90,7 +90,11 @@ namespace Bot
         {
             var local = Set.GetByLocal(set.Id);
             Console.WriteLine(JsonConvert.SerializeObject(set, Formatting.Indented));
-            Console.WriteLine(JsonConvert.SerializeObject(local, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(local, new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            }));
             //Log.Flag = set.Id;
 
             //var started = DateTime.Now;

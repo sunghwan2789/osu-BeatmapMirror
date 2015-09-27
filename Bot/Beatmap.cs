@@ -222,11 +222,11 @@ namespace Bot
                     }
                     case "HitObjects":
                     {
-                        //try
-                        //{
+                        try
+                        {
                             this.HitObjects.Add(HitObject.Parse(line, this));
-                        //}
-                        //catch (Exception e){ Console.WriteLine(e.GetBaseException()); }
+                        }
+                        catch { }
                         break;
                     }
                 }

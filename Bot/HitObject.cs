@@ -35,7 +35,7 @@ namespace Bot
                 return new HitObject(data);
             }
 
-            var hitObject = (HitObject) Activator.CreateInstance(caller.HitObjectTypes[type], data);
+            var hitObject = (HitObject) Activator.CreateInstance(caller.HitObjectTypes[type], new[] { data });
             hitObject.Constructor = caller;
             return hitObject;
         }
