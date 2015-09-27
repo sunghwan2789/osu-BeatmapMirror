@@ -226,20 +226,20 @@ namespace Manager
                             if (received == 0)
                             {
                                 Send("upload", new Dictionary<string, object>
-                            {
-                                { "state", "download" },
-                                { "total", total }
-                            });
+                                {
+                                    { "state", "download" },
+                                    { "total", total }
+                                });
                                 return;
                             }
                             if ((DateTime.Now - pushed).TotalSeconds >= 3)
                             {
                                 pushed = DateTime.Now;
                                 Send("upload", new Dictionary<string, object>
-                            {
-                                { "state", "downloading" },
-                                { "got", received }
-                            });
+                                {
+                                    { "state", "downloading" },
+                                    { "got", received }
+                                });
                             }
                         });
                         Send("upload", new Dictionary<string, string>

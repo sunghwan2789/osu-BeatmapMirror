@@ -20,7 +20,7 @@ namespace Manager
 
         public HttpWebRequest Create(string url, bool post = false)
         {
-            var wr = (HttpWebRequest) WebRequest.Create(url);
+            var wr = WebRequest.CreateHttp(url);
             wr.ServicePoint.Expect100Continue = false;
             wr.CookieContainer = Cookie;
             wr.Timeout = Settings.ResponseTimeout;
