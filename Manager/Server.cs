@@ -21,8 +21,6 @@ namespace Manager
             InitializeComponent();
         }
 
-        private HttpListener Listener;
-
         protected override void OnStart(string[] args)
         {
             // 동기화 봇
@@ -39,7 +37,6 @@ namespace Manager
         }
 
         private object Bot = new object();
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             lock (Bot)
@@ -59,6 +56,7 @@ namespace Manager
             }
         }
 
+        private HttpListener Listener;
         private async void Listen()
         {
             while (Listener.IsListening)

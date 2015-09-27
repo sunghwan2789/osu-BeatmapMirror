@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,9 +57,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Beatmap.cs" />
+    <Compile Include="HitCircle.cs" />
+    <Compile Include="HitNote.cs" />
+    <Compile Include="HitObject.cs" />
+    <Compile Include="HoldNote.cs" />
+    <Compile Include="Mania.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Set.cs" />
+    <Compile Include="Slider.cs" />
+    <Compile Include="Spinner.cs" />
+    <Compile Include="Standard.cs" />
+    <Compile Include="TimingPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

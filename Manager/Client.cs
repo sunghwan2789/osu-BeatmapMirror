@@ -72,7 +72,7 @@ namespace Manager
             }
         }
 
-        private async void Process(JObject request)
+        private void Process(JObject request)
         {
             switch (request["action"].Value<string>())
             {
@@ -84,19 +84,20 @@ namespace Manager
                     var data = request["data"].Value<JObject>();
                     if (data["sid"] == null)
                     {
-                        using (var sw = new StreamWriter(await wr.GetRequestStreamAsync()))
+                        using (var sw = new StreamWriter(wr.GetRequestStream()))
                         {
-                            await sw.WriteAsync(string.Format("login=login&username={0}&password={1}&autologin=on",
-                                Uri.EscapeDataString(data["id"].Value<string>()), Uri.EscapeDataString(data["pw"].Value<string>())));
+                            sw.Write(string.Format("login=login&username={0}&password={1}&autologin=on",
+                                Uri.EscapeDataString(data["id"].Value<string>()),
+                                Uri.EscapeDataString(data["pw"].Value<string>())));
                         }
                     }
                     else
                     {
                         Request.AddCookie(Settings.SessionKey, data["sid"].Value<string>());
                     }
-                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
-                        var sessionGrab = Regex.Match(await sr.ReadToEndAsync(), Settings.SessionExpression);
+                        var sessionGrab = Regex.Match(sr.ReadToEnd(), Settings.SessionExpression);
                         Send("login", sessionGrab.Success ?
                             new Dictionary<string, string>
                             {
@@ -118,8 +119,7 @@ namespace Manager
                     var session = Request.GetCookie(Settings.SessionKey);
                     if (session != null)
                     {
-                        var wr = Request.Create(url + session);
-                        await wr.GetResponseAsync();
+                        Request.Create(url + session).GetResponse().Dispose();
                     }
                     break;
                 }
@@ -131,7 +131,7 @@ namespace Manager
                     {
                         query.CommandText = "SELECT id FROM osu_beatmaps WHERE id = @i";
                         query.Parameters.AddWithValue("@i", id);
-                        if (await query.ExecuteScalarAsync() != null)
+                        if (query.ExecuteScalar() != null)
                         {
                             Send("upload", new Dictionary<string, string>
                             {
@@ -150,9 +150,9 @@ namespace Manager
                     // 맵퍼 본인 확인 절차
                     string mid, mname;
                     var wr = Request.Create("http://osu.ppy.sh/s/" + id);
-                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
-                        var data = await sr.ReadToEndAsync();
+                        var data = sr.ReadToEnd();
                         var creatorGrab = Regex.Match(data, Settings.CreatorExpression);
                         if (!creatorGrab.Success)
                         {
@@ -186,9 +186,9 @@ namespace Manager
                         mname = creatorGrab.Groups["name"].Value;
                     }
                     wr = Request.Create("http://osu.ppy.sh/u/" + mid);
-                    using (var sr = new StreamReader((await wr.GetResponseAsync()).GetResponseStream()))
+                    using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
-                        if ((await sr.ReadToEndAsync()).IndexOf(mname) < 0 &&
+                        if (sr.ReadToEnd().IndexOf(mname) < 0 &&
                             (mid != "4341397" && mid != "3"))
                             // 1 맵핑 컨테스트 당선작용 Multiple Creators Id
                         {
@@ -209,7 +209,7 @@ namespace Manager
                             query.CommandText = "INSERT INTO osu_custom_list SET id = @id " +
                                 "ON DUPLICATE KEY UPDATE id = @id";
                             query.Parameters.AddWithValue("@id", id);
-                            await query.ExecuteNonQueryAsync();
+                            query.ExecuteNonQuery();
                         }
                         Send("upload", new Dictionary<string, object>
                         {
@@ -261,7 +261,7 @@ namespace Manager
                         process.Start();
                         process.WaitForExit();
 
-                        var output = (await process.StandardOutput.ReadToEndAsync()).Trim();
+                        var output = process.StandardOutput.ReadToEnd().Trim();
                         Send("upload", new Dictionary<string, string>
                         {
                             { "state", "finished" },
