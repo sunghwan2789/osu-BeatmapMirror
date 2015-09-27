@@ -8,18 +8,9 @@ namespace Bot
 {
     class TimingPoint
     {
-        public int Time
-        {
-            get; private set;
-        }
-        public double BeatLength
-        {
-            get; private set;
-        }
-        public int Meter
-        {
-            get; private set;
-        }
+        public int Time;
+        public double BeatLength;
+        public int Meter = 4;
 
         public static TimingPoint tpParent;
         private TimingPoint Parent;
@@ -53,7 +44,7 @@ namespace Bot
         {
             get
             {
-                return 60000 / this.BeatLength;
+                return BeatLength > 0 ? 60000 / this.BeatLength : -1;
             }
         }
     }

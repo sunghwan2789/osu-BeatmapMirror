@@ -64,7 +64,7 @@ namespace Bot
         {
             get
             {
-                return TimingPoints.First().BPM;
+                return TimingPoints.FirstOrDefault().BPM;
             }
         }
 
@@ -78,9 +78,7 @@ namespace Bot
         {
             get
             {
-                return HitObjects.Count > 0 ?
-                    (HitObjects.Last().EndTime - HitObjects.First().Time + 500) / 1000 :
-                    0;
+                return (HitObjects.LastOrDefault().EndTime - HitObjects.FirstOrDefault().Time + 500) / 1000;
             }
         }
 
