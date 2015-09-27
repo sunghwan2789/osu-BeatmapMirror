@@ -297,7 +297,7 @@ namespace Manager
                 Log.Write(Id + " SEND " + s);
                 await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(s)), WebSocketMessageType.Text, true, CancellationToken.None);
             }
-            catch (Exception e)
+            catch
             {
                 // 비트맵 업로드가 연결이 끊긴 상태에서도 작동하기 위함
                 // Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);

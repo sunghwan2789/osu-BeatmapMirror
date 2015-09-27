@@ -68,14 +68,14 @@ namespace Bot
         {
             get
             {
-                return Beatmaps.FirstOrDefault().Title;
+                return Beatmaps.First().Title;
             }
         }
         public string TitleUnicode
         {
             get
             {
-                var unicode = Beatmaps.FirstOrDefault().TitleUnicode;
+                var unicode = Beatmaps.First().TitleUnicode;
                 return string.IsNullOrEmpty(unicode) || Title == unicode ? null : unicode;
             }
         }
@@ -83,14 +83,14 @@ namespace Bot
         {
             get
             {
-                return Beatmaps.FirstOrDefault().Artist;
+                return Beatmaps.First().Artist;
             }
         }
         public string ArtistUnicode
         {
             get
             {
-                var unicode = Beatmaps.FirstOrDefault().ArtistUnicode;
+                var unicode = Beatmaps.First().ArtistUnicode;
                 return string.IsNullOrEmpty(unicode) || Artist == unicode ? null : unicode;
             }
         }
@@ -98,7 +98,7 @@ namespace Bot
         {
             get
             {
-                return Beatmaps.FirstOrDefault().Creator;
+                return Beatmaps.First().Creator;
             }
         }
         public string CreatorOld;
@@ -111,7 +111,7 @@ namespace Bot
         {
             get
             {
-                var beatmap = Beatmaps.FirstOrDefault();
+                var beatmap = Beatmaps.First();
                 return (beatmap.Source + " " + beatmap.Tags).ToLower()
                     .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             }
@@ -170,11 +170,11 @@ namespace Bot
 
                 set.Beatmaps.Add(new Beatmap
                 {
-                    BeatmapId = i["beatmap_id"].Value<int>(),
+                    BeatmapID = i["beatmap_id"].Value<int>(),
                     Version = i["version"].Value<string>(),
                     Title = i["title"].Value<string>(),
                     Artist = i["artist"].Value<string>(),
-                    Creator = i["creator"].Value<string>(),
+                    Creator = i["creator"].Value<string>()
                 });
             }
             return set;
@@ -188,7 +188,7 @@ namespace Bot
         public static Set GetByLocal(int id)
         {
             var set = new Set { Id = id };
-            using (var osz = new ZipFile(Path.Combine(Settings.Storage, id + "")))
+            using (var osz = new ZipFile(Path.Combine(Settings.Storage, id + ".osz")))
             {
                 foreach (var entry in osz.Cast<ZipEntry>().Where(i => i.IsFile && i.Name.EndsWith(".osu")))
                 {

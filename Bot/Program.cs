@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Bot
 {
@@ -45,7 +46,9 @@ namespace Bot
             }
             Settings.Session = Request.GetCookie(Settings.SessionKey);
 
-
+            DateTime o;
+            Sync(Set.GetByAPI(345250, out o));
+            return;
             if (args.Length > 0)
             {
                 if (args[0] == "/?")
@@ -85,49 +88,52 @@ namespace Bot
 
         private static void Sync(Set set, bool skipDownload = false, bool keepSynced = false)
         {
-            Log.Flag = set.Id;
+            var local = Set.GetByLocal(set.Id);
+            Console.WriteLine(JsonConvert.SerializeObject(set, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(local, Formatting.Indented));
+            //Log.Flag = set.Id;
 
-            var started = DateTime.Now;
-            try
-            {
-                if (!skipDownload)
-                {
-                    Download(set.Id, out started);
-                }
+            //var started = DateTime.Now;
+            //try
+            //{
+            //    if (!skipDownload)
+            //    {
+            //        Download(set.Id, out started);
+            //    }
 
-                var local = Set.GetByLocal(set.Id);
-                set.Title = local.Title;
-                set.TitleUnicode = local.TitleUnicode;
-                set.Artist = local.Artist;
-                set.ArtistUnicode = local.ArtistUnicode;
-                set.Creator = local.Creator;
-                set.Tags = local.Tags;
-                foreach (var i in set.Beatmaps)
-                {
-                    var k = local.Beatmaps.Find(j => j.Version == i.Version);
-                    if (k != null)
-                    {
-                        i.Mode = k.Mode;
-                        i.HPDrainRate = k.HPDrainRate;
-                        i.CircleSize = k.CircleSize;
-                        i.OverallDifficulty = k.OverallDifficulty;
-                        i.ApproachRate = k.ApproachRate;
-                        i.BPM = k.BPM;
-                        i.Length = k.Length;
-                    }
-                    else
-                    {
-                        Log.WriteLine("missing beatmap: " + i.BeatmapId + " " + i.Version);
-                    }
-                }
+            //    var local = Set.GetByLocal(set.Id);
+            //    set.Title = local.Title;
+            //    set.TitleUnicode = local.TitleUnicode;
+            //    set.Artist = local.Artist;
+            //    set.ArtistUnicode = local.ArtistUnicode;
+            //    set.Creator = local.Creator;
+            //    set.Tags = local.Tags;
+            //    foreach (var i in set.Beatmaps)
+            //    {
+            //        var k = local.Beatmaps.Find(j => j.Version == i.Version);
+            //        if (k != null)
+            //        {
+            //            i.Mode = k.Mode;
+            //            i.HPDrainRate = k.HPDrainRate;
+            //            i.CircleSize = k.CircleSize;
+            //            i.OverallDifficulty = k.OverallDifficulty;
+            //            i.ApproachRate = k.ApproachRate;
+            //            i.BPM = k.BPM;
+            //            i.Length = k.Length;
+            //        }
+            //        else
+            //        {
+            //            Log.WriteLine("missing beatmap: " + i.BeatmapId + " " + i.Version);
+            //        }
+            //    }
 
-                Register(set, keepSynced ? new DateTime(0) : started);
-            }
-            catch (Exception e)
-            {
-                Log.WriteLine("error occured\r\n" + e.GetBaseException());
-                Settings.LastCheckTime = Settings.LastCheckTime;
-            }
+            //    Register(set, keepSynced ? new DateTime(0) : started);
+            //}
+            //catch (Exception e)
+            //{
+            //    Log.WriteLine("error occured\r\n" + e.GetBaseException());
+            //    Settings.LastCheckTime = Settings.LastCheckTime;
+            //}
         }
     }
 }

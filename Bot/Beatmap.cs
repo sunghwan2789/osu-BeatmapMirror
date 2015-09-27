@@ -14,17 +14,42 @@ namespace Bot
             { Standard.Id, typeof(Standard) },
             { Mania.Id, typeof(Mania) }
         };
+        public Dictionary<int, Type> HitObjectTypes = new Dictionary<int, Type>
+        {
+            { 0, typeof(HitObject) }
+        };
 
         // [General]
-        public int Mode = 0;
+        public int Mode
+        {
+            get; set;
+        }
 
         // [Metadata]
         private string _Version = "Normal";
-        public string Title;
-        public string TitleUnicode;
-        public string Artist;
-        public string ArtistUnicode;
-        public string Creator;
+        public string Title
+        {
+            get; set;
+        }
+        public string TitleUnicode
+        {
+            get; set;
+        }
+        public string Artist
+        {
+            get;
+            set;
+        }
+        public string ArtistUnicode
+        {
+            get;
+            set;
+        }
+        public string Creator
+        {
+            get;
+            set;
+        }
         public string Version
         {
             get
@@ -36,15 +61,36 @@ namespace Bot
                 _Version = value;
             }
         }
-        public string Source;
-        public string Tags;
-        public int BeatmapId = -1;
+        public string Source
+        {
+            get;
+            set;
+        }
+        public string Tags
+        {
+            get;
+            set;
+        }
+        public int BeatmapID
+        {
+            get; set;
+        }
 
         // [Difficulty]
         private double _ApproachRate = -1;
-        public double HPDrainRate = 5;
-        public double CircleSize = 5;
-        public double OverallDifficulty = 5;
+        public double HPDrainRate
+        {
+            get; set;
+        }
+        public double CircleSize
+        {
+            get;
+            set;
+        }
+        public double OverallDifficulty
+        {
+            get; set;
+        }
         public double ApproachRate
         {
             get
@@ -56,7 +102,11 @@ namespace Bot
                 _ApproachRate = value;
             }
         }
-        public double SliderMultiplier = 1.4;
+        public double SliderMultiplier
+        {
+            get;
+            set;
+        }
 
         // [TimingPoints]
         public List<TimingPoint> TimingPoints;
@@ -64,12 +114,12 @@ namespace Bot
         {
             get
             {
-                return TimingPoints.FirstOrDefault().BPM;
+                var timingPoint = TimingPoints.FirstOrDefault();
+                return timingPoint != null ? timingPoint.BPM : -1;
             }
         }
 
         // [HitObjects]
-        public Dictionary<int, Type> HitObjectTypes = new Dictionary<int, Type>();
         public List<HitObject> HitObjects;
         /// <summary>
         /// 비트맵의 플레이 시간을 반올림
@@ -78,21 +128,28 @@ namespace Bot
         {
             get
             {
-                return (HitObjects.LastOrDefault().EndTime - HitObjects.FirstOrDefault().Time + 500) / 1000;
+                var hitObjectL = HitObjects.LastOrDefault();
+                var hitObjectF = HitObjects.FirstOrDefault();
+                return hitObjectL != null ? (hitObjectL.EndTime - hitObjectF.Time + 500) / 1000 : -1;
             }
         }
 
         public Beatmap()
         {
+            BeatmapID = -1;
+            Mode = 0;
+            HPDrainRate = 5;
+            CircleSize = 5;
+            OverallDifficulty = 5;
+            SliderMultiplier = 1.4;
+            this.TimingPoints = new List<TimingPoint>();
+            this.HitObjects = new List<HitObject>();
         }
 
         private string[] stream;
-        public Beatmap(string osu)
+        public Beatmap(string osu) : this()
         {
             this.stream = osu.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
-
-            this.TimingPoints = new List<TimingPoint>();
-            this.HitObjects = new List<HitObject>();
         }
 
         public static Beatmap Parse(string osu)
@@ -106,7 +163,8 @@ namespace Bot
             if (!Modes.ContainsKey(mode))
             {
                 var beatmap = new Beatmap(osu);
-                beatmap.Mode = -1;
+                // Length 계산 힘들어 Mode 없음 해놨는데, 필요할 듯
+                // beatmap.Mode = -1;
                 beatmap.Load();
                 return beatmap;
             }
@@ -116,7 +174,7 @@ namespace Bot
         public int mask;
         public void Load()
         {
-            this.mask = HitObjectTypes.Keys.Aggregate((a, b) => a | b);
+            this.mask = this.HitObjectTypes.Keys.Aggregate((a, b) => a | b);
 
             var currentSection = "";
             foreach (var line in this.stream)
@@ -164,11 +222,11 @@ namespace Bot
                     }
                     case "HitObjects":
                     {
-                        try
-                        {
+                        //try
+                        //{
                             this.HitObjects.Add(HitObject.Parse(line, this));
-                        }
-                        catch { }
+                        //}
+                        //catch (Exception e){ Console.WriteLine(e.GetBaseException()); }
                         break;
                     }
                 }

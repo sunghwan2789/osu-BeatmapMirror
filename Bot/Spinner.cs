@@ -8,7 +8,7 @@ namespace Bot
 {
     class Spinner : HitCircle
     {
-        public static int Id = 8;
+        new public static int Id = 8;
 
         public Spinner(string[] data) : base(data)
         {

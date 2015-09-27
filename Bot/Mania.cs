@@ -14,7 +14,7 @@ namespace Bot
         {
             this.HitObjectTypes.Add(HitNote.Id, typeof(HitNote));
             this.HitObjectTypes.Add(HoldNote.Id, typeof(HoldNote));
-            base.Load();
+            this.Load();
         }
     }
 }

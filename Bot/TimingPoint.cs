@@ -15,6 +15,10 @@ namespace Bot
         public static TimingPoint tpParent;
         private TimingPoint Parent;
 
+        public TimingPoint()
+        {
+        }
+
         public TimingPoint(string line)
         {
             var data = line.Split(',');

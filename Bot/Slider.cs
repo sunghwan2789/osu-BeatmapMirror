@@ -8,7 +8,7 @@ namespace Bot
 {
     class Slider : HitCircle
     {
-        public static int Id = 2;
+        new public static int Id = 2;
 
         public Slider(string[] data) : base(data)
         {

@@ -8,7 +8,7 @@ namespace Bot
 {
     class HoldNote : HitNote
     {
-        public static int Id = 128;
+        new public static int Id = 128;
 
         public HoldNote(string[] data) : base(data)
         {

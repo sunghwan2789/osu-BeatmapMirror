@@ -15,7 +15,7 @@ namespace Bot
             this.HitObjectTypes.Add(HitCircle.Id, typeof(HitCircle));
             this.HitObjectTypes.Add(Slider.Id, typeof(Slider));
             this.HitObjectTypes.Add(Spinner.Id, typeof(Spinner));
-            base.Load();
+            this.Load();
         }
     }
 }
