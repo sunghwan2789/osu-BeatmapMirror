@@ -9,7 +9,7 @@ namespace Manager
 {
     class Log
     {
-        private static readonly StreamWriter Writer = new StreamWriter(Settings.LogFile, false);
+        private static readonly StreamWriter Writer = new StreamWriter(Settings.LogPath, false);
         private static readonly object Locker = new object();
 
         public static void Write(object str)

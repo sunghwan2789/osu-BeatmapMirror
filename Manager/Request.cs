@@ -68,12 +68,18 @@ namespace Manager
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                onprogress(received, rp.ContentLength);
+                if (onprogress != null)
+                {
+                    onprogress(received, rp.ContentLength);
+                }
                 while ((got = rs.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     fs.Write(buffer, 0, got);
                     received += got;
-                    onprogress(received, rp.ContentLength);
+                    if (onprogress != null)
+                    {
+                        onprogress(received, rp.ContentLength);
+                    }
                 }
             }
 

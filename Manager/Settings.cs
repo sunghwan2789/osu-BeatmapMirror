@@ -33,7 +33,8 @@ namespace Manager
 
 
         private static string _Prefix = null;
-
+        private static byte _TLSOnly = 2;
+        private static string _Fallback = null;
         /// <summary>
         /// 이 서버에 접속하기 위해 사용할 주소
         /// </summary>
@@ -56,9 +57,6 @@ namespace Manager
                 return _Prefix;
             }
         }
-
-        private static byte _TLSOnly = 2;
-
         /// <summary>
         /// 안전한 연결만 허용할지를 정합니다.
         /// </summary>
@@ -84,9 +82,6 @@ namespace Manager
                 return _TLSOnly == 1;
             }
         }
-
-        private static string _Fallback = null;
-
         /// <summary>
         /// 비정상적인 접속시 안내할 페이지 주소
         /// </summary>
@@ -113,7 +108,6 @@ namespace Manager
                 return Get("DB", "Server");
             }
         }
-
         public static string DBUserId
         {
             get
@@ -121,7 +115,6 @@ namespace Manager
                 return Get("DB", "UserId");
             }
         }
-
         public static string DBPassword
         {
             get
@@ -129,7 +122,6 @@ namespace Manager
                 return Get("DB", "Password");
             }
         }
-
         public static string DBDatabase
         {
             get
@@ -140,6 +132,11 @@ namespace Manager
 
 
         private static string _Storage = null;
+        private static string _LogPath = null;
+        private static int _ResponseTimeout = -1;
+        private static int _FavoriteMinimum = -1;
+        private static int _SyncInterval = -1;
+        private static IEnumerable<int> _BeatmapList = null;
         /// <summary>
         /// 비트맵셋 파일 저장소
         /// </summary>
@@ -154,111 +151,17 @@ namespace Manager
                 return _Storage;
             }
         }
-
-
-        private static string _SessionKey = null;
-
-        /// <summary>
-        /// osu! 세션 쿠키의 이름
-        /// </summary>
-        public static string SessionKey
+        public static string LogPath
         {
             get
             {
-                if (_SessionKey == null)
+                if (_LogPath == null)
                 {
-                    _SessionKey = Get("EXP", "SessionKey");
+                    _LogPath = Get("ENV", "LogPath");
                 }
-                return _SessionKey;
+                return _LogPath;
             }
         }
-
-        private static string _SessionExpression = null;
-
-        /// <summary>
-        /// osu! 세션의 정보를 긁는 정규식
-        /// </summary>
-        public static string SessionExpression
-        {
-            get
-            {
-                if (_SessionExpression == null)
-                {
-                    _SessionExpression = Get("EXP", "Session");
-                }
-                return _SessionExpression;
-            }
-        }
-
-        private static string _CreatorExpression = null;
-
-        /// <summary>
-        /// osu! 비트맵 페이지에서 맵퍼 정보를 긁는 정규식
-        /// </summary>
-        public static string CreatorExpression
-        {
-            get
-            {
-                if (_CreatorExpression == null)
-                {
-                    _CreatorExpression = Get("EXP", "Creator");
-                }
-                return _CreatorExpression;
-            }
-        }
-
-        private static string _FavoriteExpression = null;
-
-        /// <summary>
-        /// osu! 비트맵 페이지에서 좋아요 정보를 긁는 정규식
-        /// </summary>
-        public static string FavoriteExpression
-        {
-            get
-            {
-                if (_FavoriteExpression == null)
-                {
-                    _FavoriteExpression = Get("EXP", "Favorite");
-                }
-                return _FavoriteExpression;
-            }
-        }
-
-        private static string _ScoreboardExpression = null;
-
-        /// <summary>
-        /// osu! 비트맵 페이지에서 랭크 상태를 긁는 정규식
-        /// </summary>
-        public static string ScoreboardExpression
-        {
-            get
-            {
-                if (_ScoreboardExpression == null)
-                {
-                    _ScoreboardExpression = Get("EXP", "Scoreboard");
-                }
-                return _ScoreboardExpression;
-            }
-        }
-
-
-
-        private static string _LogFile = null;
-
-        public static string LogFile
-        {
-            get
-            {
-                if (_LogFile == null)
-                {
-                    _LogFile = Get("ENV", "LogFile");
-                }
-                return _LogFile;
-            }
-        }
-
-        private static int _ResponseTimeout = -1;
-
         /// <summary>
         /// 인터넷 탐색시 응답 시간 제한
         /// </summary>
@@ -284,9 +187,6 @@ namespace Manager
                 return _ResponseTimeout;
             }
         }
-
-        private static int _FavoriteMinimum = -1;
-
         public static int FavoriteMinimum
         {
             get
@@ -309,9 +209,6 @@ namespace Manager
                 return _FavoriteMinimum;
             }
         }
-
-        private static int _SyncInterval = -1;
-
         public static int SyncInterval
         {
             get
@@ -335,10 +232,116 @@ namespace Manager
                 return _SyncInterval;
             }
         }
+        public static IEnumerable<int> BeatmapList
+        {
+            get
+            {
+                if (_BeatmapList == null)
+                {
+                    _BeatmapList = Get("ENV", "BeatmapList").Split(',').Select(i => Convert.ToInt32(i));
+                }
+                return _BeatmapList;
+            }
+        }
+
+
+        private static string _SessionKey = null;
+        private static string _SessionExpression = null;
+        private static string _CreatorExpression = null;
+        private static string _FavoriteExpression = null;
+        private static string _ScoreboardExpression = null;
+        private static string _SetIdExpression = "";
+        /// <summary>
+        /// osu! 세션 쿠키의 이름
+        /// </summary>
+        public static string SessionKey
+        {
+            get
+            {
+                if (_SessionKey == null)
+                {
+                    _SessionKey = Get("EXP", "SessionKey");
+                }
+                return _SessionKey;
+            }
+        }
+        /// <summary>
+        /// osu! 세션의 정보를 긁는 정규식
+        /// </summary>
+        public static string SessionExpression
+        {
+            get
+            {
+                if (_SessionExpression == null)
+                {
+                    _SessionExpression = Get("EXP", "Session");
+                }
+                return _SessionExpression;
+            }
+        }
+        /// <summary>
+        /// osu! 비트맵 페이지에서 맵퍼 정보를 긁는 정규식
+        /// </summary>
+        public static string CreatorExpression
+        {
+            get
+            {
+                if (_CreatorExpression == null)
+                {
+                    _CreatorExpression = Get("EXP", "Creator");
+                }
+                return _CreatorExpression;
+            }
+        }
+        /// <summary>
+        /// osu! 비트맵 페이지에서 좋아요 정보를 긁는 정규식
+        /// </summary>
+        public static string FavoriteExpression
+        {
+            get
+            {
+                if (_FavoriteExpression == null)
+                {
+                    _FavoriteExpression = Get("EXP", "Favorite");
+                }
+                return _FavoriteExpression;
+            }
+        }
+        /// <summary>
+        /// osu! 비트맵 페이지에서 랭크 상태를 긁는 정규식
+        /// </summary>
+        public static string ScoreboardExpression
+        {
+            get
+            {
+                if (_ScoreboardExpression == null)
+                {
+                    _ScoreboardExpression = Get("EXP", "Scoreboard");
+                }
+                return _ScoreboardExpression;
+            }
+        }
+        /// <summary>
+        /// osu! 비트맵 목록 페이지에서 맵셋 ID를 긁는 정규식
+        /// </summary>
+        public static string SetIdExpression
+        {
+            get
+            {
+                if (_SetIdExpression == "")
+                {
+                    _SetIdExpression = Get("EXP", "SetId");
+                }
+                return _SetIdExpression;
+            }
+        }
 
 
         private static string _Session = null;
-
+        private static string _OsuId = null;
+        private static string _OsuPw = null;
+        private static string _APIKey = null;
+        private static DateTime _LastCheckTime = DateTime.MinValue;
         /// <summary>
         /// 동기화 봇이 사용하는 세션 값
         /// </summary>
@@ -358,9 +361,6 @@ namespace Manager
                 Set("KEY", "Session", value);
             }
         }
-
-        private static string _OsuId = null;
-
         public static string OsuId
         {
             get
@@ -372,8 +372,6 @@ namespace Manager
                 return _OsuId;
             }
         }
-        private static string _OsuPw = null;
-
         public static string OsuPw
         {
             get
@@ -385,8 +383,6 @@ namespace Manager
                 return _OsuPw;
             }
         }
-        private static string _APIKey = null;
-
         public static string APIKey
         {
             get
@@ -396,6 +392,33 @@ namespace Manager
                     _APIKey = Get("KEY", "API");
                 }
                 return _APIKey;
+            }
+        }
+        public static DateTime LastCheckTime
+        {
+            get
+            {
+                if (_LastCheckTime == DateTime.MinValue)
+                {
+                    try
+                    {
+                        _LastCheckTime = Convert.ToDateTime(Get("KEY", "LastCheckTime"));
+                    }
+                    catch
+                    {
+                        _LastCheckTime = DateTime.MinValue;
+                    }
+                    if (_LastCheckTime == DateTime.MinValue)
+                    {
+                        _LastCheckTime = _LastCheckTime.AddTicks(1);
+                    }
+                }
+                return _LastCheckTime;
+            }
+            set
+            {
+                _LastCheckTime = LastCheckTime;
+                Set("KEY", "LastCheckTime", value.ToString("s"));
             }
         }
     }

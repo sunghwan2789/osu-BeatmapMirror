@@ -58,7 +58,7 @@ namespace Bot
             {
                 return _status;
             }
-            private set
+            set
             {
                 _status = value < 0 ? 0 : value;
             }
@@ -152,8 +152,8 @@ namespace Bot
         /// <returns>Set</returns>
         public static Set GetByAPI(int id, out DateTime lastUpdate)
         {
-            lastUpdate = DateTime.MinValue;
             var set = new Set { Id = id };
+            lastUpdate = DateTime.MinValue;
             foreach (var i in GetAPIData("s=" + set.Id))
             {
                 var update = Convert.ToDateTime(i["approved_date"].Value<string>() ?? i["last_update"].Value<string>())
@@ -188,7 +188,7 @@ namespace Bot
         public static Set GetByLocal(int id)
         {
             var set = new Set { Id = id };
-            using (var osz = new ZipFile(Path.Combine(Settings.Storage, id + ".osz")))
+            using (var osz = new ZipFile(Path.Combine(Settings.Storage, id + ".osz.download")))
             {
                 foreach (var entry in osz.Cast<ZipEntry>().Where(i => i.IsFile && i.Name.EndsWith(".osu")))
                 {

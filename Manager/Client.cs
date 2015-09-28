@@ -172,7 +172,7 @@ namespace Manager
                             });
                             break;
                         }
-                        if (data.IndexOf(Settings.ScoreboardExpression) != -1)
+                        if (Regex.IsMatch(data, Settings.ScoreboardExpression))
                         {
                             Send("upload", new Dictionary<string, string>
                             {

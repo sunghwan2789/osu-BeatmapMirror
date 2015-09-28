@@ -115,14 +115,14 @@ namespace Bot
             get
             {
                 var timingPoint = TimingPoints.FirstOrDefault();
-                return timingPoint != null ? timingPoint.BPM : -1;
+                return timingPoint != null ? timingPoint.BPM : 0;
             }
         }
 
         // [HitObjects]
         public List<HitObject> HitObjects;
         /// <summary>
-        /// 비트맵의 플레이 시간을 반올림
+        /// 비트맵의 플레이 시간을 올림
         /// </summary>
         public int Length
         {
@@ -130,7 +130,7 @@ namespace Bot
             {
                 var hitObjectL = HitObjects.LastOrDefault();
                 var hitObjectF = HitObjects.FirstOrDefault();
-                return hitObjectL != null ? (hitObjectL.EndTime - hitObjectF.Time + 500) / 1000 : -1;
+                return hitObjectL != null ? (int) Math.Ceiling((hitObjectL.EndTime - hitObjectF.Time) / 1000.0) : 0;
             }
         }
 
