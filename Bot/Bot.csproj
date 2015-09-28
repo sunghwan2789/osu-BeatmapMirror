@@ -58,11 +58,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Beatmap\Beatmap.cs" />
+    <Compile Include="Beatmap\CatchTheBeat\CatchTheBeat.cs" />
     <Compile Include="Beatmap\Standard\HitCircle.cs" />
     <Compile Include="Beatmap\Mania\HitNote.cs" />
     <Compile Include="Beatmap\HitObject.cs" />
     <Compile Include="Beatmap\Mania\HoldNote.cs" />
     <Compile Include="Beatmap\Mania\Mania.cs" />
+    <Compile Include="Beatmap\Taiko\Taiko.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

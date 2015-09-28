@@ -10,14 +10,9 @@ namespace Bot
     {
         public int Time;
         public double BeatLength;
-        public int Meter = 4;
 
         public static TimingPoint tpParent;
         private TimingPoint Parent;
-
-        public TimingPoint()
-        {
-        }
 
         public TimingPoint(string line)
         {
@@ -29,7 +24,6 @@ namespace Bot
 
             this.Time = Convert.ToInt32(data[0]);
             this.BeatLength = Convert.ToDouble(data[1]);
-            this.Meter = Convert.ToInt32(data[2]);
 
             if (this.BeatLength >= 0)
             {
@@ -40,7 +34,6 @@ namespace Bot
                 this.Parent = tpParent;
                 var sliderVelocity = -100 / this.BeatLength;
                 this.BeatLength = this.Parent.BeatLength / sliderVelocity;
-                this.Meter = this.Parent.Meter;
             }
         }
 
@@ -48,7 +41,7 @@ namespace Bot
         {
             get
             {
-                return BeatLength > 0 ? 60000 / this.BeatLength : -1;
+                return this.BeatLength > 0 ? 60000 / this.BeatLength : -1;
             }
         }
     }

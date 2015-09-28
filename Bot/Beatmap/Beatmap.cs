@@ -12,6 +12,8 @@ namespace Bot
         public static Dictionary<int, Type> Modes = new Dictionary<int, Type>
         {
             { Standard.Id, typeof(Standard) },
+            { Taiko.Id, typeof(Taiko) },
+            { CatchTheBeat.Id, typeof(CatchTheBeat) },
             { Mania.Id, typeof(Mania) }
         };
         public Dictionary<int, Type> HitObjectTypes = new Dictionary<int, Type>
@@ -26,7 +28,7 @@ namespace Bot
         }
 
         // [Metadata]
-        private string _Version = "Normal";
+        private string _Version;
         public string Title
         {
             get; set;
@@ -37,18 +39,15 @@ namespace Bot
         }
         public string Artist
         {
-            get;
-            set;
+            get; set;
         }
         public string ArtistUnicode
         {
-            get;
-            set;
+            get; set;
         }
         public string Creator
         {
-            get;
-            set;
+            get; set;
         }
         public string Version
         {
@@ -63,13 +62,11 @@ namespace Bot
         }
         public string Source
         {
-            get;
-            set;
+            get; set;
         }
         public string Tags
         {
-            get;
-            set;
+            get; set;
         }
         public int BeatmapID
         {
@@ -77,15 +74,14 @@ namespace Bot
         }
 
         // [Difficulty]
-        private double _ApproachRate = -1;
+        private double _ApproachRate;
         public double HPDrainRate
         {
             get; set;
         }
         public double CircleSize
         {
-            get;
-            set;
+            get; set;
         }
         public double OverallDifficulty
         {
@@ -104,8 +100,7 @@ namespace Bot
         }
         public double SliderMultiplier
         {
-            get;
-            set;
+            get; set;
         }
 
         // [TimingPoints]
@@ -136,11 +131,11 @@ namespace Bot
 
         public Beatmap()
         {
-            BeatmapID = -1;
             Mode = 0;
             HPDrainRate = 5;
             CircleSize = 5;
             OverallDifficulty = 5;
+            ApproachRate = -1;
             SliderMultiplier = 1.4;
             this.TimingPoints = new List<TimingPoint>();
             this.HitObjects = new List<HitObject>();

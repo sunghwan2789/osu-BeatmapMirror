@@ -152,7 +152,7 @@ namespace Bot
 
                 var local = Set.GetByLocal(set.Id);
                 local.Status = set.Status;
-                foreach (var beatmap in local.Beatmaps.Where(i => i.BeatmapID == -1))
+                foreach (var beatmap in local.Beatmaps.Where(i => i.BeatmapID == 0))
                 {
                     var online = set.Beatmaps.Find(i => i.Version == beatmap.Version);
                     if (online == null)
