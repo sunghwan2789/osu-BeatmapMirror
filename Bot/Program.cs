@@ -83,7 +83,7 @@ namespace Bot
                 }
                 return;
             }
-
+            
             var bucket = new Stack<Set>();
             var lastCheckTime = Settings.LastCheckTime;
             using (var query = DB.Command)
@@ -104,7 +104,8 @@ namespace Bot
                             {
                                 lastCheckTime = lastUpdate;
                             }
-                            if (lastUpdate <= Settings.LastCheckTime)
+                            if (lastUpdate <= Settings.LastCheckTime.AddHours(-12))
+                            // 1 비트맵 리스트 캐시 피하기 위함
                             {
                                 page = 0;
                                 break;
@@ -130,52 +131,82 @@ namespace Bot
                     } while (page > 0 && page++ < 125);
                 }
             }
-            Settings.LastCheckTime = lastCheckTime;
             while (bucket.Any())
             {
-                Sync(bucket.Pop());
+                if (!Sync(bucket.Pop()))
+                {
+                    lastCheckTime = Settings.LastCheckTime;
+                }
             }
+            Settings.LastCheckTime = lastCheckTime;
         }
 
+        /// <summary>
+        /// 비트맵을 내려받고 DB에 등록합니다.
+        /// </summary>
+        /// <param name="set">기본 정보가 입력된 Set.
+        /// 여기서 기본 정보는 <code>Id, Status, Beatmaps[i].BeatmapID, Beatmaps[i].Version, Beatmaps[i].Creator</code>입니다.</param>
+        /// <param name="skipDownload"></param>
+        /// <param name="keepSynced"></param>
+        /// <returns></returns>
         private static bool Sync(Set set, bool skipDownload = false, bool keepSynced = false)
         {
             Log.Flag = set.Id;
-            var started = DateTime.Now;
+            var started = keepSynced ? DateTime.MinValue : DateTime.Now;
             var result = false;
             try
             {
-                Log.Write("DOWNLOAD");
-                if (!skipDownload)
-                {
-                    Request.Download(set.Id, null);
-                }
+                var path = Request.Download(set.Id, null, skipDownload);
+                Log.Write("DOWNLOADED");
 
-                var local = Set.GetByLocal(set.Id);
+                var local = Set.GetByLocal(set.Id, path);
                 local.Status = set.Status;
-                foreach (var beatmap in local.Beatmaps.Where(i => i.BeatmapID == 0))
+                local.Beatmaps = set.Beatmaps.Select(i =>
                 {
-                    var online = set.Beatmaps.Find(i => i.Version == beatmap.Version);
-                    if (online == null)
+                    // BeatmapID로 찾지 않는 이유는
+                    // 올린 비트맵을 삭제하고 다시 올리면
+                    // 맵셋 Id만 올라가고 비트맵 Id는 그대로이기 때문임.
+                    var beatmap = local.Beatmaps.Find(j => j.Version == i.Version && j.Creator == i.Creator);
+                    if (beatmap == null)
                     {
                         throw new EntryPointNotFoundException();
                     }
-                    beatmap.BeatmapID = online.BeatmapID;
-                }
+                    beatmap.BeatmapID = i.BeatmapID;
+                    return beatmap;
+                }).ToList();
+                Log.Write("IS VALID");
 
-                Register(local, keepSynced ? DateTime.MinValue : started);
+                Register(local, started);
+                Log.Write("REGISTERED");
+
+                try
+                {
+                    var oldBeatmap = path.Remove(path.LastIndexOf(".download"));
+                    if (File.Exists(oldBeatmap))
+                    {
+                        File.Delete(oldBeatmap);
+                    }
+                    File.Move(path, oldBeatmap);
+                }
+                catch { }
+
                 result = true;
-            }
-            catch (SharpZipBaseException)
-            {
-                Log.Write("invalid beatmap set");
             }
             catch (WebException)
             {
                 return Sync(set, skipDownload, keepSynced);
             }
+            catch (SharpZipBaseException)
+            {
+                Log.Write("CORRUPTED");
+            }
+            catch (EntryPointNotFoundException)
+            {
+                Log.Write("CORRUPTED");
+            }
             catch (Exception e)
             {
-                Log.Write(e.GetBaseException() +"");
+                Log.Write(e.GetBaseException() + "");
             }
             return result;
         }
@@ -184,44 +215,23 @@ namespace Bot
         {
             using (var query = DB.Command)
             {
-                query.CommandText = "INSERT INTO gosu_artists (name, nameU)" +
-                    "VALUES (@a, @au) " +
-                    "ON DUPLICATE KEY UPDATE idx = LAST_INSERT_ID(idx), name = @a, nameU = @au";
+                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
+                    "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @sy) " +
+                    "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, synced = @sy";
+                if (synced == DateTime.MinValue)
+                {
+                    query.CommandText = query.CommandText.Replace("= @sy", "= synced");
+                }
+                query.Parameters.AddWithValue("@i", set.Id);
+                query.Parameters.AddWithValue("@s", set.Status);
                 query.Parameters.AddWithValue("@a", set.Artist);
                 query.Parameters.AddWithValue("@au", set.ArtistUnicode);
+                query.Parameters.AddWithValue("@t", set.Title);
+                query.Parameters.AddWithValue("@tu", set.TitleUnicode);
+                query.Parameters.AddWithValue("@ci", GetCreatorId(set.Id));
+                query.Parameters.AddWithValue("@c", set.Creator);
+                query.Parameters.AddWithValue("@sy", synced.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 query.ExecuteNonQuery();
-                var artistId = query.LastInsertedId;
-
-                var wr = Request.Create("http://osu.ppy.sh/s/" + set.Id);
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                {
-                    var beatmapPage = rp.ReadToEnd();
-                    var creatorId = Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
-                    query.CommandText = "INSERT INTO gosu_creators (id, name) "+
-                        "VALUES (@ci, @c) " +
-                        "ON DUPLICATE KEY UPDATE oldName = (CASE WHEN name = @c THEN oldName ELSE name END), name = @c";
-                    query.Parameters.AddWithValue("@ci", creatorId);
-                    query.Parameters.AddWithValue("@c", set.Creator);
-                    query.ExecuteNonQuery();
-
-                    query.CommandText = "SELECT oldName FROM gosu_creators WHERE id = @ci";
-                    set.CreatorOld = Convert.ToString(query.ExecuteScalar());
-
-                    query.CommandText = "INSERT INTO gosu_sets (id, status, artistId, creatorId, title, titleU, synced) " +
-                        "VALUES (@i, @s, @ai, @ci, @t, @tu, @sy) " +
-                        "ON DUPLICATE KEY UPDATE status = @s, artistId = @ai, title = @t, titleU = @tu, synced = @sy";
-                    if (synced == DateTime.MinValue)
-                    {
-                        query.CommandText = query.CommandText.Replace("= @sy", "= synced");
-                    }
-                    query.Parameters.AddWithValue("@i", set.Id);
-                    query.Parameters.AddWithValue("@s", set.Status);
-                    query.Parameters.AddWithValue("@ai", artistId);
-                    query.Parameters.AddWithValue("@t", set.Title);
-                    query.Parameters.AddWithValue("@tu", set.TitleUnicode);
-                    query.Parameters.AddWithValue("@sy", synced.ToString("s").Replace('T', ' '));
-                    query.ExecuteNonQuery();
-                }
 
                 query.CommandText = "DELETE FROM gosu_beatmaps WHERE setId = @i";
                 query.ExecuteNonQuery();
@@ -233,12 +243,12 @@ namespace Bot
                 query.Parameters.Add("@b", MySqlDbType.Float);
                 query.Parameters.Add("@l", MySqlDbType.Int32);
                 query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length) " +
-                    "VALUES (@i, @ci, @tu, @ai, @d1, @d2, @d3, @d4, @b, @l)";
+                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l)";
                 foreach (var beatmap in set.Beatmaps)
                 {
-                    query.Parameters["@ci"].Value = beatmap.BeatmapID;
-                    query.Parameters["@tu"].Value = beatmap.Version;
-                    query.Parameters["@ai"].Value = beatmap.Mode;
+                    query.Parameters["@s"].Value = beatmap.BeatmapID;
+                    query.Parameters["@a"].Value = beatmap.Version;
+                    query.Parameters["@ci"].Value = beatmap.Mode;
                     query.Parameters["@d1"].Value = beatmap.HPDrainRate;
                     query.Parameters["@d2"].Value = beatmap.CircleSize;
                     query.Parameters["@d3"].Value = beatmap.OverallDifficulty;
@@ -263,6 +273,16 @@ namespace Bot
             {
                 return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
                        select Convert.ToInt32(i.Groups[1].Value);
+            }
+        }
+
+        private static int GetCreatorId(int setId)
+        {
+            var wr = Request.Create("http://osu.ppy.sh/s/" + setId);
+            using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+            {
+                var beatmapPage = rp.ReadToEnd();
+                return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
             }
         }
     }

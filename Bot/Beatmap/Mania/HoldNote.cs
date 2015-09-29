@@ -10,7 +10,7 @@ namespace Bot
     {
         new public static int Id = 128;
 
-        public HoldNote(string[] data) : base(data)
+        public HoldNote(string[] data, Beatmap caller) : base(data, caller)
         {
             this.EndTime = Convert.ToInt32(data[5].Split(':')[0]);
         }

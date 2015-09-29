@@ -17,12 +17,12 @@ namespace Bot
         public TimingPoint(string line)
         {
             var data = line.Split(',');
-            if (data.Length < 3)
+            if (data.Length < 2)
             {
                 throw new FormatException();
             }
 
-            this.Time = Convert.ToInt32(data[0]);
+            this.Time = (int) Convert.ToDouble(data[0]);
             this.BeatLength = Convert.ToDouble(data[1]);
 
             if (this.BeatLength >= 0)
@@ -41,7 +41,7 @@ namespace Bot
         {
             get
             {
-                return this.BeatLength > 0 ? 60000 / this.BeatLength : -1;
+                return this.BeatLength > 0 ? 60000 / this.BeatLength : 0;
             }
         }
     }

@@ -11,7 +11,7 @@ namespace Bot
     {
         public static int Id = 1;
 
-        public HitCircle(string[] data) : base(data)
+        public HitCircle(string[] data, Beatmap caller) : base(data, caller)
         {
         }
     }

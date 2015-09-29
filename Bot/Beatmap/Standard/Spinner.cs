@@ -10,7 +10,7 @@ namespace Bot
     {
         new public static int Id = 8;
 
-        public Spinner(string[] data) : base(data)
+        public Spinner(string[] data, Beatmap caller) : base(data, caller)
         {
             this.EndTime = Convert.ToInt32(data[5]);
         }

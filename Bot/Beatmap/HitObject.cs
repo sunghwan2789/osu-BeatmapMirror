@@ -15,8 +15,9 @@ namespace Bot
         public int Time;
         public int EndTime;
 
-        public HitObject(string[] data)
+        public HitObject(string[] data, Beatmap caller)
         {
+            this.Constructor = caller;
             this.Time = Convert.ToInt32(data[2]);
             this.EndTime = this.Time;
         }
@@ -32,12 +33,10 @@ namespace Bot
             var type = Convert.ToInt32(data[3]) & caller.mask;
             if (!caller.HitObjectTypes.ContainsKey(type))
             {
-                return new HitObject(data);
+                return new HitObject(data, caller);
             }
 
-            var hitObject = (HitObject) Activator.CreateInstance(caller.HitObjectTypes[type], new[] { data });
-            hitObject.Constructor = caller;
-            return hitObject;
+            return (HitObject) Activator.CreateInstance(caller.HitObjectTypes[type], new object[] { data, caller });
         }
     }
 }

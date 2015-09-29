@@ -10,7 +10,7 @@ namespace Bot
     {
         new public static int Id = 2;
 
-        public Slider(string[] data) : base(data)
+        public Slider(string[] data, Beatmap caller) : base(data, caller)
         {
             var repeat = Convert.ToInt32(data[6]);
             var pixelLength = Convert.ToDouble(data[7]);

@@ -10,7 +10,7 @@ namespace Bot
     {
         public static int Id = 1;
 
-        public HitNote(string[] data) : base(data)
+        public HitNote(string[] data, Beatmap caller) : base(data, caller)
         {
         }
     }

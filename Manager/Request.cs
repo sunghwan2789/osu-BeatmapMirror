@@ -48,17 +48,26 @@ namespace Manager
         }
 
         /// <summary>
-        /// osu!에서 비트맵셋을 내려받습니다.
+        /// osu!에서 비트맵셋을 내려받고 올바른 파일인지 확인합니다.
         /// </summary>
         /// <param name="id">비트맵셋 ID</param>
         /// <param name="onprogress"><code>(received, total) => { ... }</code></param>
+        /// <param name="skipDownload">파일을 내려받고 검증할 때 <code>true</code></param>
         /// <exception cref="WebException"></exception>
         /// <exception cref="IOException"></exception>
-        /// <exception cref="SharpZipBaseException"></exception>
-        public void Download(int id, Action<int, long> onprogress)
+        /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
+        public string Download(int id, Action<int, long> onprogress, bool skipDownload = false)
         {
             var url = "http://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
+
+            if (skipDownload)
+            {
+                using (new ZipFile(path))
+                {
+                }
+                return path;
+            }
 
             var wr = Create(url);
             using (var rp = (HttpWebResponse) wr.GetResponse())
@@ -82,10 +91,7 @@ namespace Manager
                     }
                 }
             }
-
-            using (new ZipFile(path))
-            {
-            }
+            return Download(id, onprogress, true);
         }
     }
 }

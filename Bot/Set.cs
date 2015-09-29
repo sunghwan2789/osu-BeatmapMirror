@@ -101,7 +101,6 @@ namespace Bot
                 return Beatmaps.First().Creator;
             }
         }
-        public string CreatorOld;
         // public int CreatorID { get; set; }
 
         // public int Genre { get; set; }
@@ -128,7 +127,7 @@ namespace Bot
         public override string ToString()
         {
             return Regex.Replace(string.Join(" ",
-                new[] { Title, TitleUnicode, Artist, ArtistUnicode, Creator, CreatorOld }
+                new[] { Title, TitleUnicode, Artist, ArtistUnicode, Creator }
                 .Concat(Beatmaps.ConvertAll(i => i.Version)).Concat(Tags)), @"\s+", " ").ToUpper();
         }
 
@@ -145,11 +144,12 @@ namespace Bot
         }
 
         /// <summary>
-        /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름)를 가져옴
+        /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름)를 가져옴.
+        /// 여기서 기본 정보는 <code>Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <param name="lastUpdate">Ranked 맵셋은 approved_date, 그외 맵셋은 last_update 값을 저장</param>
-        /// <returns>Set</returns>
+        /// <returns></returns>
         public static Set GetByAPI(int id, out DateTime lastUpdate)
         {
             var set = new Set { Id = id };
@@ -172,8 +172,6 @@ namespace Bot
                 {
                     BeatmapID = i["beatmap_id"].Value<int>(),
                     Version = i["version"].Value<string>(),
-                    Title = i["title"].Value<string>(),
-                    Artist = i["artist"].Value<string>(),
                     Creator = i["creator"].Value<string>()
                 });
             }
@@ -183,14 +181,14 @@ namespace Bot
         /// <summary>
         /// 내려받은 맵셋 파일을 통해 자세한 정보를 가져옴
         /// </summary>
-        /// <param name="id">맵셋 ID</param>
+        /// <param name="path">맵셋 파일 경로</param>
         /// <returns>Set</returns>
-        public static Set GetByLocal(int id)
+        public static Set GetByLocal(int id, string path)
         {
             var set = new Set { Id = id };
-            using (var osz = new ZipFile(Path.Combine(Settings.Storage, id + ".osz.download")))
+            using (var osz = new ZipFile(path))
             {
-                foreach (var entry in osz.Cast<ZipEntry>().Where(i => i.IsFile && i.Name.EndsWith(".osu")))
+                foreach (var entry in osz.Cast<ZipEntry>().Where(i => i.IsFile && i.Name.Split('/').Length == 1 && i.Name.EndsWith(".osu")))
                 {
                     using (var reader = new StreamReader(osz.GetInputStream(entry.ZipFileIndex)))
                     {

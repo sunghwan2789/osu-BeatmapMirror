@@ -125,7 +125,15 @@ namespace Bot
             {
                 var hitObjectL = HitObjects.LastOrDefault();
                 var hitObjectF = HitObjects.FirstOrDefault();
-                return hitObjectL != null ? (int) Math.Ceiling((hitObjectL.EndTime - hitObjectF.Time) / 1000.0) : 0;
+                if (hitObjectL == null)
+                {
+                    return 0;
+                }
+                if (hitObjectF.Time == hitObjectL.EndTime)
+                {
+                    return 1;
+                }
+                return (int) Math.Ceiling((hitObjectL.EndTime - hitObjectF.Time) / 1000.0);
             }
         }
 
