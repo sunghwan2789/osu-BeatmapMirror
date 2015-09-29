@@ -52,9 +52,9 @@ namespace Manager
             }
             catch (Exception e)
             {
-                Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
+                //Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
             }
-            Log.Write(Id + " Dispose");
+            //Log.Write(Id + " Dispose");
             Socket.Dispose();
         }
 

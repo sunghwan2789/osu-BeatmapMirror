@@ -24,6 +24,7 @@ namespace Manager
         protected override void OnStart(string[] args)
         {
             // 동기화 봇
+            Task.Run(() => timer1_Tick(null, null));
             timer1.Interval = Settings.SyncInterval;
             timer1.Start();
 
@@ -84,7 +85,7 @@ namespace Manager
                 try
                 {
                     var wsContext = await context.AcceptWebSocketAsync(null);
-                    Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
+                    //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
                     new Client(wsContext.WebSocket).Listen();
                 }
                 catch { }
