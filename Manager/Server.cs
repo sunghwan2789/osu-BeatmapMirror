@@ -25,7 +25,7 @@ namespace Manager
         {
             // 동기화 봇
             timer1.Interval = Settings.SyncInterval;
-            //timer1.Start();
+            timer1.Start();
 
             // 웹소켓 서버
             Listener = new HttpListener();
@@ -45,14 +45,18 @@ namespace Manager
                 {
                     StartInfo =
                     {
-                        FileName = Path.Combine(
-                            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
+                        FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
                         CreateNoWindow = true,
-                        UseShellExecute = false
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true
                     }
                 };
                 process.Start();
                 process.WaitForExit();
+
+                var output = process.StandardOutput.ReadToEnd().Trim();
+                Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
+                Log.Write("BEATMAP SYNC PROCESS ===========");
             }
         }
 

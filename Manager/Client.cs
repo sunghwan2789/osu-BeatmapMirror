@@ -129,7 +129,7 @@ namespace Manager
 
                     using (var query = DB.Command)
                     {
-                        query.CommandText = "SELECT id FROM osu_beatmaps WHERE id = @i";
+                        query.CommandText = "SELECT 1 FROM gosu_beatmaps WHERE setId = @i";
                         query.Parameters.AddWithValue("@i", id);
                         if (query.ExecuteScalar() != null)
                         {
@@ -185,21 +185,6 @@ namespace Manager
                         mid = creatorGrab.Groups["id"].Value;
                         mname = creatorGrab.Groups["name"].Value;
                     }
-                    wr = Request.Create("http://osu.ppy.sh/u/" + mid);
-                    using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
-                    {
-                        if (sr.ReadToEnd().IndexOf(mname) < 0 &&
-                            (mid != "4341397" && mid != "3"))
-                            // 1 맵핑 컨테스트 당선작용 Multiple Creators Id
-                        {
-                            Send("upload", new Dictionary<string, string>
-                            {
-                                { "state", "rejected" },
-                                { "detail", "troll" }
-                            });
-                            break;
-                        }
-                    }
 
                     // 비로그인 유저는 내가 짬날 때 업로드
                     if (Request.GetCookie(Settings.SessionKey) == null)
@@ -251,8 +236,8 @@ namespace Manager
                         {
                             StartInfo =
                             {
-                                FileName = @"D:\sunghwan2789\Develop\C#\osu!BeatmapMirrorBot2\bin\osu!BeatmapMirrorBot2.exe",
-                                Arguments = "-ad " + id,
+                                FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
+                                Arguments = id + "l",
                                 CreateNoWindow = true,
                                 UseShellExecute = false,
                                 RedirectStandardOutput = true

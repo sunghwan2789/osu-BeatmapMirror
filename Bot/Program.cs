@@ -151,13 +151,12 @@ namespace Bot
         /// <returns></returns>
         private static bool Sync(Set set, bool skipDownload = false, bool keepSynced = false)
         {
-            Log.Flag = set.Id;
             var started = keepSynced ? DateTime.MinValue : DateTime.Now;
             var result = false;
             try
             {
                 var path = Request.Download(set.Id, null, skipDownload);
-                Log.Write("DOWNLOADED");
+                Log.Write(set.Id + " DOWNLOADED");
 
                 var local = Set.GetByLocal(set.Id, path);
                 local.Status = set.Status;
@@ -174,10 +173,10 @@ namespace Bot
                     beatmap.BeatmapID = i.BeatmapID;
                     return beatmap;
                 }).ToList();
-                Log.Write("IS VALID");
+                Log.Write(set.Id + " IS VALID");
 
                 Register(local, started);
-                Log.Write("REGISTERED");
+                Log.Write(set.Id + " REGISTERED");
 
                 try
                 {
@@ -198,15 +197,15 @@ namespace Bot
             }
             catch (SharpZipBaseException)
             {
-                Log.Write("CORRUPTED");
+                Log.Write(set.Id + " CORRUPTED");
             }
             catch (EntryPointNotFoundException)
             {
-                Log.Write("CORRUPTED");
+                Log.Write(set.Id + " CORRUPTED");
             }
             catch (Exception e)
             {
-                Log.Write(e.GetBaseException() + "");
+                Log.Write(set.Id + " " + e.GetBaseException() + ": " + e.Message);
             }
             return result;
         }
