@@ -24,9 +24,7 @@ namespace Manager
         protected override void OnStart(string[] args)
         {
             // 동기화 봇
-            Task.Run(() => timer1_Tick(null, null));
-            timer1.Interval = Settings.SyncInterval;
-            timer1.Start();
+            Task.Run(() => RunBot());
 
             // 웹소켓 서버
             Listener = new HttpListener();
@@ -37,11 +35,11 @@ namespace Manager
             Listen();
         }
 
-        private object Bot = new object();
-        private void timer1_Tick(object sender, EventArgs e)
+        private void RunBot()
         {
-            lock (Bot)
+            while (true)
             {
+                var scheduler = Task.Delay(Settings.SyncInterval);
                 var process = new Process
                 {
                     StartInfo =
@@ -56,8 +54,11 @@ namespace Manager
                 process.WaitForExit();
 
                 var output = process.StandardOutput.ReadToEnd().Trim();
+                process.Dispose();
                 Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
                 Log.Write("BEATMAP SYNC PROCESS ===========");
+                scheduler.Wait();
+                scheduler.Dispose();
             }
         }
 
@@ -95,7 +96,6 @@ namespace Manager
         protected override void OnStop()
         {
             Listener.Close();
-            timer1.Stop();
         }
     }
 }
