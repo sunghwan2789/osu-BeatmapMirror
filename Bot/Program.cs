@@ -40,7 +40,7 @@ namespace Bot
             {
                 if (rp.Cookies["last_login"] == null)
                 {
-                    Settings.Session = "";
+                    Settings.Session = null;
                     Console.WriteLine("login failed");
                     Main(args);
                     return;
