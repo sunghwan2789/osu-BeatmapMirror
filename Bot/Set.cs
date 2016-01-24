@@ -136,10 +136,17 @@ namespace Bot
         {
             const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
 
-            var wr = WebRequest.CreateHttp(string.Format(url, Settings.APIKey, query));
-            using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+            try
             {
-                return JArray.Parse(rp.ReadToEnd());
+                var wr = new Request().Create(string.Format(url, Settings.APIKey, query));
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    return JArray.Parse(rp.ReadToEnd());
+                }
+            }
+            catch (WebException)
+            {
+                return GetAPIData(query);
             }
         }
 

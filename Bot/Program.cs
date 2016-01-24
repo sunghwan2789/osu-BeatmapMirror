@@ -267,21 +267,35 @@ namespace Bot
         {
             const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
 
-            var wr = Request.Create(string.Format(url, r, page));
-            using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+            try
             {
-                return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
-                       select Convert.ToInt32(i.Groups[1].Value);
+                var wr = Request.Create(string.Format(url, r, page));
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
+                           select Convert.ToInt32(i.Groups[1].Value);
+                }
+            }
+            catch (WebException)
+            {
+                return GrabSetIDFromBeatmapList(r, page);
             }
         }
 
         private static int GetCreatorId(int setId)
         {
-            var wr = Request.Create("http://osu.ppy.sh/s/" + setId);
-            using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+            try
             {
-                var beatmapPage = rp.ReadToEnd();
-                return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
+                var wr = Request.Create("http://osu.ppy.sh/s/" + setId);
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    var beatmapPage = rp.ReadToEnd();
+                    return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
+                }
+            }
+            catch (WebException)
+            {
+                return GetCreatorId(setId);
             }
         }
     }
