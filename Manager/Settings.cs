@@ -248,8 +248,6 @@ namespace Manager
         private static string _SessionKey = null;
         private static string _SessionExpression = null;
         private static string _CreatorExpression = null;
-        private static string _FavoriteExpression = null;
-        private static string _ScoreboardExpression = null;
         private static string _SetIdExpression = "";
         /// <summary>
         /// osu! 세션 쿠키의 이름
@@ -291,34 +289,6 @@ namespace Manager
                     _CreatorExpression = Get("EXP", "Creator");
                 }
                 return _CreatorExpression;
-            }
-        }
-        /// <summary>
-        /// osu! 비트맵 페이지에서 좋아요 정보를 긁는 정규식
-        /// </summary>
-        public static string FavoriteExpression
-        {
-            get
-            {
-                if (_FavoriteExpression == null)
-                {
-                    _FavoriteExpression = Get("EXP", "Favorite");
-                }
-                return _FavoriteExpression;
-            }
-        }
-        /// <summary>
-        /// osu! 비트맵 페이지에서 랭크 상태를 긁는 정규식
-        /// </summary>
-        public static string ScoreboardExpression
-        {
-            get
-            {
-                if (_ScoreboardExpression == null)
-                {
-                    _ScoreboardExpression = Get("EXP", "Scoreboard");
-                }
-                return _ScoreboardExpression;
             }
         }
         /// <summary>

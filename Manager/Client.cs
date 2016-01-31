@@ -152,8 +152,7 @@ namespace Manager
                     var wr = Request.Create("http://osu.ppy.sh/s/" + id);
                     using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
-                        var data = sr.ReadToEnd();
-                        var creatorGrab = Regex.Match(data, Settings.CreatorExpression);
+                        var creatorGrab = Regex.Match(sr.ReadToEnd(), Settings.CreatorExpression);
                         if (!creatorGrab.Success)
                         {
                             Send("upload", new Dictionary<string, string>
@@ -163,7 +162,9 @@ namespace Manager
                             });
                             break;
                         }
-                        if (Convert.ToInt32(Regex.Match(data, Settings.FavoriteExpression).Groups[1].Value) < Settings.FavoriteMinimum)
+                        var beatmap = GetAPIData("s=" + id).First();
+                        // 품질 관리
+                        if (beatmap["favourite_count"].Value<int>() < Settings.FavoriteMinimum)
                         {
                             Send("upload", new Dictionary<string, string>
                             {
@@ -172,7 +173,8 @@ namespace Manager
                             });
                             break;
                         }
-                        if (Regex.IsMatch(data, Settings.ScoreboardExpression))
+                        // 랭크된 비트맵은 자동 동기화함
+                        if (beatmap["approved"].Value<int>() > 0)
                         {
                             Send("upload", new Dictionary<string, string>
                             {
@@ -286,6 +288,24 @@ namespace Manager
             {
                 // 비트맵 업로드가 연결이 끊긴 상태에서도 작동하기 위함
                 // Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
+            }
+        }
+
+        private static JArray GetAPIData(string query)
+        {
+            const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
+
+            try
+            {
+                var wr = new Request().Create(string.Format(url, Settings.APIKey, query));
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    return JArray.Parse(rp.ReadToEnd());
+                }
+            }
+            catch (WebException)
+            {
+                return GetAPIData(query);
             }
         }
     }
