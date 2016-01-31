@@ -86,7 +86,7 @@ namespace Manager
                     {
                         using (var sw = new StreamWriter(wr.GetRequestStream()))
                         {
-                            sw.Write(string.Format("login=login&username={0}&password={1}&autologin=on",
+                            sw.Write(string.Format("login=Login&username={0}&password={1}&autologin=on",
                                 Uri.EscapeDataString(data["id"].Value<string>()),
                                 Uri.EscapeDataString(data["pw"].Value<string>())));
                         }

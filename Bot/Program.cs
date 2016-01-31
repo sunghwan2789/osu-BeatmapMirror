@@ -27,7 +27,7 @@ namespace Bot
             {
                 using (var sw = new StreamWriter(wr.GetRequestStream()))
                 {
-                    sw.Write(string.Format("login=login&username={0}&password={1}&autologin=on",
+                    sw.Write(string.Format("login=Login&username={0}&password={1}&autologin=on",
                         Uri.EscapeDataString(Settings.OsuId),
                         Uri.EscapeDataString(Settings.OsuPw)));
                 }
@@ -95,7 +95,12 @@ namespace Bot
                     var page = 1;
                     do
                     {
-                        foreach (var id in GrabSetIDFromBeatmapList(r, page))
+                        var ids = GrabSetIDFromBeatmapList(r, page);
+                        if (ids.Count() == 0)
+                        {
+                            break;
+                        }
+                        foreach (var id in ids)
                         {
                             DateTime lastUpdate;
                             var set = Set.GetByAPI(id, out lastUpdate);
@@ -104,8 +109,8 @@ namespace Bot
                             {
                                 lastCheckTime = lastUpdate;
                             }
-                            if (lastUpdate <= Settings.LastCheckTime.AddHours(-12))
-                            // 1 비트맵 리스트 캐시 피하기 위함
+                            if (lastUpdate != DateTime.MinValue && lastUpdate <= Settings.LastCheckTime.AddHours(-12))
+                            // 1 API에 정보가 늦게 등록될 수 있음    1 비트맵 리스트 캐시 피하기 위함
                             {
                                 page = 0;
                                 break;
@@ -265,7 +270,7 @@ namespace Bot
 
         private static IEnumerable<int> GrabSetIDFromBeatmapList(int r, int page = 1)
         {
-            const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
+            const string url = "http://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
 
             try
             {
