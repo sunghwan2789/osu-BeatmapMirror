@@ -81,7 +81,12 @@ namespace Bot
                     DateTime lastUpdate;
                     Sync(Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value), out lastUpdate), skipDownload, keepSynced);
                 }
-                return;
+
+                if (args[0] != "manage")
+                {
+                    return;
+                }
+                Log.Writer = new StreamWriter(Settings.LogPath + ".bot.log");
             }
             
             var bucket = new Stack<Set>();

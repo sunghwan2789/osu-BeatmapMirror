@@ -45,16 +45,16 @@ namespace Manager
                     StartInfo =
                     {
                         FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
+                        Arguments = "manage",
                         CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true
+                        UseShellExecute = false
                     }
                 };
                 process.Start();
                 process.WaitForExit();
-
-                var output = process.StandardOutput.ReadToEnd().Trim();
                 process.Dispose();
+
+                var output = File.ReadAllText(Settings.LogPath + ".bot.log");
                 Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
                 Log.Write("BEATMAP SYNC PROCESS ===========");
                 scheduler.Wait();
