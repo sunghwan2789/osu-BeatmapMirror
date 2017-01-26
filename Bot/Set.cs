@@ -144,7 +144,7 @@ namespace Bot
                     return JArray.Parse(rp.ReadToEnd());
                 }
             }
-            catch (Exception e) when (e is WebException || e is JsonReaderException)
+            catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
             {
                 return GetAPIData(query);
             }

@@ -54,9 +54,13 @@ namespace Manager
                 process.WaitForExit();
                 process.Dispose();
 
-                var output = File.ReadAllText(Settings.LogPath + ".bot.log");
-                Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
-                Log.Write("BEATMAP SYNC PROCESS ===========");
+                try
+                {
+                    var output = File.ReadAllText(Settings.LogPath + ".bot.log");
+                    Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
+                    Log.Write("BEATMAP SYNC PROCESS ===========");
+                }
+                catch {}
                 scheduler.Wait();
                 scheduler.Dispose();
             }

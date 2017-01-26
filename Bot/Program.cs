@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using ICSharpCode.SharpZipLib;
+using System.Diagnostics;
 
 namespace Bot
 {
@@ -20,6 +21,10 @@ namespace Bot
 
         private static void Main(string[] args)
         {
+            System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+
+
             const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
 
             var wr = Request.Create(url, true);
@@ -86,7 +91,7 @@ namespace Bot
                 {
                     return;
                 }
-                Log.Writer = new StreamWriter(Settings.LogPath + ".bot.log");
+                Log.Writer = new StreamWriter(File.Open(Settings.LogPath + ".bot.log", FileMode.Create));
             }
             
             var bucket = new Stack<Set>();
@@ -149,6 +154,12 @@ namespace Bot
                 }
             }
             Settings.LastCheckTime = lastCheckTime;
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = (Exception) e.ExceptionObject;
+            Log.Write(ex.GetBaseException().ToString());
         }
 
         /// <summary>
