@@ -312,6 +312,7 @@ namespace Manager
         private static string _OsuPw = null;
         private static string _APIKey = null;
         private static DateTime _LastCheckTime = DateTime.MinValue;
+        private static DateTime _LastSummaryTime = DateTime.MinValue;
         /// <summary>
         /// 동기화 봇이 사용하는 세션 값
         /// </summary>
@@ -389,6 +390,33 @@ namespace Manager
             {
                 _LastCheckTime = LastCheckTime;
                 Set("KEY", "LastCheckTime", value.ToString("s"));
+            }
+        }
+        public static DateTime LastSummaryTime
+        {
+            get
+            {
+                if (_LastSummaryTime == DateTime.MinValue)
+                {
+                    try
+                    {
+                        _LastSummaryTime = Convert.ToDateTime(Get("KEY", "LastSummaryTime"));
+                    }
+                    catch
+                    {
+                        _LastSummaryTime = DateTime.MinValue;
+                    }
+                    if (_LastSummaryTime == DateTime.MinValue)
+                    {
+                        _LastSummaryTime = _LastSummaryTime.AddTicks(1);
+                    }
+                }
+                return _LastSummaryTime;
+            }
+            set
+            {
+                _LastSummaryTime = LastSummaryTime;
+                Set("KEY", "LastSummaryTime", value.ToString("s"));
             }
         }
     }

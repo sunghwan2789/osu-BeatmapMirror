@@ -26,7 +26,8 @@ namespace Manager
                 return new MySqlCommand
                 {
                     Connection = conn,
-                    CommandType = CommandType.Text
+                    CommandType = CommandType.Text,
+                    CommandTimeout = 0
                 };
             }
         }
