@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Bot</RootNamespace>
     <AssemblyName>Bot</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -44,6 +44,12 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="osu.Framework">
+      <HintPath>lib\net45\osu.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game">
+      <HintPath>lib\net45\osu.Game.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -55,22 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Beatmap\Beatmap.cs" />
-    <Compile Include="Beatmap\CatchTheBeat\CatchTheBeat.cs" />
-    <Compile Include="Beatmap\Standard\HitCircle.cs" />
-    <Compile Include="Beatmap\Mania\HitNote.cs" />
-    <Compile Include="Beatmap\HitObject.cs" />
-    <Compile Include="Beatmap\Mania\HoldNote.cs" />
-    <Compile Include="Beatmap\Mania\Mania.cs" />
-    <Compile Include="Beatmap\Taiko\Taiko.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Set.cs" />
-    <Compile Include="Beatmap\Standard\Slider.cs" />
-    <Compile Include="Beatmap\Standard\Spinner.cs" />
-    <Compile Include="Beatmap\Standard\Standard.cs" />
-    <Compile Include="Beatmap\TimingPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

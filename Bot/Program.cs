@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using ICSharpCode.SharpZipLib;
 using System.Diagnostics;
+using osu.Game.Beatmaps.IO;
+using osu.Framework.IO.Stores;
+using osu.Game.Rulesets.Objects.Types;
 
 namespace Bot
 {
@@ -23,6 +26,8 @@ namespace Bot
         {
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+
+            OszArchiveReader.Register();
 
 
             const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
@@ -186,12 +191,14 @@ namespace Bot
                     // BeatmapID로 찾지 않는 이유는
                     // 올린 비트맵을 삭제하고 다시 올리면
                     // 맵셋 Id만 올라가고 비트맵 Id는 그대로이기 때문임.
-                    var beatmap = local.Beatmaps.Find(j => j.Version == i.Version && j.Creator == i.Creator);
+                    var beatmap = local.Beatmaps.Find(j =>
+                        j.BeatmapInfo.Version == i.BeatmapInfo.Version &&
+                        j.Metadata.Author == i.Metadata.Author);
                     if (beatmap == null)
                     {
                         throw new EntryPointNotFoundException();
                     }
-                    beatmap.BeatmapID = i.BeatmapID;
+                    beatmap.BeatmapInfo.OnlineBeatmapID = i.BeatmapInfo.OnlineBeatmapID;
                     return beatmap;
                 }).ToList();
                 Log.Write(set.Id + " IS VALID");
@@ -262,19 +269,24 @@ namespace Bot
                 query.Parameters.Add("@d4", MySqlDbType.Float);
                 query.Parameters.Add("@b", MySqlDbType.Float);
                 query.Parameters.Add("@l", MySqlDbType.Int32);
-                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length) " +
-                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l)";
+                query.Parameters.Add("@d0", MySqlDbType.Float);
+                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star) " +
+                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0)";
                 foreach (var beatmap in set.Beatmaps)
                 {
-                    query.Parameters["@s"].Value = beatmap.BeatmapID;
-                    query.Parameters["@a"].Value = beatmap.Version;
-                    query.Parameters["@ci"].Value = beatmap.Mode;
-                    query.Parameters["@d1"].Value = beatmap.HPDrainRate;
-                    query.Parameters["@d2"].Value = beatmap.CircleSize;
-                    query.Parameters["@d3"].Value = beatmap.OverallDifficulty;
-                    query.Parameters["@d4"].Value = beatmap.ApproachRate;
-                    query.Parameters["@b"].Value = beatmap.BPM;
-                    query.Parameters["@l"].Value = beatmap.Length;
+                    query.Parameters["@s"].Value = beatmap.BeatmapInfo.OnlineBeatmapID;
+                    query.Parameters["@a"].Value = beatmap.BeatmapInfo.Version;
+                    query.Parameters["@ci"].Value = beatmap.BeatmapInfo.RulesetID;
+                    query.Parameters["@d1"].Value = beatmap.BeatmapInfo.Difficulty.DrainRate;
+                    query.Parameters["@d2"].Value = beatmap.BeatmapInfo.Difficulty.CircleSize;
+                    query.Parameters["@d3"].Value = beatmap.BeatmapInfo.Difficulty.OverallDifficulty;
+                    query.Parameters["@d4"].Value = beatmap.BeatmapInfo.Difficulty.ApproachRate;
+                    query.Parameters["@b"].Value = beatmap.ControlPointInfo.BPMMode;
+                    // https://github.com/ppy/osu/blob/e93d0cbb3ab7daf6c2ef4a80c755f429a5d88609/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L109
+                    var lastObject = beatmap.HitObjects.LastOrDefault();
+                    var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
+                    query.Parameters["@l"].Value = (int) (endTime - (beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0)) / 1000;
+                    query.Parameters["@d0"].Value = beatmap.BeatmapInfo.StarDifficulty;
                     query.ExecuteNonQuery();
                 }
 

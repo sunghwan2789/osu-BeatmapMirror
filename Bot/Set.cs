@@ -12,6 +12,12 @@ using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Manager;
+using osu.Game.Beatmaps.IO;
+using osu.Game.Beatmaps.Formats;
+using osu.Game.Database;
+using osu.Game.Beatmaps;
+using osu.Game.Rulesets;
+using System.Reflection;
 
 namespace Bot
 {
@@ -64,71 +70,52 @@ namespace Bot
             }
         }
 
-        public string Title
-        {
-            get
-            {
-                return Beatmaps.First().Title;
-            }
-        }
+        public string Title => Beatmaps.First().Metadata.Title;
         public string TitleUnicode
         {
             get
             {
-                var unicode = Beatmaps.First().TitleUnicode;
+                var unicode = Beatmaps.First().Metadata.TitleUnicode;
                 return string.IsNullOrEmpty(unicode) || Title == unicode ? null : unicode;
             }
         }
-        public string Artist
+        public string Artist => Beatmaps.First().Metadata.Artist;
+        public string ArtistUnicode 
         {
             get
             {
-                return Beatmaps.First().Artist;
-            }
-        }
-        public string ArtistUnicode
-        {
-            get
-            {
-                var unicode = Beatmaps.First().ArtistUnicode;
+                var unicode = Beatmaps.First().Metadata.ArtistUnicode;
                 return string.IsNullOrEmpty(unicode) || Artist == unicode ? null : unicode;
             }
         }
-        public string Creator
-        {
-            get
-            {
-                return Beatmaps.First().Creator;
-            }
-        }
+        public string Creator => Beatmaps.First().Metadata.Author;
         // public int CreatorID { get; set; }
 
         // public int Genre { get; set; }
         // public int Language { get; set; }
 
-        public string[] Tags
-        {
-            get
-            {
-                var beatmap = Beatmaps.First();
-                return (beatmap.Source + " " + beatmap.Tags).ToLower()
-                    .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            }
-        }
+        public string Source => Beatmaps.First().Metadata.Tags;
+        public string Tags => Beatmaps.First().Metadata.Tags;
 
-        public List<Beatmap> Beatmaps;
-
-        public Set()
+        public string[] SearchableTerms => new[]
         {
-            Beatmaps = new List<Beatmap>();
-        }
+            Title,
+            TitleUnicode,
+            Artist,
+            ArtistUnicode,
+            Creator,
+            Source,
+            Tags
+        }.Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+        public List<Beatmap> Beatmaps = new List<Beatmap>();
 
 
         public override string ToString()
         {
-            return Regex.Replace(string.Join(" ",
-                new[] { Title, TitleUnicode, Artist, ArtistUnicode, Creator }
-                .Concat(Beatmaps.ConvertAll(i => i.Version)).Concat(Tags)), @"\s+", " ").ToUpper();
+            return Regex.Replace(
+                string.Join(" ", SearchableTerms.Concat(Beatmaps.Select(i => i.BeatmapInfo.Version))),
+                @"\s+", " ").ToUpper();
         }
 
 
@@ -177,13 +164,27 @@ namespace Bot
 
                 set.Beatmaps.Add(new Beatmap
                 {
-                    BeatmapID = i["beatmap_id"].Value<int>(),
-                    Version = i["version"].Value<string>(),
-                    Creator = i["creator"].Value<string>()
+                    BeatmapInfo = new BeatmapInfo
+                    {
+                        OnlineBeatmapID = i["beatmap_id"].Value<int>(),
+                        Version = i["version"].Value<string>(),
+                        Metadata = new BeatmapMetadata
+                        {
+                            Author = i["creator"].Value<string>()
+                        }
+                    }
                 });
             }
             return set;
         }
+
+        private static List<RulesetInfo> rulesets = null;
+        private static RulesetInfo createRulesetInfo(Ruleset ruleset) => new RulesetInfo
+        {
+            Name = ruleset.Description,
+            InstantiationInfo = ruleset.GetType().AssemblyQualifiedName,
+            ID = ruleset.LegacyID
+        };
 
         /// <summary>
         /// 내려받은 맵셋 파일을 통해 자세한 정보를 가져옴
@@ -192,14 +193,47 @@ namespace Bot
         /// <returns>Set</returns>
         public static Set GetByLocal(int id, string path)
         {
-            var set = new Set { Id = id };
-            using (var osz = new ZipFile(path))
+            if (rulesets == null)
             {
-                foreach (var entry in osz.Cast<ZipEntry>().Where(i => i.IsFile && i.Name.Split('/').Length == 1 && i.Name.EndsWith(".osu")))
+                // https://github.com/ppy/osu/blob/7fbbe74b65e7e399072c198604e9db09fb729626/osu.Game/Database/RulesetDatabase.cs
+                List<Ruleset> instances = new List<Ruleset>();
+
+                foreach (string file in Directory.GetFiles(Environment.CurrentDirectory, @"osu.Game.Rulesets.*.dll"))
                 {
-                    using (var reader = new StreamReader(osz.GetInputStream(entry.ZipFileIndex)))
+                    try
                     {
-                        set.Beatmaps.Add(Beatmap.Parse(reader.ReadToEnd()));
+                        var assembly = Assembly.LoadFile(file);
+                        var rulesets = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Ruleset)));
+
+                        if (rulesets.Count() != 1)
+                            continue;
+
+                        foreach (Type rulesetType in rulesets)
+                            instances.Add((Ruleset)Activator.CreateInstance(rulesetType));
+                    }
+                    catch (Exception) { }
+                }
+
+                rulesets = new List<RulesetInfo>();
+                foreach (var r in instances.Where(r => r.LegacyID >= 0).OrderBy(r => r.LegacyID))
+                {
+                    rulesets.Add(createRulesetInfo(r));
+                }
+            }
+
+
+            var set = new Set { Id = id };
+            using (var fs = File.OpenRead(path))
+            using (var osz = new OszArchiveReader(fs))
+            {
+                foreach (var entry in osz.BeatmapFilenames)
+                {
+                    using (var sr = new StreamReader(osz.GetStream(entry)))
+                    {
+                        var beatmap = BeatmapDecoder.GetDecoder(sr).Decode(sr);
+                        var ruleset = rulesets.First(r => r.ID == beatmap.BeatmapInfo.RulesetID).CreateInstance();
+                        beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0;
+                        set.Beatmaps.Add(beatmap);
                     }
                 }
             }
