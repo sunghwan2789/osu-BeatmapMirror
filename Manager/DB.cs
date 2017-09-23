@@ -10,22 +10,31 @@ namespace Manager
 {
     public class DB
     {
-        private static string ConnectionString = null;
+        private static string connectionString;
+        private static string ConnectionString => connectionString
+            ?? (connectionString = new MySqlConnectionStringBuilder
+            {
+                ConnectionProtocol = MySqlConnectionProtocol.NamedPipe,
+                Server = ".",
+                UserID = Settings.DBUserId,
+                Password = Settings.DBPassword,
+                Database = Settings.DBDatabase,
+            }.ConnectionString);
+
+        public static MySqlConnection Connect()
+        {
+            var conn = new MySqlConnection(ConnectionString);
+            conn.Open();
+            return conn;
+        }
 
         public static MySqlCommand Command
         {
             get
             {
-                if (ConnectionString == null)
-                {
-                    ConnectionString = string.Format("Server={0};UserId={1};Password={2};Database={3}",
-                        Settings.DBServer, Settings.DBUserId, Settings.DBPassword, Settings.DBDatabase);
-                }
-                var conn = new MySqlConnection(ConnectionString);
-                conn.Open();
                 return new MySqlCommand
                 {
-                    Connection = conn,
+                    Connection = Connect(),
                     CommandType = CommandType.Text,
                     CommandTimeout = 0
                 };

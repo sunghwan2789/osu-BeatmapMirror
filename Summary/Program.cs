@@ -18,20 +18,27 @@ namespace Summary
 
             var CLAUSE = $"WHERE `at` <= '{DateTime.Now.AddDays(-1.0).ToString("yyyy-MM-dd")}'";
 
-            using (var query = DB.Command)
+            using (var conn = DB.Connect())
+            using (var tr = conn.BeginTransaction())
+            using (var query = conn.CreateCommand())
             {
-                query.CommandText = "INSERT INTO `gosu_download_summary` (`setId`, `date`, `downloads`) " +
-                    "SELECT `setId`, `at`, COUNT(DISTINCT `ip`, `at`) FROM `gosu_downloads` " +
-                    CLAUSE + " GROUP BY `setId`, `at`";
+                query.CommandTimeout = 0;
+
+                query.CommandText = $@"INSERT INTO `gosu_download_summary` (`setId`, `date`, `downloads`)
+                    SELECT `setId`, `at`, COUNT(DISTINCT `ip`, `at`) FROM `gosu_downloads`
+                    {CLAUSE} GROUP BY `setId`, `at`";
                 Console.Write("insert ");
                 var result = query.ExecuteNonQuery();
                 Console.WriteLine(result + " rows");
+
                 if (result > 0)
                 {
-                    query.CommandText = "DELETE FROM `gosu_downloads` " + CLAUSE;
+                    query.CommandText = $"DELETE FROM `gosu_downloads` {CLAUSE}";
                     Console.Write("delete ");
                     Console.WriteLine(query.ExecuteNonQuery() + "rows");
                 }
+
+                tr.Commit();
             }
 
             Settings.LastSummaryTime = DateTime.Now.Date;
