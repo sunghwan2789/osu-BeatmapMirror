@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Manager;
+using Utility;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
-using ICSharpCode.SharpZipLib;
 using System.Diagnostics;
 using osu.Game.Beatmaps.IO;
 using osu.Game.Rulesets.Objects.Types;
@@ -243,10 +242,6 @@ namespace Bot
             {
                 return Sync(set, skipDownload, keepSynced);
             }
-            catch (SharpZipBaseException)
-            {
-                Log.Write(set.Id + " CORRUPTED FILE");
-            }
             catch (EntryPointNotFoundException)
             {
                 Log.Write(set.Id + " CORRUPTED ENTRY");
@@ -260,7 +255,9 @@ namespace Bot
 
         private static void Register(Set set, DateTime synced)
         {
-            using (var query = DB.Command)
+            using (var conn = DB.Connect())
+            using (var tr = conn.BeginTransaction())
+            using (var query = conn.CreateCommand())
             {
                 query.CommandText = "INSERT INTO ggosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
                     "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @sy) " +
@@ -305,7 +302,7 @@ namespace Bot
                     // https://github.com/ppy/osu/blob/e93d0cbb3ab7daf6c2ef4a80c755f429a5d88609/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L109
                     var lastObject = beatmap.HitObjects.LastOrDefault();
                     var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
-                    query.Parameters["@l"].Value = (int) (endTime - (beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0)) / 1000;
+                    query.Parameters["@l"].Value = (int)(endTime - (beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0)) / 1000;
                     query.Parameters["@d0"].Value = beatmap.BeatmapInfo.StarDifficulty;
                     query.ExecuteNonQuery();
                 }
@@ -313,6 +310,8 @@ namespace Bot
                 query.CommandText = "UPDATE ggosu_sets SET keyword = @t where id = @i";
                 query.Parameters["@t"].Value = set.ToString();
                 query.ExecuteNonQuery();
+
+                tr.Commit();
             }
         }
 

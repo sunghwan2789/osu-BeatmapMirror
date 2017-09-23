@@ -1,16 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manager", "Manager\Manager.csproj", "{A1A18C3A-42F1-451E-891D-17712761538B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot", "Bot\Bot.csproj", "{20416EE6-0971-4C24-910E-2C2EB251AC45}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Summary", "Summary\Summary.csproj", "{6B90463B-E103-409B-9B8E-89E5F559C6F4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A1A18C3A-42F1-451E-891D-17712761538B} = {A1A18C3A-42F1-451E-891D-17712761538B}
-	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,8 +29,15 @@ Global
 		{6B90463B-E103-409B-9B8E-89E5F559C6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B90463B-E103-409B-9B8E-89E5F559C6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B90463B-E103-409B-9B8E-89E5F559C6F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69D657BE-56F4-43AA-B625-75AF79D7D8F6}
 	EndGlobalSection
 EndGlobal
