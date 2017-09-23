@@ -13,14 +13,16 @@ using MySql.Data.MySqlClient;
 using ICSharpCode.SharpZipLib;
 using System.Diagnostics;
 using osu.Game.Beatmaps.IO;
-using osu.Framework.IO.Stores;
 using osu.Game.Rulesets.Objects.Types;
+using osu.Game.Beatmaps.Formats;
 
 namespace Bot
 {
     static class Program
     {
-        private static Request Request = new Request();
+        public static Request Request = new Request();
+
+        private static List<string> faults;
 
         private static void Main(string[] args)
         {
@@ -28,35 +30,19 @@ namespace Bot
 
 
             OszArchiveReader.Register();
+            OsuLegacyDecoder.Register();
 
 
-            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
 
-            var wr = Request.Create(url, true);
-            if (string.IsNullOrEmpty(Settings.Session))
+            Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
+                Request.Login(Settings.OsuId, Settings.OsuPw) :
+                Request.Login(Settings.Session);
+            if (Settings.Session == null)
             {
-                using (var sw = new StreamWriter(wr.GetRequestStream()))
-                {
-                    sw.Write(string.Format("login=Login&username={0}&password={1}&autologin=on",
-                        Uri.EscapeDataString(Settings.OsuId),
-                        Uri.EscapeDataString(Settings.OsuPw)));
-                }
+                Console.WriteLine("login failed");
+                Main(args);
+                return;
             }
-            else
-            {
-                Request.AddCookie(Settings.SessionKey, Settings.Session);
-            }
-            using (var rp = (HttpWebResponse) wr.GetResponse())
-            {
-                if (rp.Cookies["last_login"] == null)
-                {
-                    Settings.Session = null;
-                    Console.WriteLine("login failed");
-                    Main(args);
-                    return;
-                }
-            }
-            Settings.Session = Request.GetCookie(Settings.SessionKey);
 
             if (args.Length > 0)
             {
@@ -70,6 +56,39 @@ namespace Bot
                     Console.WriteLine("\ts");
                     Console.WriteLine("\t\tsynced 열의 값을 유지하면서 데이터베이스 갱신");
                     Console.WriteLine();
+                    return;
+                }
+
+                if (args[0] == "reset")
+                {
+                    faults = new List<string>();
+                    using (var query = DB.Command)
+                    {
+                        query.CommandText = "SELECT id FROM gosu_sets {122} ORDER BY synced DESC";
+                        if (args.Length > 1)
+                        {
+                            query.CommandText = query.CommandText.Replace("{122}", "WHERE synced < (SELECT synced FROM gosu_sets WHERE id = @id)");
+                            query.Parameters.AddWithValue("@id", int.Parse(args[1]));
+                        }
+                        else
+                        {
+                            query.CommandText = query.CommandText.Replace("{122}", "");
+                        }
+                        using (var result = query.ExecuteReader())
+                        {
+                            while (result.Read())
+                            {
+                                if (!Sync(Set.GetByDB(result.GetInt32(0)), true, true))
+                                {
+                                    faults.Add(result.GetString(0));
+                                }
+                            }
+                        }
+                    }
+                    if (faults.Count > 0)
+                    {
+                        throw new NotImplementedException();
+                    }
                     return;
                 }
 
@@ -165,6 +184,7 @@ namespace Bot
         {
             Exception ex = (Exception) e.ExceptionObject;
             Log.Write(ex.GetBaseException().ToString());
+            Log.Write(string.Join("ls ", faults) + "ls\n");
         }
 
         /// <summary>
@@ -225,11 +245,11 @@ namespace Bot
             }
             catch (SharpZipBaseException)
             {
-                Log.Write(set.Id + " CORRUPTED");
+                Log.Write(set.Id + " CORRUPTED FILE");
             }
             catch (EntryPointNotFoundException)
             {
-                Log.Write(set.Id + " CORRUPTED");
+                Log.Write(set.Id + " CORRUPTED ENTRY");
             }
             catch (Exception e)
             {
@@ -242,7 +262,7 @@ namespace Bot
         {
             using (var query = DB.Command)
             {
-                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
+                query.CommandText = "INSERT INTO ggosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
                     "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @sy) " +
                     "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, synced = @sy";
                 if (synced == DateTime.MinValue)
@@ -255,12 +275,12 @@ namespace Bot
                 query.Parameters.AddWithValue("@au", set.ArtistUnicode);
                 query.Parameters.AddWithValue("@t", set.Title);
                 query.Parameters.AddWithValue("@tu", set.TitleUnicode);
-                query.Parameters.AddWithValue("@ci", GetCreatorId(set.Id));
+                query.Parameters.AddWithValue("@ci", set.CreatorID);
                 query.Parameters.AddWithValue("@c", set.Creator);
                 query.Parameters.AddWithValue("@sy", synced.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 query.ExecuteNonQuery();
 
-                query.CommandText = "DELETE FROM gosu_beatmaps WHERE setId = @i";
+                query.CommandText = "DELETE FROM ggosu_beatmaps WHERE setId = @i";
                 query.ExecuteNonQuery();
 
                 query.Parameters.Add("@d1", MySqlDbType.Float);
@@ -270,7 +290,7 @@ namespace Bot
                 query.Parameters.Add("@b", MySqlDbType.Float);
                 query.Parameters.Add("@l", MySqlDbType.Int32);
                 query.Parameters.Add("@d0", MySqlDbType.Float);
-                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star) " +
+                query.CommandText = "INSERT INTO ggosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star) " +
                     "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0)";
                 foreach (var beatmap in set.Beatmaps)
                 {
@@ -290,7 +310,7 @@ namespace Bot
                     query.ExecuteNonQuery();
                 }
 
-                query.CommandText = "UPDATE gosu_sets SET keyword = @t where id = @i";
+                query.CommandText = "UPDATE ggosu_sets SET keyword = @t where id = @i";
                 query.Parameters["@t"].Value = set.ToString();
                 query.ExecuteNonQuery();
             }
@@ -312,23 +332,6 @@ namespace Bot
             catch (WebException)
             {
                 return GrabSetIDFromBeatmapList(r, page);
-            }
-        }
-
-        private static int GetCreatorId(int setId)
-        {
-            try
-            {
-                var wr = Request.Create("http://osu.ppy.sh/s/" + setId);
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                {
-                    var beatmapPage = rp.ReadToEnd();
-                    return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
-                }
-            }
-            catch (WebException)
-            {
-                return GetCreatorId(setId);
             }
         }
     }

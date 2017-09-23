@@ -23,7 +23,7 @@ namespace Bot
 {
     internal class Set
     {
-        public int Id;
+        public int Id { get; set; }
 
         private int _status;
         /// <summary>
@@ -80,7 +80,7 @@ namespace Bot
             }
         }
         public string Artist => Beatmaps.First().Metadata.Artist;
-        public string ArtistUnicode 
+        public string ArtistUnicode
         {
             get
             {
@@ -89,7 +89,38 @@ namespace Bot
             }
         }
         public string Creator => Beatmaps.First().Metadata.Author;
-        // public int CreatorID { get; set; }
+        public int CreatorID
+        {
+            get
+            {
+                using (var query = DB.Command)
+                {
+                    query.CommandText = "SELECT creatorId FROM gosu_sets WHERE id = @id";
+                    query.Parameters.AddWithValue("@id", Id);
+                    using (var result = query.ExecuteReader())
+                    {
+                        if (result.Read())
+                        {
+                            return result.GetInt32(0);
+                        }
+                    }
+                }
+
+                try
+                {
+                    var wr = Program.Request.Create("http://osu.ppy.sh/s/" + Id);
+                    using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                    {
+                        var beatmapPage = rp.ReadToEnd();
+                        return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
+                    }
+                }
+                catch (WebException)
+                {
+                    return CreatorID;
+                }
+            }
+        }
 
         // public int Genre { get; set; }
         // public int Language { get; set; }
@@ -174,6 +205,45 @@ namespace Bot
                         }
                     }
                 });
+            }
+            return set;
+        }
+
+        /// <summary>
+        /// DB를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름)를 가져옴.
+        /// 여기서 기본 정보는 <code>Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
+        /// </summary>
+        /// <param name="id">맵셋 ID</param>
+        /// <returns></returns>
+        public static Set GetByDB(int id)
+        {
+            var set = new Set { Id = id };
+            using (var query = DB.Command)
+            {
+                query.CommandText = "SELECT set.status, set.creator, beatmap.id, beatmap.name FROM gosu_beatmaps beatmap " +
+                    "LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId " +
+                    "WHERE beatmap.setId = @s";
+                query.Parameters.AddWithValue("@s", id);
+                using (var result = query.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        set.Status = result.GetInt32(0);
+
+                        set.Beatmaps.Add(new Beatmap
+                        {
+                            BeatmapInfo = new BeatmapInfo
+                            {
+                                OnlineBeatmapID = result.GetInt32(2),
+                                Version = result.GetString(3),
+                                Metadata = new BeatmapMetadata
+                                {
+                                    Author = result.GetString(1)
+                                }
+                            }
+                        });
+                    }
+                }
             }
             return set;
         }

@@ -41,12 +41,39 @@ namespace Manager
 
         public string GetCookie(string name)
         {
-            var cookie = Cookie.GetCookies(new Uri("http://osu.ppy.sh"))[name];
-            if (cookie == null)
+            return Cookie.GetCookies(new Uri("http://osu.ppy.sh"))[name]?.Value;
+        }
+
+        private bool LoginValidate(HttpWebRequest wr)
+        {
+            using (var rp = (HttpWebResponse) wr.GetResponse())
             {
-                return null;
+                return rp.Cookies["last_login"] != null;
             }
-            return cookie.Value;
+        }
+
+        public string Login(string id, string pw)
+        {
+            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+
+            var wr = Create(url, true);
+            using (var sw = new StreamWriter(wr.GetRequestStream()))
+            {
+                sw.Write($"login=Login&username={Uri.EscapeDataString(id)}" +
+                    $"&password={Uri.EscapeDataString(pw)}&autologin=on");
+            }
+
+            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
+        }
+
+        public string Login(string sid)
+        {
+            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+
+            AddCookie(Settings.SessionKey, sid);
+
+            var wr = Create(url, true);
+            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
         }
 
         /// <summary>
@@ -65,6 +92,15 @@ namespace Manager
 
             if (skipDownload)
             {
+                if (File.Exists(path))
+                {
+                    using (new ZipFile(path))
+                    {
+                    }
+                    return path;
+                }
+
+                path = path.Substring(0, path.Length - ".download".Length);
                 using (new ZipFile(path))
                 {
                 }
@@ -79,18 +115,12 @@ namespace Manager
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                if (onprogress != null)
-                {
-                    onprogress(received, rp.ContentLength);
-                }
+                onprogress?.Invoke(received, rp.ContentLength);
                 while ((got = rs.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     fs.Write(buffer, 0, got);
                     received += got;
-                    if (onprogress != null)
-                    {
-                        onprogress(received, rp.ContentLength);
-                    }
+                    onprogress?.Invoke(received, rp.ContentLength);
                 }
             }
             return Download(id, onprogress, true);
