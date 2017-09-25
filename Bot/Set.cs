@@ -29,6 +29,10 @@ namespace Bot
         /// 맵셋의 랭크 상태를 나타냅니다.
         /// <list type="number">
         ///     <item>
+        ///         <term>4</term>
+        ///         <description>loved</description>
+        ///     </item>
+        ///     <item>
         ///         <term>3</term>
         ///         <description>qualified</description>
         ///     </item>
@@ -92,6 +96,8 @@ namespace Bot
         {
             get
             {
+                // 먼저, DB에서 해당 비트맵셋의 creatorID를 가져옵니다.
+                // 전에 내려받은 비트맵을 갱신하는 경우, 캐시 사용
                 using (var query = DB.Command)
                 {
                     query.CommandText = "SELECT creatorId FROM gosu_sets WHERE id = @id";
@@ -107,7 +113,7 @@ namespace Bot
 
                 try
                 {
-                    var wr = Program.Request.Create("http://osu.ppy.sh/s/" + Id);
+                    var wr = new Request().Create("http://osu.ppy.sh/s/" + Id);
                     using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
                         var beatmapPage = rp.ReadToEnd();
@@ -123,9 +129,13 @@ namespace Bot
 
         // public int Genre { get; set; }
         // public int Language { get; set; }
+        public int Favorites { get; set; }
 
-        public string Source => Beatmaps.First().Metadata.Tags;
+        public string Source => Beatmaps.First().Metadata.Source;
         public string Tags => Beatmaps.First().Metadata.Tags;
+
+        /// <summary>Ranked 맵셋은 approved_date, 그외 맵셋은 last_update 값을 저장</summary>
+        public DateTime LastUpdate { get; set; }
 
         public string[] SearchableTerms => new[]
         {
@@ -168,40 +178,58 @@ namespace Bot
         }
 
         /// <summary>
-        /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름)를 가져옴.
-        /// 여기서 기본 정보는 <code>Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
+        /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름, 갱신 날짜)를 가져옴.
+        /// 여기서 기본 정보는 <code>LastUpdate, Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
         /// </summary>
         /// <param name="id">맵셋 ID</param>
-        /// <param name="lastUpdate">Ranked 맵셋은 approved_date, 그외 맵셋은 last_update 값을 저장</param>
         /// <returns></returns>
-        public static Set GetByAPI(int id, out DateTime lastUpdate)
+        public static Set GetByAPI(int id)
         {
-            var set = new Set { Id = id };
-            lastUpdate = DateTime.MinValue;
-            foreach (var i in GetAPIData("s=" + set.Id))
+            Set set = null;
+            //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
+            var inited = false;
+            foreach (JObject i in GetAPIData("s=" + id))
             {
-                var update = Convert.ToDateTime(i["approved_date"].Value<string>() ?? i["last_update"].Value<string>())
-                    .AddHours(1);
-                // 1 호주 기준 osu! 시간 보정
-                if (update > lastUpdate)
+                var update = i.Value<DateTime?>("approved_date") ?? i.Value<DateTime>("last_update");
+                // 호주 기준 UTC+8을 현지 시각으로 변환
+                if (update.Kind == DateTimeKind.Unspecified)
                 {
-                    lastUpdate = update;
+                    update = TimeZoneInfo.ConvertTime(update, TimeZoneInfo.FindSystemTimeZoneById("W. Australia Standard Time"), TimeZoneInfo.Local);
+                }
+                
+                if (!inited)
+                {
+                    inited = true;
+                    set = new Set
+                    {
+                        Id = id,
+                        Status = i.Value<int>("approved"),
+                        LastUpdate = update,
+                        Favorites = i.Value<int>("favourite_count"),
+                    };
+                    // set.Genre = i["genre_id"].Value<int>();
+                    // set.Language = i["language_id"].Value<int>();
                 }
 
-                set.Status = i["approved"].Value<int>();
-                // set.Genre = i["genre_id"].Value<int>();
-                // set.Language = i["language_id"].Value<int>();
+                if (set.LastUpdate < update)
+                {
+                    set.LastUpdate = update;
+                }
 
                 set.Beatmaps.Add(new Beatmap
                 {
                     BeatmapInfo = new BeatmapInfo
                     {
-                        OnlineBeatmapID = i["beatmap_id"].Value<int>(),
-                        Version = i["version"].Value<string>(),
+                        OnlineBeatmapID = i.Value<int>("beatmap_id"),
+                        Version = i.Value<string>("version"),
+                        RulesetID = i.Value<int>("mode"),
+                        Hash = i.Value<string>("file_md5"),
                         Metadata = new BeatmapMetadata
                         {
-                            Author = i["creator"].Value<string>()
-                        }
+                            Author = i.Value<string>("creator"),
+                            Artist = i.Value<string>("artist"),
+                            Title = i.Value<string>("title"),
+                        },
                     }
                 });
             }
@@ -216,10 +244,12 @@ namespace Bot
         /// <returns></returns>
         public static Set GetByDB(int id)
         {
-            var set = new Set { Id = id };
+            Set set = null;
+            //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
+            var inited = false;
             using (var query = DB.Command)
             {
-                query.CommandText = "SELECT set.status, set.creator, beatmap.id, beatmap.name FROM gosu_beatmaps beatmap " +
+                query.CommandText = "SELECT set.status, set.creator, beatmap.id, beatmap.name, set.synced FROM gosu_beatmaps beatmap " +
                     "LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId " +
                     "WHERE beatmap.setId = @s";
                 query.Parameters.AddWithValue("@s", id);
@@ -227,7 +257,16 @@ namespace Bot
                 {
                     while (result.Read())
                     {
-                        set.Status = result.GetInt32(0);
+                        if (!inited)
+                        {
+                            inited = true;
+                            set = new Set
+                            {
+                                Id = id,
+                                Status = result.GetInt32(0),
+                                LastUpdate = result.GetDateTime(4),
+                            };
+                        }
 
                         set.Beatmaps.Add(new Beatmap
                         {
@@ -265,28 +304,16 @@ namespace Bot
             if (rulesets == null)
             {
                 // https://github.com/ppy/osu/blob/7fbbe74b65e7e399072c198604e9db09fb729626/osu.Game/Database/RulesetDatabase.cs
-                List<Ruleset> instances = new List<Ruleset>();
-
-                foreach (string file in Directory.GetFiles(Environment.CurrentDirectory, @"osu.Game.Rulesets.*.dll"))
+                rulesets = new List<RulesetInfo>();
+                foreach (var file in Directory.GetFiles(Environment.CurrentDirectory, @"osu.Game.Rulesets.*.dll"))
                 {
                     try
                     {
                         var assembly = Assembly.LoadFile(file);
-                        var rulesets = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Ruleset)));
-
-                        if (rulesets.Count() != 1)
-                            continue;
-
-                        foreach (Type rulesetType in rulesets)
-                            instances.Add((Ruleset)Activator.CreateInstance(rulesetType));
+                        var ruleset = assembly.GetTypes().First(t => t.IsSubclassOf(typeof(Ruleset)));
+                        rulesets.Add(createRulesetInfo((Ruleset)Activator.CreateInstance(ruleset, new RulesetInfo())));
                     }
                     catch (Exception) { }
-                }
-
-                rulesets = new List<RulesetInfo>();
-                foreach (var r in instances.Where(r => r.LegacyID >= 0).OrderBy(r => r.LegacyID))
-                {
-                    rulesets.Add(createRulesetInfo(r));
                 }
             }
 
@@ -300,6 +327,7 @@ namespace Bot
                     using (var sr = new StreamReader(osz.GetStream(entry)))
                     {
                         var beatmap = BeatmapDecoder.GetDecoder(sr).Decode(sr);
+                        // https://github.com/ppy/osu/blob/9576f71b10bab8d0a860afb2d888b808dab45902/osu.Game/Beatmaps/BeatmapManager.cs#L491
                         var ruleset = rulesets.First(r => r.ID == beatmap.BeatmapInfo.RulesetID).CreateInstance();
                         beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0;
                         set.Beatmaps.Add(beatmap);

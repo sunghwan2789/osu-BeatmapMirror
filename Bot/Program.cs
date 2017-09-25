@@ -19,7 +19,7 @@ namespace Bot
 {
     static class Program
     {
-        public static Request Request = new Request();
+        private static Request Request = new Request();
 
         private static List<string> faults;
 
@@ -106,8 +106,7 @@ namespace Bot
                             keepSynced = true;
                         }
                     }
-                    DateTime lastUpdate;
-                    Sync(Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value), out lastUpdate), skipDownload, keepSynced);
+                    Sync(Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value)), skipDownload, keepSynced);
                 }
 
                 if (args[0] != "manage")
@@ -116,58 +115,42 @@ namespace Bot
                 }
                 Log.Writer = new StreamWriter(File.Open(Settings.LogPath + ".bot.log", FileMode.Create));
             }
-            
+
             var bucket = new Stack<Set>();
             var lastCheckTime = Settings.LastCheckTime;
-            using (var query = DB.Command)
+            foreach (var r in Settings.BeatmapList)
             {
-                query.CommandText = "SELECT status, synced FROM gosu_sets WHERE id = @i";
-                query.Parameters.Add("@i", MySqlDbType.Int32);
-                foreach (var r in Settings.BeatmapList)
+                var page = 1;
+                do
                 {
-                    var page = 1;
-                    do
+                    var ids = GrabSetIDFromBeatmapList(r, page);
+                    if (ids.Count() == 0)
                     {
-                        var ids = GrabSetIDFromBeatmapList(r, page);
-                        if (ids.Count() == 0)
+                        break;
+                    }
+                    foreach (var id in ids)
+                    {
+                        var set = Set.GetByAPI(id);
+
+                        if (set.LastUpdate > lastCheckTime)
                         {
+                            lastCheckTime = set.LastUpdate;
+                        }
+                        if (set.LastUpdate != default(DateTime) && set.LastUpdate <= Settings.LastCheckTime.AddHours(-12))
+                        // 1 API에 정보가 늦게 등록될 수 있음    1 비트맵 리스트 캐시 피하기 위함
+                        {
+                            page = 0;
                             break;
                         }
-                        foreach (var id in ids)
+
+                        var savedSet = Set.GetByDB(id);
+                        if ((savedSet.Status != set.Status || savedSet.LastUpdate < set.LastUpdate) &&
+                            !bucket.Any(i => i.Id == id))
                         {
-                            DateTime lastUpdate;
-                            var set = Set.GetByAPI(id, out lastUpdate);
-
-                            if (lastUpdate > lastCheckTime)
-                            {
-                                lastCheckTime = lastUpdate;
-                            }
-                            if (lastUpdate != DateTime.MinValue && lastUpdate <= Settings.LastCheckTime.AddHours(-12))
-                            // 1 API에 정보가 늦게 등록될 수 있음    1 비트맵 리스트 캐시 피하기 위함
-                            {
-                                page = 0;
-                                break;
-                            }
-
-                            var status = 0;
-                            var synced = lastUpdate;
-                            query.Parameters["@i"].Value = id;
-                            using (var result = query.ExecuteReader())
-                            {
-                                if (result.Read())
-                                {
-                                    status = Convert.ToInt32(result.GetValue(0));
-                                    synced = Convert.ToDateTime(result.GetValue(1));
-                                }
-                            }
-                            if ((status != set.Status || synced < lastUpdate) &&
-                                !bucket.Any(i => i.Id == id))
-                            {
-                                bucket.Push(set);
-                            }
+                            bucket.Push(set);
                         }
-                    } while (page > 0 && page++ < 125);
-                }
+                    }
+                } while (page > 0 && page++ < 125);
             }
             while (bucket.Any())
             {
