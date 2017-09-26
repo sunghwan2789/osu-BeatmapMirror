@@ -17,7 +17,6 @@ namespace Utility
         public Request()
         {
             Cookie = new CookieContainer();
-            OszArchiveReader.Register();
         }
 
         public HttpWebRequest Create(string url, bool post = false)

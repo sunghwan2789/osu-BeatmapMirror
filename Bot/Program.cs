@@ -28,7 +28,6 @@ namespace Bot
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
 
-            OszArchiveReader.Register();
             OsuLegacyDecoder.Register();
 
 
@@ -116,6 +115,9 @@ namespace Bot
                 Log.Writer = new StreamWriter(File.Open(Settings.LogPath + ".bot.log", FileMode.Create));
             }
 
+            //Console.WriteLine(string.Join("\n", Set.GetByLocal(587388, Request.Download(587388, null, true)).Beatmaps.Select(i => i.BeatmapInfo.StarDifficulty)));
+            //return;
+
             var bucket = new Stack<Set>();
             var lastCheckTime = Settings.LastCheckTime;
             foreach (var r in Settings.BeatmapList)
@@ -132,18 +134,20 @@ namespace Bot
                     {
                         var set = Set.GetByAPI(id);
 
-                        if (set.LastUpdate > lastCheckTime)
+                        if (lastCheckTime < set.LastUpdate)
                         {
                             lastCheckTime = set.LastUpdate;
                         }
-                        if (set.LastUpdate != default(DateTime) && set.LastUpdate <= Settings.LastCheckTime.AddHours(-12))
-                        // 1 API에 정보가 늦게 등록될 수 있음    1 비트맵 리스트 캐시 피하기 위함
+                        // 마지막 확인한 비트맵과 이 비트맵의 날짜를 비교 후 탐색 중지 여부 검사
+                        // API에 정보가 늦게 등록될 수 있음 + 비트맵 리스트 캐시 피하기 위함
+                        if (set.LastUpdate < Settings.LastCheckTime.AddHours(-12))
                         {
                             page = 0;
                             break;
                         }
 
                         var savedSet = Set.GetByDB(id);
+                        // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         if ((savedSet.Status != set.Status || savedSet.LastUpdate < set.LastUpdate) &&
                             !bucket.Any(i => i.Id == id))
                         {
@@ -156,6 +160,7 @@ namespace Bot
             {
                 if (!Sync(bucket.Pop()))
                 {
+                    // 동기화에 실패한 비트맵을 다음 번에 다시 확인해 보아야 한다.
                     lastCheckTime = Settings.LastCheckTime;
                 }
             }

@@ -286,8 +286,26 @@ namespace Bot
             return set;
         }
 
+        private static readonly Dictionary<Assembly, Type> loaded_assemblies = new Dictionary<Assembly, Type>();
+        private const string ruleset_library_prefix = "osu.Game.Rulesets";
+        private static void LoadRulesetFromFile(string file)
+        {
+            var filename = Path.GetFileNameWithoutExtension(file);
+
+            if (loaded_assemblies.Values.Any(t => t.Namespace == filename))
+                return;
+
+            try
+            {
+                var assembly = Assembly.LoadFrom(file);
+                loaded_assemblies[assembly] = assembly.GetTypes().First(t => t.IsSubclassOf(typeof(Ruleset)));
+            }
+            catch (Exception) { }
+        }
+        private static Assembly currentDomain_AssemblyResolve(object sender, ResolveEventArgs args) => loaded_assemblies.Keys.FirstOrDefault(a => a.FullName == args.Name);
+
         private static List<RulesetInfo> rulesets = null;
-        private static RulesetInfo createRulesetInfo(Ruleset ruleset) => new RulesetInfo
+        private static RulesetInfo CreateRulesetInfo(Ruleset ruleset) => new RulesetInfo
         {
             Name = ruleset.Description,
             InstantiationInfo = ruleset.GetType().AssemblyQualifiedName,
@@ -303,17 +321,17 @@ namespace Bot
         {
             if (rulesets == null)
             {
-                // https://github.com/ppy/osu/blob/7fbbe74b65e7e399072c198604e9db09fb729626/osu.Game/Database/RulesetDatabase.cs
+                AppDomain.CurrentDomain.AssemblyResolve += currentDomain_AssemblyResolve;
+                // https://github.com/ppy/osu/blob/99b512cce57d2308cde8dea7ffbfe6ba84cbb32e/osu.Game/Rulesets/RulesetStore.cs
+                foreach (string file in Directory.GetFiles(Environment.CurrentDirectory, $"{ruleset_library_prefix}.*.dll"))
+                    LoadRulesetFromFile(file);
+                var instances = loaded_assemblies.Values.Select(r => (Ruleset)Activator.CreateInstance(r, new RulesetInfo()));
+
                 rulesets = new List<RulesetInfo>();
-                foreach (var file in Directory.GetFiles(Environment.CurrentDirectory, @"osu.Game.Rulesets.*.dll"))
+                //add all legacy modes in correct order
+                foreach (var r in instances.Where(r => r.LegacyID >= 0).OrderBy(r => r.LegacyID))
                 {
-                    try
-                    {
-                        var assembly = Assembly.LoadFile(file);
-                        var ruleset = assembly.GetTypes().First(t => t.IsSubclassOf(typeof(Ruleset)));
-                        rulesets.Add(createRulesetInfo((Ruleset)Activator.CreateInstance(ruleset, new RulesetInfo())));
-                    }
-                    catch (Exception) { }
+                    rulesets.Add(CreateRulesetInfo(r));
                 }
             }
 
@@ -322,7 +340,7 @@ namespace Bot
             using (var fs = File.OpenRead(path))
             using (var osz = new OszArchiveReader(fs))
             {
-                foreach (var entry in osz.BeatmapFilenames)
+                foreach (var entry in osz.Filenames.Where(i => i.EndsWith(@".osu")))
                 {
                     using (var sr = new StreamReader(osz.GetStream(entry)))
                     {

@@ -43,7 +43,8 @@
     <Reference Include="osu.Framework">
       <HintPath>lib\net45\osu.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="osu.Game">
+    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\net45\osu.Game.dll</HintPath>
     </Reference>
     <Reference Include="System" />
