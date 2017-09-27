@@ -17,6 +17,7 @@ using osu.Game.Database;
 using osu.Game.Beatmaps;
 using osu.Game.Rulesets;
 using System.Reflection;
+using osu.Framework.Extensions;
 
 namespace Bot
 {
@@ -73,25 +74,27 @@ namespace Bot
             }
         }
 
-        public string Title => Beatmaps.First().Metadata.Title;
+        public BeatmapMetadata Metadata => Beatmaps.First().Metadata;
+
+        public string Title => Metadata.Title;
         public string TitleUnicode
         {
             get
             {
-                var unicode = Beatmaps.First().Metadata.TitleUnicode;
+                var unicode = Metadata.TitleUnicode;
                 return string.IsNullOrEmpty(unicode) || Title == unicode ? null : unicode;
             }
         }
-        public string Artist => Beatmaps.First().Metadata.Artist;
+        public string Artist => Metadata.Artist;
         public string ArtistUnicode
         {
             get
             {
-                var unicode = Beatmaps.First().Metadata.ArtistUnicode;
+                var unicode = Metadata.ArtistUnicode;
                 return string.IsNullOrEmpty(unicode) || Artist == unicode ? null : unicode;
             }
         }
-        public string Creator => Beatmaps.First().Metadata.Author;
+        public string Creator => Metadata.Author;
         public int CreatorID
         {
             get
@@ -131,8 +134,8 @@ namespace Bot
         // public int Language { get; set; }
         public int Favorites { get; set; }
 
-        public string Source => Beatmaps.First().Metadata.Source;
-        public string Tags => Beatmaps.First().Metadata.Tags;
+        public string Source => Metadata.Source;
+        public string Tags => Metadata.Tags;
 
         /// <summary>Ranked 맵셋은 approved_date, 그외 맵셋은 last_update 값을 저장</summary>
         public DateTime LastUpdate { get; set; }
@@ -223,7 +226,7 @@ namespace Bot
                         OnlineBeatmapID = i.Value<int>("beatmap_id"),
                         Version = i.Value<string>("version"),
                         RulesetID = i.Value<int>("mode"),
-                        Hash = i.Value<string>("file_md5"),
+                        MD5Hash = i.Value<string>("file_md5"),
                         Metadata = new BeatmapMetadata
                         {
                             Author = i.Value<string>("creator"),
@@ -340,14 +343,30 @@ namespace Bot
             using (var fs = File.OpenRead(path))
             using (var osz = new OszArchiveReader(fs))
             {
+                if (!osz.Filenames.Any(f => f.EndsWith(@".osu")))
+                {
+                    throw new InvalidOperationException("No beatmap files found in the map folder.");
+                }
+                
+                // https://github.com/ppy/osu/blob/9576f71b10bab8d0a860afb2d888b808dab45902/osu.Game/Beatmaps/BeatmapManager.cs#L471
                 foreach (var entry in osz.Filenames.Where(i => i.EndsWith(@".osu")))
                 {
-                    using (var sr = new StreamReader(osz.GetStream(entry)))
+                    using (var raw = osz.GetStream(entry))
+                    using (var ms = new MemoryStream()) //we need a memory stream so we can seek and shit
+                    using (var sr = new StreamReader(ms))
                     {
+                        raw.CopyTo(ms);
+                        ms.Position = 0;
+
                         var beatmap = BeatmapDecoder.GetDecoder(sr).Decode(sr);
-                        // https://github.com/ppy/osu/blob/9576f71b10bab8d0a860afb2d888b808dab45902/osu.Game/Beatmaps/BeatmapManager.cs#L491
-                        var ruleset = rulesets.First(r => r.ID == beatmap.BeatmapInfo.RulesetID).CreateInstance();
-                        beatmap.BeatmapInfo.StarDifficulty = ruleset?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0;
+
+                        beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
+                        beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
+
+                        // TODO: this should be done in a better place once we actually need to dynamically update it.
+                        beatmap.BeatmapInfo.Ruleset = rulesets.FirstOrDefault(r => r.ID == beatmap.BeatmapInfo.RulesetID);
+                        beatmap.BeatmapInfo.StarDifficulty = beatmap.BeatmapInfo.Ruleset?.CreateInstance()?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0;
+
                         set.Beatmaps.Add(beatmap);
                     }
                 }

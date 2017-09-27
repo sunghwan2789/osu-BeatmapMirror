@@ -115,9 +115,6 @@ namespace Bot
                 Log.Writer = new StreamWriter(File.Open(Settings.LogPath + ".bot.log", FileMode.Create));
             }
 
-            //Console.WriteLine(string.Join("\n", Set.GetByLocal(587388, Request.Download(587388, null, true)).Beatmaps.Select(i => i.BeatmapInfo.StarDifficulty)));
-            //return;
-
             var bucket = new Stack<Set>();
             var lastCheckTime = Settings.LastCheckTime;
             foreach (var r in Settings.BeatmapList)
