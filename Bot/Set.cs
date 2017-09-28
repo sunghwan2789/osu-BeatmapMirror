@@ -252,7 +252,7 @@ namespace Bot
             var inited = false;
             using (var query = DB.Command)
             {
-                query.CommandText = "SELECT set.status, set.creator, beatmap.id, beatmap.name, set.synced FROM gosu_beatmaps beatmap " +
+                query.CommandText = "SELECT set.status, set.creator, beatmap.id, beatmap.name, set.synced, beatmap.hash_md5 FROM gosu_beatmaps beatmap " +
                     "LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId " +
                     "WHERE beatmap.setId = @s";
                 query.Parameters.AddWithValue("@s", id);
@@ -277,6 +277,7 @@ namespace Bot
                             {
                                 OnlineBeatmapID = result.GetInt32(2),
                                 Version = result.GetString(3),
+                                MD5Hash = result.GetString(5),
                                 Metadata = new BeatmapMetadata
                                 {
                                     Author = result.GetString(1)

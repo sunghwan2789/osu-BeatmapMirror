@@ -60,9 +60,11 @@ namespace Bot
                 if (args[0] == "reset")
                 {
                     faults = new List<string>();
-                    using (var query = DB.Command)
+                    using (var conn = DB.Connect())
+                    using (var query = conn.CreateCommand())
                     {
                         query.CommandText = "SELECT id FROM gosu_sets {122} ORDER BY synced DESC";
+                        query.CommandTimeout = 0;
                         if (args.Length > 1)
                         {
                             query.CommandText = query.CommandText.Replace("{122}", "WHERE synced < (SELECT synced FROM gosu_sets WHERE id = @id)");
@@ -196,8 +198,11 @@ namespace Bot
                     // 올린 비트맵을 삭제하고 다시 올리면
                     // 맵셋 Id만 올라가고 비트맵 Id는 그대로이기 때문임.
                     var beatmap = local.Beatmaps.Find(j =>
-                        j.BeatmapInfo.Version == i.BeatmapInfo.Version &&
-                        j.Metadata.Author == i.Metadata.Author);
+                        j.BeatmapInfo.MD5Hash == i.BeatmapInfo.MD5Hash
+                        || (
+                            j.BeatmapInfo.Version == i.BeatmapInfo.Version
+                            && j.Metadata.Author == i.Metadata.Author
+                        ));
                     if (beatmap == null)
                     {
                         throw new EntryPointNotFoundException();
@@ -272,8 +277,9 @@ namespace Bot
                 query.Parameters.Add("@b", MySqlDbType.Float);
                 query.Parameters.Add("@l", MySqlDbType.Int32);
                 query.Parameters.Add("@d0", MySqlDbType.Float);
-                query.CommandText = "INSERT INTO ggosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star) " +
-                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0)";
+                query.Parameters.Add("@h1", MySqlDbType.String);
+                query.CommandText = "INSERT INTO ggosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star, hash_md5) " +
+                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0, @h1)";
                 foreach (var beatmap in set.Beatmaps)
                 {
                     query.Parameters["@s"].Value = beatmap.BeatmapInfo.OnlineBeatmapID;
@@ -289,6 +295,7 @@ namespace Bot
                     var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
                     query.Parameters["@l"].Value = (int)(endTime - (beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0)) / 1000;
                     query.Parameters["@d0"].Value = beatmap.BeatmapInfo.StarDifficulty;
+                    query.Parameters["@h1"].Value = beatmap.BeatmapInfo.MD5Hash;
                     query.ExecuteNonQuery();
                 }
 

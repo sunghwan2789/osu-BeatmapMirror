@@ -9,7 +9,7 @@ namespace Bot
 {
     class Log
     {
-        public static StreamWriter Writer = new StreamWriter(Console.OpenStandardOutput());
+        public static StreamWriter Writer = new StreamWriter(Console.OpenStandardOutput(), Encoding.Default);
         private static readonly object Locker = new object();
 
         public static void Write(object str)
