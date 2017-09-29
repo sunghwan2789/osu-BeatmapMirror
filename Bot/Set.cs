@@ -247,7 +247,10 @@ namespace Bot
         /// <returns></returns>
         public static Set GetByDB(int id)
         {
-            Set set = null;
+            Set set = new Set
+            {
+                Id = id
+            };
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
             var inited = false;
             using (var query = DB.Command)
@@ -360,6 +363,11 @@ namespace Bot
                         ms.Position = 0;
 
                         var beatmap = BeatmapDecoder.GetDecoder(sr).Decode(sr);
+
+                        if (string.IsNullOrEmpty(beatmap.BeatmapInfo.Version))
+                        {
+                            beatmap.BeatmapInfo.Version = "Normal";
+                        }
 
                         beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
                         beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();

@@ -21,7 +21,7 @@ namespace Bot
     {
         private static Request Request = new Request();
 
-        private static List<string> faults;
+        private static List<string> faults = new List<string>();
 
         private static void Main(string[] args)
         {
@@ -59,7 +59,6 @@ namespace Bot
 
                 if (args[0] == "reset")
                 {
-                    faults = new List<string>();
                     using (var conn = DB.Connect())
                     using (var query = conn.CreateCommand())
                     {
@@ -107,7 +106,23 @@ namespace Bot
                             keepSynced = true;
                         }
                     }
-                    Sync(Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value)), skipDownload, keepSynced);
+                    Set set;
+                    try
+                    {
+                        set = Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value));
+                    }
+                    catch
+                    {
+                        set = Set.GetByDB(Convert.ToInt32(arg.Groups[1].Value));
+                    }
+                    if (set == null || !Sync(set, skipDownload, keepSynced))
+                    {
+                        faults.Add(arg.Groups[1].Value);
+                    }
+                }
+                if (faults.Count > 0)
+                {
+                    throw new NotImplementedException();
                 }
 
                 if (args[0] != "manage")
@@ -238,7 +253,7 @@ namespace Bot
             }
             catch (Exception e)
             {
-                Log.Write(set.Id + " " + e.GetBaseException() + ": " + e.Message);
+                Log.Write(set?.Id + " " + e.GetBaseException() + ": " + e.Message);
             }
             return result;
         }
