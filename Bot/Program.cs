@@ -264,7 +264,7 @@ namespace Bot
             using (var tr = conn.BeginTransaction())
             using (var query = conn.CreateCommand())
             {
-                query.CommandText = "INSERT INTO ggosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
+                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
                     "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @sy) " +
                     "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, synced = @sy";
                 if (synced == DateTime.MinValue)
@@ -282,7 +282,7 @@ namespace Bot
                 query.Parameters.AddWithValue("@sy", synced.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 query.ExecuteNonQuery();
 
-                query.CommandText = "DELETE FROM ggosu_beatmaps WHERE setId = @i";
+                query.CommandText = "DELETE FROM gosu_beatmaps WHERE setId = @i";
                 query.ExecuteNonQuery();
 
                 query.Parameters.Add("@d1", MySqlDbType.Float);
@@ -293,7 +293,7 @@ namespace Bot
                 query.Parameters.Add("@l", MySqlDbType.Int32);
                 query.Parameters.Add("@d0", MySqlDbType.Float);
                 query.Parameters.Add("@h1", MySqlDbType.String);
-                query.CommandText = "INSERT INTO ggosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star, hash_md5) " +
+                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star, hash_md5) " +
                     "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0, @h1)";
                 foreach (var beatmap in set.Beatmaps)
                 {
@@ -314,7 +314,7 @@ namespace Bot
                     query.ExecuteNonQuery();
                 }
 
-                query.CommandText = "UPDATE ggosu_sets SET keyword = @t where id = @i";
+                query.CommandText = "UPDATE gosu_sets SET keyword = @t where id = @i";
                 query.Parameters["@t"].Value = set.ToString();
                 query.ExecuteNonQuery();
 
