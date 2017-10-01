@@ -247,10 +247,7 @@ namespace Bot
         /// <returns></returns>
         public static Set GetByDB(int id)
         {
-            Set set = new Set
-            {
-                Id = id
-            };
+            Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
             var inited = false;
             using (var query = DB.Command)

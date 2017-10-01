@@ -162,8 +162,11 @@ namespace Bot
 
                         var savedSet = Set.GetByDB(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
-                        if ((savedSet.Status != set.Status || savedSet.LastUpdate < set.LastUpdate) &&
-                            !bucket.Any(i => i.Id == id))
+                        if ((
+                                (set.Status > 0 && (savedSet == null || savedSet.LastUpdate < set.LastUpdate))
+                                || (set.Status == 0 && (savedSet != null && savedSet.LastUpdate < set.LastUpdate))
+                            )
+                            && !bucket.Any(i => i.Id == id))
                         {
                             bucket.Push(set);
                         }
