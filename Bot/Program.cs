@@ -231,6 +231,11 @@ namespace Bot
                         throw new EntryPointNotFoundException();
                     }
                     beatmap.BeatmapInfo.OnlineBeatmapID = i.BeatmapInfo.OnlineBeatmapID;
+                    //TODO delete when it's implemented
+                    if (beatmap.BeatmapInfo.StarDifficulty.Equals(.0))
+                    {
+                        beatmap.BeatmapInfo.StarDifficulty = i.BeatmapInfo.StarDifficulty;
+                    }
                     return beatmap;
                 }).ToList();
                 Log.Write(set.Id + " IS VALID");
