@@ -77,7 +77,7 @@ namespace Bot
                         {
                             while (result.Read())
                             {
-                                if (!Sync(Set.GetByDB(result.GetInt32(0)), true, true))
+                                if (!Sync(Requests.GetSetFromDB(result.GetInt32(0)), true, true))
                                 {
                                     faults.Add(result.GetString(0));
                                 }
@@ -109,11 +109,11 @@ namespace Bot
                     Set set;
                     try
                     {
-                        set = Set.GetByAPI(Convert.ToInt32(arg.Groups[1].Value));
+                        set = Requests.GetSetFromAPI(Convert.ToInt32(arg.Groups[1].Value));
                     }
                     catch
                     {
-                        set = Set.GetByDB(Convert.ToInt32(arg.Groups[1].Value));
+                        set = Requests.GetSetFromDB(Convert.ToInt32(arg.Groups[1].Value));
                     }
                     if (set == null || !Sync(set, skipDownload, keepSynced))
                     {
@@ -146,7 +146,12 @@ namespace Bot
                     }
                     foreach (var id in ids)
                     {
-                        var set = Set.GetByAPI(id);
+                        var set = Requests.GetSetFromAPI(id);
+
+                        if (set == null)
+                        {
+                            continue;
+                        }
 
                         if (lastCheckTime < set.LastUpdate)
                         {
@@ -160,7 +165,7 @@ namespace Bot
                             break;
                         }
 
-                        var savedSet = Set.GetByDB(id);
+                        var savedSet = Requests.GetSetFromDB(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         if ((
                                 (set.Status > 0 && (savedSet == null || savedSet.LastUpdate < set.LastUpdate))
@@ -208,7 +213,7 @@ namespace Bot
                 var path = Request.Download(set.Id, null, skipDownload);
                 Log.Write(set.Id + " DOWNLOADED");
 
-                var local = Set.GetByLocal(set.Id, path);
+                var local = Requests.GetSetFromLocal(set.Id, path);
                 local.Status = set.Status;
                 local.Beatmaps = set.Beatmaps.Select(i =>
                 {

@@ -1,4 +1,6 @@
-﻿using osu.Game.Beatmaps.IO;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using osu.Game.Beatmaps.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -132,6 +134,24 @@ namespace Utility
                 }
             }
             return Download(id, onprogress, true);
+        }
+
+        public JArray GetBeatmapsAPI(string query)
+        {
+            const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
+
+            try
+            {
+                var wr = Create(string.Format(url, Settings.APIKey, query));
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    return JArray.Parse(rp.ReadToEnd());
+                }
+            }
+            catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
+            {
+                return GetBeatmapsAPI(query);
+            }
         }
     }
 }
