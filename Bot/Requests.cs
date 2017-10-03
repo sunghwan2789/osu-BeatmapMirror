@@ -64,6 +64,7 @@ namespace Bot
                         Version = i.Value<string>("version"),
                         RulesetID = i.Value<int>("mode"),
                         MD5Hash = i.Value<string>("file_md5"),
+                        StarDifficulty = i.Value<double>("difficultyrating"),
                         Metadata = new BeatmapMetadata
                         {
                             Author = i.Value<string>("creator"),
