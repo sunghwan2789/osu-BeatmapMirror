@@ -27,11 +27,6 @@ namespace Bot
         {
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-
-            OsuLegacyDecoder.Register();
-
-
-
             Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
                 Request.Login(Settings.OsuId, Settings.OsuPw) :
                 Request.Login(Settings.Session);
