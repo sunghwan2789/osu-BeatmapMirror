@@ -5127,6 +5127,11 @@
             BASSmix add-on: only read buffered data.
             </summary>
         </member>
+        <member name="F:ManagedBass.BassFlags.SplitPosition">
+            <summary>
+            BASSmix add-on: The splitter's length and position is based on the splitter's (rather than the source's) channel count.
+            </summary>
+        </member>
         <member name="F:ManagedBass.BassFlags.MixerResume">
             <summary>
             BASSmix add-on: resume a stalled mixer immediately upon new/unpaused source
@@ -5937,6 +5942,18 @@
         <member name="F:ManagedBass.ChannelAttribute.NoRamp">
             <summary>
             Disable playback ramping? 
+            </summary>
+        </member>
+        <member name="F:ManagedBass.ChannelAttribute.SplitAsyncBuffer">
+            <summary>
+            Amount of data to asynchronously buffer from a splitter's source.
+            0 = disable asynchronous buffering. The asynchronous buffering will be limited to the splitter's buffer length.
+            </summary>
+        </member>
+        <member name="F:ManagedBass.ChannelAttribute.SplitAsyncPeriod">
+            <summary>
+            Maximum amount of data to asynchronously buffer at a time from a splitter's source.
+            0 = as much as possible.
             </summary>
         </member>
         <member name="T:ManagedBass.ChannelType">
@@ -7443,6 +7460,11 @@
             <summary>
             Midi Add-On: Let the old sound decay naturally (including reverb) when changing the position,
             including looping and such can also be used in <see cref="M:ManagedBass.Bass.ChannelSetPosition(System.Int32,System.Int64,ManagedBass.PositionFlags)"/> calls to have it apply to particular position changes.
+            </summary>
+        </member>
+        <member name="F:ManagedBass.PositionFlags.MixerReset">
+            <summary>
+            Mixer playback buffering when seeking.
             </summary>
         </member>
         <member name="F:ManagedBass.PositionFlags.MusicPositionReset">

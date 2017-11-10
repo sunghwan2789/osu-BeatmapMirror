@@ -94,7 +94,7 @@ namespace Bot
                 return string.IsNullOrEmpty(unicode) || Artist == unicode ? null : unicode;
             }
         }
-        public string Creator => Metadata.Author;
+        public string Creator => Metadata.AuthorString;
         public int CreatorID
         {
             get

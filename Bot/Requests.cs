@@ -67,7 +67,7 @@ namespace Bot
                         StarDifficulty = i.Value<double>("difficultyrating"),
                         Metadata = new BeatmapMetadata
                         {
-                            Author = i.Value<string>("creator"),
+                            AuthorString = i.Value<string>("creator"),
                             Artist = i.Value<string>("artist"),
                             Title = i.Value<string>("title"),
                         },
@@ -118,7 +118,7 @@ namespace Bot
                                 MD5Hash = result.GetString(5),
                                 Metadata = new BeatmapMetadata
                                 {
-                                    Author = result.GetString(1)
+                                    AuthorString = result.GetString(1),
                                 }
                             }
                         });

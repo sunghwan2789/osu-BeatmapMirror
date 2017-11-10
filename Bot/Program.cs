@@ -308,10 +308,10 @@ namespace Bot
                     query.Parameters["@s"].Value = beatmap.BeatmapInfo.OnlineBeatmapID;
                     query.Parameters["@a"].Value = beatmap.BeatmapInfo.Version;
                     query.Parameters["@ci"].Value = beatmap.BeatmapInfo.RulesetID;
-                    query.Parameters["@d1"].Value = beatmap.BeatmapInfo.Difficulty.DrainRate;
-                    query.Parameters["@d2"].Value = beatmap.BeatmapInfo.Difficulty.CircleSize;
-                    query.Parameters["@d3"].Value = beatmap.BeatmapInfo.Difficulty.OverallDifficulty;
-                    query.Parameters["@d4"].Value = beatmap.BeatmapInfo.Difficulty.ApproachRate;
+                    query.Parameters["@d1"].Value = beatmap.BeatmapInfo.BaseDifficulty.DrainRate;
+                    query.Parameters["@d2"].Value = beatmap.BeatmapInfo.BaseDifficulty.CircleSize;
+                    query.Parameters["@d3"].Value = beatmap.BeatmapInfo.BaseDifficulty.OverallDifficulty;
+                    query.Parameters["@d4"].Value = beatmap.BeatmapInfo.BaseDifficulty.ApproachRate;
                     query.Parameters["@b"].Value = beatmap.ControlPointInfo.BPMMode;
                     // https://github.com/ppy/osu/blob/e93d0cbb3ab7daf6c2ef4a80c755f429a5d88609/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L109
                     var lastObject = beatmap.HitObjects.LastOrDefault();
