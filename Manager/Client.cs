@@ -175,15 +175,15 @@ namespace Manager
                             break;
                         }
                         // 랭크된 비트맵은 자동 동기화함
-                        if (beatmap["approved"].Value<int>() > 0)
-                        {
-                            Send("upload", new Dictionary<string, string>
-                            {
-                                { "state", "rejected" },
-                                { "detail", "will" }
-                            });
-                            break;
-                        }
+                        //if (beatmap["approved"].Value<int>() > 0)
+                        //{
+                        //    Send("upload", new Dictionary<string, string>
+                        //    {
+                        //        { "state", "rejected" },
+                        //        { "detail", "will" }
+                        //    });
+                        //    break;
+                        //}
 
                         mid = creatorGrab.Groups["id"].Value;
                         mname = creatorGrab.Groups["name"].Value;
