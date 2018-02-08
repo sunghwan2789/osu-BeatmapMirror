@@ -40,11 +40,25 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="osu.Framework">
-      <HintPath>lib\net45\osu.Framework.dll</HintPath>
+    <Reference Include="osu.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="osu.Game">
-      <HintPath>lib\net45\osu.Game.dll</HintPath>
+    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Catch">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Catch.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Mania">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Mania.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Osu">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Osu.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Taiko">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Taiko.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,11 +72,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APIBeatmap.cs" />
+    <Compile Include="Beatmap.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Requests.cs" />
+    <Compile Include="RulesetStore.cs" />
     <Compile Include="Set.cs" />
+    <Compile Include="SyncOption.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

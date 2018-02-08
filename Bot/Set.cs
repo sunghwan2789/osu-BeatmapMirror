@@ -23,9 +23,9 @@ namespace Bot
 {
     internal class Set
     {
-        public int Id { get; set; }
+        public int SetId { get; set; }
 
-        private int _status;
+        private int? statusId = null;
         /// <summary>
         /// 맵셋의 랭크 상태를 나타냅니다.
         /// <list type="number">
@@ -62,40 +62,84 @@ namespace Bot
         /// <remarks>
         /// 0 이하는 unranked로 통칩니다.
         /// </remarks>
-        public int Status
+        public int StatusId
         {
             get
             {
-                return _status;
+                return statusId ?? Beatmaps.OrderBy(i => i.StatusId).FirstOrDefault(i => i.StatusId > 0)?.StatusId ?? 0;
             }
             set
             {
-                _status = value < 0 ? 0 : value;
+                statusId = Math.Max(0, value);
             }
         }
 
         public BeatmapMetadata Metadata => Beatmaps.First().Metadata;
 
-        public string Title => Metadata.Title;
+        //public string Title => Encoding.ASCII.GetString(Encoding.UTF8.GetBytes(Metadata.Title));
+        private string title = null;
+        public string Title
+        {
+            get
+            {
+                return title ?? Metadata.Title;
+            }
+            set
+            {
+                title = value;
+            }
+        }
         public string TitleUnicode
         {
             get
             {
                 var unicode = Metadata.TitleUnicode;
-                return string.IsNullOrEmpty(unicode) || Title == unicode ? null : unicode;
+                // old beatmap metadata
+                if (string.IsNullOrEmpty(unicode))
+                {
+                    unicode = Metadata.Title;
+                }
+                return string.IsNullOrEmpty(unicode) || Title.Equals(unicode) ? null : unicode;
             }
         }
-        public string Artist => Metadata.Artist;
+        private string artist = null;
+        public string Artist
+        {
+            get
+            {
+                return artist ?? Metadata.Artist;
+            }
+            set
+            {
+                artist = value;
+            }
+        }
         public string ArtistUnicode
         {
             get
             {
                 var unicode = Metadata.ArtistUnicode;
-                return string.IsNullOrEmpty(unicode) || Artist == unicode ? null : unicode;
+                // old beatmap metadata
+                if (string.IsNullOrEmpty(unicode))
+                {
+                    unicode = Metadata.Artist;
+                }
+                return string.IsNullOrEmpty(unicode) || Artist.Equals(unicode) ? null : unicode;
             }
         }
-        public string Creator => Metadata.AuthorString;
-        public int CreatorID
+        private string creator = null;
+        public string Creator
+        {
+            get
+            {
+                return creator ?? Metadata.AuthorString;
+            }
+            set
+            {
+                creator = value;
+            }
+        }
+        public int CreatorId
         {
             get
             {
@@ -104,7 +148,7 @@ namespace Bot
                 using (var query = DB.Command)
                 {
                     query.CommandText = "SELECT creatorId FROM gosu_sets WHERE id = @id";
-                    query.Parameters.AddWithValue("@id", Id);
+                    query.Parameters.AddWithValue("@id", SetId);
                     using (var result = query.ExecuteReader())
                     {
                         if (result.Read())
@@ -116,7 +160,7 @@ namespace Bot
 
                 try
                 {
-                    var wr = new Request().Create("http://osu.ppy.sh/s/" + Id);
+                    var wr = Request.Context.Create("http://osu.ppy.sh/s/" + SetId);
                     using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
                         var beatmapPage = rp.ReadToEnd();
@@ -125,20 +169,25 @@ namespace Bot
                 }
                 catch (WebException)
                 {
-                    return CreatorID;
+                    return CreatorId;
                 }
             }
         }
 
-        // public int Genre { get; set; }
-        // public int Language { get; set; }
+        public int GenreId { get; set; }
+        public int LanguageId { get; set; }
         public int Favorites { get; set; }
 
         public string Source => Metadata.Source;
         public string Tags => Metadata.Tags;
 
-        /// <summary>Ranked 맵셋은 approved_date, 그외 맵셋은 last_update 값을 저장</summary>
-        public DateTime LastUpdate { get; set; }
+        public DateTime? RankedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime InfoChangedAt => (RankedAt ?? UpdatedAt) > UpdatedAt
+            ? (RankedAt ?? UpdatedAt)
+            : UpdatedAt;
+
+        public SyncOption SyncOption = SyncOption.Default;
 
         public string[] SearchableTerms => new[]
         {
@@ -146,19 +195,25 @@ namespace Bot
             TitleUnicode,
             Artist,
             ArtistUnicode,
-            Creator,
             Source,
             Tags
-        }.Where(s => !string.IsNullOrEmpty(s)).ToArray();
+        }.Concat(new[]
+            {
+                Creator
+            }.Concat(Beatmaps.Select(i => i.BeatmapInfo.Metadata.AuthorString))
+            .GroupBy(i => i)
+            .Select(i => i.Key))
+        .Concat(Beatmaps.Select(i => i.BeatmapInfo.Version)
+            .GroupBy(i => i)
+            .Select(i => i.Key))
+        .ToArray();
 
-        public List<Beatmap> Beatmaps = new List<Beatmap>();
+        public List<Bot.Beatmap> Beatmaps = new List<Beatmap>();
 
 
         public override string ToString()
         {
-            return Regex.Replace(
-                string.Join(" ", SearchableTerms.Concat(Beatmaps.Select(i => i.BeatmapInfo.Version))),
-                @"\s+", " ").ToUpper();
+            return Regex.Replace(string.Join(" ", SearchableTerms), @"\s+", " ").ToUpper();
         }
 
 

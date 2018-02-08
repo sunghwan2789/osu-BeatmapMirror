@@ -44,8 +44,25 @@
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="osu.Framework">
-      <HintPath>..\Bot\lib\net45\osu.Framework.dll</HintPath>
+    <Reference Include="osu.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Catch">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Catch.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Mania">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Mania.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Osu">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Osu.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Taiko">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.Rulesets.Taiko.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,9 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
-    <Compile Include="DB.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Request.cs" />
     <Compile Include="Server.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,11 +87,24 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bot\Bot.csproj">
+      <Project>{20416ee6-0971-4c24-910e-2c2eb251ac45}</Project>
+      <Name>Bot</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Summary\Summary.csproj">
+      <Project>{6b90463b-e103-409b-9b8e-89e5f559c6f4}</Project>
+      <Name>Summary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{10addfa9-4c3d-4046-8b50-af5edd49fa73}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

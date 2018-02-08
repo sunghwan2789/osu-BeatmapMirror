@@ -16,6 +16,13 @@ namespace Utility
     {
         public CookieContainer Cookie;
 
+        public static Request Context { get; set; }
+
+        static Request()
+        {
+            Context = new Request();
+        }
+
         public Request()
         {
             Cookie = new CookieContainer();
@@ -108,7 +115,7 @@ namespace Utility
                     return path;
                 }
 
-                path = path.Substring(0, path.Length - ".download".Length);
+                path = path.Remove(path.LastIndexOf(".download"));
                 if (ValidateOsz(path))
                 {
                     return path;

@@ -14,9 +14,9 @@ namespace Utility
         private static string ConnectionString => connectionString
             ?? (connectionString = new MySqlConnectionStringBuilder
             {
-                Server = ".",
+                Server = Settings.DBServer,
                 ConnectionProtocol = Settings.DBProtocol,
-                UserID = Settings.DBUserID,
+                UserID = Settings.DBUserId,
                 Password = Settings.DBPassword,
                 Database = Settings.DBDatabase,
             }.ConnectionString);

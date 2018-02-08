@@ -116,7 +116,7 @@ namespace Utility
                 return (MySqlConnectionProtocol)Enum.Parse(typeof(MySqlConnectionProtocol), Get("DB", "Protocol"), true);
             }
         }
-        public static string DBUserID
+        public static string DBUserId
         {
             get
             {

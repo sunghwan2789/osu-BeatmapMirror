@@ -39,10 +39,11 @@
     </Reference>
     <Reference Include="osu.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Bot\lib\net45\osu.Framework.dll</HintPath>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="osu.Game">
-      <HintPath>..\Bot\lib\net45\osu.Game.dll</HintPath>
+    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\osu.Game.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,5 +64,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

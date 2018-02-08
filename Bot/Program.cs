@@ -19,8 +19,6 @@ namespace Bot
 {
     static class Program
     {
-        private static Request Request = new Request();
-
         private static List<string> faults = new List<string>();
 
         private static void Main(string[] args)
@@ -28,8 +26,8 @@ namespace Bot
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
-                Request.Login(Settings.OsuId, Settings.OsuPw) :
-                Request.Login(Settings.Session);
+                Request.Context.Login(Settings.OsuId, Settings.OsuPw) :
+                Request.Context.Login(Settings.Session);
             if (Settings.Session == null)
             {
                 Console.WriteLine("login failed");
@@ -52,32 +50,145 @@ namespace Bot
                     return;
                 }
 
-                if (args[0] == "reset")
+                if (args[0] == "boo")
                 {
                     using (var conn = DB.Connect())
+                    using (var tx = conn.BeginTransaction())
                     using (var query = conn.CreateCommand())
                     {
-                        query.CommandText = "SELECT id FROM gosu_sets {122} ORDER BY synced DESC";
-                        query.CommandTimeout = 0;
+                        var r = new Random(DateTime.Now.Millisecond);
+                        query.CommandText = "SELECT id, synced, rankedAt FROM gosu_sets WHERE synced <= rankedAt";
+                        var records = new List<Tuple<int, DateTime, DateTime>>();
+                        using (var result = query.ExecuteReader())
+                        {
+                            while (result.Read())
+                            {
+                                var setId = result.GetInt32(0);
+                                var synced = result.GetDateTime(1);
+                                var rankedAt = result.GetDateTime(2);
+                                synced = synced.AddMinutes(r.Next(3));
+                                synced = synced.AddSeconds(r.NextDouble());
+                                records.Add(new Tuple<int, DateTime, DateTime>(setId, synced, rankedAt));
+                            }
+                        }
+                        Console.WriteLine($"{records.Count} to update");
+                        query.CommandText = "UPDATE gosu_sets SET synced=@s WHERE id=@i";
+                        query.Parameters.Add("@s", MySqlDbType.DateTime);
+                        query.Parameters.Add("@i", MySqlDbType.Int32);
+                        foreach (var record in records)
+                        {
+                            query.Parameters["@s"].Value = record.Item2.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                            query.Parameters["@i"].Value = record.Item1;
+                            query.ExecuteNonQuery();
+                        }
+                        tx.Commit();
+                    }
+                    return;
+                }
+
+                if (args[0] == "health")
+                {
+                    Log.WriteLevel = 1;
+                    foreach (var file in Directory.EnumerateFiles(Settings.Storage, "*.download"))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                        }
+                        catch
+                        {
+                            Console.WriteLine($"{file} 삭제 실패!");
+                        }
+                    }
+                    var queue = new Queue<int>();
+                    using (var query = DB.Command)
+                    {
+                        query.CommandText = "SELECT id FROM gosu_sets {} ORDER BY synced DESC";
                         if (args.Length > 1)
                         {
-                            query.CommandText = query.CommandText.Replace("{122}", "WHERE synced < (SELECT synced FROM gosu_sets WHERE id = @id)");
+                            query.CommandText = query.CommandText.Replace("{}", "WHERE synced <= (SELECT synced FROM gosu_sets WHERE id = @id)");
                             query.Parameters.AddWithValue("@id", int.Parse(args[1]));
                         }
                         else
                         {
-                            query.CommandText = query.CommandText.Replace("{122}", "");
+                            query.CommandText = query.CommandText.Replace("{}", "");
                         }
                         using (var result = query.ExecuteReader())
                         {
                             while (result.Read())
                             {
-                                if (!Sync(Requests.GetSetFromDB(result.GetInt32(0)), true, true))
-                                {
-                                    faults.Add(result.GetString(0));
-                                }
+                                queue.Enqueue(result.GetInt32(0));
                             }
                         }
+                    }
+                    var startedAt = DateTime.Now;
+                    while (queue.Any())
+                    {
+                        Console.Title = $@"Now {queue.Peek()}, {queue.Count} Left, {DateTime.Now.Subtract(startedAt)} Passed";
+                        //var set = Requests.GetSetFromDB(result.GetInt32(0));
+                        //set.SyncOption |= SyncOption.KeepSyncedAt | SyncOption.SkipDownload;
+                        //if (!Sync(set))
+                        //{
+                        //    faults.Add(result.GetString(0));
+                        //}
+
+                        var id = queue.Dequeue();
+                        var set = Requests.GetSetFromAPI(id) ?? Requests.GetSetFromDB(id);
+                        var saved = Requests.GetSetFromDB(id);
+                        // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
+                        //if ((
+                        //        (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
+                        //        || (set.StatusId == 0 && (saved != null && (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
+                        //    ))
+                        //{
+                        set.SyncOption |= SyncOption.SkipDownload;
+                        if (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)
+                        {
+                            Console.WriteLine($"{id}가 변경된 것 같습니다.");
+                            Console.WriteLine($@"Updated: {saved.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")} ==> {set.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")}");
+                            Console.WriteLine($@"Ranked: {saved.RankedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "null"} ==> {set.RankedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "null"}");
+                            Console.WriteLine($@"Status: {saved.StatusId} ==> {set.StatusId}");
+                            Console.WriteLine($@"Beatmaps: {saved.Beatmaps.Count} ==> {set.Beatmaps.Count}");
+                            Console.Write($"{id}를 내려받을까요? (Y/N): ");
+                            if (saved.StatusId == 0 && set.StatusId == 0)
+                            {
+                                Console.Write("미등록 비트맵은 자동으로 내려받습니다...");
+                                set.SyncOption &= ~SyncOption.SkipDownload;
+                            }
+                            else //if (Console.ReadKey().Key == ConsoleKey.Y)
+                            {
+                                Console.Write("등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...");
+                                //set.SyncOption &= ~SyncOption.SkipDownload;
+                            }
+                            Console.WriteLine();
+                        }
+                        // 1차 시도
+                        if (Sync(set))
+                        {
+                            continue;
+                        }
+
+                        Console.WriteLine($"{id}가 깨진 것 같습니다.");
+                        Console.Write($"{id}를 내려받을까요? (Y/N): ");
+                        if (saved.StatusId == 0 && set.StatusId == 0)
+                        {
+                            Console.Write("미등록 비트맵은 자동으로 내려받습니다...");
+                            set.SyncOption &= ~SyncOption.SkipDownload;
+                        }
+                        else //if (Console.ReadKey().Key == ConsoleKey.Y)
+                        {
+                            Console.Write("자야되니까 자동 체크 합니다!!!!!!!!!!!!!!!!!!!!!!!");
+                            set.SyncOption &= ~SyncOption.SkipDownload;
+                        }
+                        Console.WriteLine();
+                        // 2차부터는 그냥 나중에 수동으로 하는 거루...
+                        if (Sync(set))
+                        {
+                            continue;
+                        }
+
+                        faults.Add(id + "");
+                        //}
                     }
                     if (faults.Count > 0)
                     {
@@ -88,29 +199,26 @@ namespace Bot
 
                 foreach (Match arg in Regex.Matches(string.Join(" ", args), @"(\d+)([^\s]*)"))
                 {
-                    var skipDownload = false;
-                    var keepSynced = false;
+                    Set set = Requests.GetSetFromAPI(Convert.ToInt32(arg.Groups[1].Value))
+                        ?? Requests.GetSetFromDB(Convert.ToInt32(arg.Groups[1].Value));
+                    if (set == null)
+                    {
+                        faults.Add(arg.Groups[1].Value);
+                        continue;
+                    }
+
                     foreach (var op in arg.Groups[2].Value)
                     {
                         if (op == 'l')
                         {
-                            skipDownload = true;
+                            set.SyncOption |= SyncOption.SkipDownload;
                         }
                         else if (op == 's')
                         {
-                            keepSynced = true;
+                            set.SyncOption |= SyncOption.KeepSyncedAt;
                         }
                     }
-                    Set set;
-                    try
-                    {
-                        set = Requests.GetSetFromAPI(Convert.ToInt32(arg.Groups[1].Value));
-                    }
-                    catch
-                    {
-                        set = Requests.GetSetFromDB(Convert.ToInt32(arg.Groups[1].Value));
-                    }
-                    if (set == null || !Sync(set, skipDownload, keepSynced))
+                    if (!Sync(set))
                     {
                         faults.Add(arg.Groups[1].Value);
                     }
@@ -135,38 +243,39 @@ namespace Bot
                 do
                 {
                     var ids = GrabSetIDFromBeatmapList(r, page);
-                    if (ids.Count() == 0)
+                    if (!ids.Any())
                     {
                         break;
                     }
+
                     foreach (var id in ids)
                     {
                         var set = Requests.GetSetFromAPI(id);
-
                         if (set == null)
                         {
+                            // ID NOT FOUND BUT CONTINUE
                             continue;
                         }
 
-                        if (lastCheckTime < set.LastUpdate)
+                        if (lastCheckTime < set.InfoChangedAt)
                         {
-                            lastCheckTime = set.LastUpdate;
+                            lastCheckTime = set.InfoChangedAt;
                         }
                         // 마지막 확인한 비트맵과 이 비트맵의 날짜를 비교 후 탐색 중지 여부 검사
                         // API에 정보가 늦게 등록될 수 있음 + 비트맵 리스트 캐시 피하기 위함
-                        if (set.LastUpdate < Settings.LastCheckTime.AddHours(-12))
+                        if (set.InfoChangedAt < Settings.LastCheckTime.AddHours(-12))
                         {
                             page = 0;
                             break;
                         }
 
-                        var savedSet = Requests.GetSetFromDB(id);
+                        var saved = Requests.GetSetFromDB(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         if ((
-                                (set.Status > 0 && (savedSet == null || savedSet.LastUpdate < set.LastUpdate))
-                                || (set.Status == 0 && (savedSet != null && savedSet.LastUpdate < set.LastUpdate))
+                                (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
+                                || (set.StatusId == 0 && (saved != null && (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
                             )
-                            && !bucket.Any(i => i.Id == id))
+                            && !bucket.Any(i => i.SetId == id))
                         {
                             bucket.Push(set);
                         }
@@ -187,6 +296,8 @@ namespace Bot
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception ex = (Exception) e.ExceptionObject;
+            Log.Level = 3;
+            Log.Write(Console.Title);
             Log.Write(ex.GetBaseException().ToString());
             Log.Write(string.Join("ls ", faults) + "ls\n");
         }
@@ -199,44 +310,76 @@ namespace Bot
         /// <param name="skipDownload"></param>
         /// <param name="keepSynced"></param>
         /// <returns></returns>
-        private static bool Sync(Set set, bool skipDownload = false, bool keepSynced = false)
+        private static bool Sync(Set set)
         {
-            var started = keepSynced ? DateTime.MinValue : DateTime.Now;
-            var result = false;
             try
             {
-                var path = Request.Download(set.Id, null, skipDownload);
-                Log.Write(set.Id + " DOWNLOADED");
+                var path = Request.Context.Download(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
+                Log.Write(set.SetId + " DOWNLOADED");
 
-                var local = Requests.GetSetFromLocal(set.Id, path);
-                local.Status = set.Status;
-                local.Beatmaps = set.Beatmaps.Select(i =>
+                var local = Requests.GetSetFromLocal(set.SetId, path);
+                local.Title = set.Title;
+                local.Artist = set.Artist;
+                local.Creator = set.Creator;
+                local.StatusId = set.StatusId;
+                local.RankedAt = set.RankedAt;
+                //local.Favorites = set.Favorites;
+                local.GenreId = set.GenreId;
+                local.LanguageId = set.LanguageId;
+                local.UpdatedAt = File.GetLastWriteTime(path);
+                // 온라인 맵셋 정보를 로컬 맵셋 데이터에 추가
+                local.Beatmaps = set.Beatmaps.Select(oBeatmap =>
                 {
                     // BeatmapID로 찾지 않는 이유는
-                    // 올린 비트맵을 삭제하고 다시 올리면
-                    // 맵셋 Id만 올라가고 비트맵 Id는 그대로이기 때문임.
-                    var beatmap = local.Beatmaps.Find(j =>
-                        j.BeatmapInfo.MD5Hash == i.BeatmapInfo.MD5Hash
+                    // 실제로 등록되지 않은 비트맵이 로컬 맵셋에 들어있을 때
+                    // 이(백업 파일?)를 등록된 비트맵으로 착각할 수 있기 때문임.
+                    var beatmap = local.Beatmaps.Find(lBeatmap =>
+                        lBeatmap.BeatmapInfo.Hash.Equals(oBeatmap.BeatmapInfo.Hash)
+                        || lBeatmap.BeatmapInfo.MD5Hash.Equals(oBeatmap.BeatmapInfo.MD5Hash)
+                        // 해시값이 제공되는 이상 아래와 같은 비교는
+                        // 적당한 데이터가 DB에 없고, 현재 온라인에서 삭제된 비트맵만...
                         || (
-                            j.BeatmapInfo.Version == i.BeatmapInfo.Version
-                            && j.Metadata.Author == i.Metadata.Author
+                            (
+                                lBeatmap.BeatmapInfo.Version.Equals(oBeatmap.BeatmapInfo.Version)
+                                // 비트맵 이름은 공백인데 Normal로 등록된 경우
+                                // http://osu.ppy.sh/s/1785
+                                || (
+                                    string.IsNullOrEmpty(lBeatmap.BeatmapInfo.Version)
+                                    && oBeatmap.BeatmapInfo.Version.Equals("Normal")
+                                )
+                            )
+                            // 맵셋 등록자 이름과 비트맵 작성자 이름을 비교해서
+                            // 참고용으로 넣은 파일이 등록되었는지 확인
+                            && lBeatmap.Metadata.AuthorString.Equals(oBeatmap.Metadata.AuthorString)
                         ));
+                    // 읭? 온라인엔 있는 비트맵이 로컬에 없다구??
+                    // 다시 받아봐...
                     if (beatmap == null)
                     {
-                        throw new EntryPointNotFoundException();
+                        throw new EntryPointNotFoundException("온라인 비트맵과 정보가 일치하지 않습니다.");
                     }
-                    beatmap.BeatmapInfo.OnlineBeatmapID = i.BeatmapInfo.OnlineBeatmapID;
+
+                    //
+                    // 온라인 데이터를 로컬 비트맵에 추가
+                    // 별 영양가 있는 건 아니다.
+                    //
+                    beatmap.BeatmapInfo.OnlineBeatmapID = oBeatmap.BeatmapInfo.OnlineBeatmapID;
+                    //beatmap.BeatmapInfo.Version = oBeatmap.BeatmapInfo.Version;
                     //TODO delete when it's implemented
-                    if (beatmap.BeatmapInfo.StarDifficulty.Equals(.0))
-                    {
-                        beatmap.BeatmapInfo.StarDifficulty = i.BeatmapInfo.StarDifficulty;
-                    }
+                    beatmap.BeatmapInfo.StarDifficulty = oBeatmap.BeatmapInfo.StarDifficulty;
+                    beatmap.StatusId = oBeatmap.StatusId;
                     return beatmap;
                 }).ToList();
-                Log.Write(set.Id + " IS VALID");
+                // 짜집기 형식의 맵셋은 허용하지 않습니다...
+                // 근데 osu!는 해주기 때문에... 언랭맵만 내가 좋아하는 대루..^^
+                //if (set.StatusId == 0 && local.Beatmaps.GroupBy(i => $"{i.Metadata.Source}@{i.Metadata.Artist}|{i.Metadata.ArtistUnicode}\\{i.Metadata.Title}:{i.Metadata.TitleUnicode}%{i.Metadata.Tags}").Count() > 1)
+                //{
+                //    throw new EntryPointNotFoundException("메타데이터가 동일하지 않습니다.");
+                //}
+                Log.Write(set.SetId + " IS VALID");
 
-                Register(local, started);
-                Log.Write(set.Id + " REGISTERED");
+                Register(local);
+                Log.Write(set.SetId + " REGISTERED");
 
                 try
                 {
@@ -249,45 +392,55 @@ namespace Bot
                 }
                 catch { }
 
-                result = true;
+                return true;
             }
             catch (WebException)
             {
-                return Sync(set, skipDownload, keepSynced);
+                return Sync(set);
             }
-            catch (EntryPointNotFoundException)
+            catch (EntryPointNotFoundException e)
             {
-                Log.Write(set.Id + " CORRUPTED ENTRY");
+                Log.Level = 1;
+                Log.Write(set.SetId + " CORRUPTED ENTRY");
+                Log.Write(e.GetBaseException());
+                Log.Level = 0;
             }
             catch (Exception e)
             {
-                Log.Write(set?.Id + " " + e.GetBaseException() + ": " + e.Message);
+                Log.Level = 1;
+                Log.Write(set?.SetId + " " + e.GetBaseException() + ": " + e.Message);
+                Log.Level = 0;
             }
-            return result;
+            return false;
         }
 
-        private static void Register(Set set, DateTime synced)
+        private static void Register(Set set)
         {
             using (var conn = DB.Connect())
             using (var tr = conn.BeginTransaction())
             using (var query = conn.CreateCommand())
             {
-                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, synced) " +
-                    "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @sy) " +
-                    "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, synced = @sy";
-                if (synced == DateTime.MinValue)
+                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, genreId, languageId, source, tags, rankedAt, synced) " +
+                    "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @gi, @li, @ss, @tg, @r, @sy) " +
+                    "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, genreId = @gi, languageId = @li, source = @ss, tags = @tg, rankedAt = @r, synced = @sy";
+                if (set.SyncOption.HasFlag(SyncOption.KeepSyncedAt))
                 {
                     query.CommandText = query.CommandText.Replace("= @sy", "= synced");
                 }
-                query.Parameters.AddWithValue("@i", set.Id);
-                query.Parameters.AddWithValue("@s", set.Status);
+                query.Parameters.AddWithValue("@i", set.SetId);
+                query.Parameters.AddWithValue("@s", set.StatusId);
                 query.Parameters.AddWithValue("@a", set.Artist);
                 query.Parameters.AddWithValue("@au", set.ArtistUnicode);
                 query.Parameters.AddWithValue("@t", set.Title);
                 query.Parameters.AddWithValue("@tu", set.TitleUnicode);
-                query.Parameters.AddWithValue("@ci", set.CreatorID);
+                query.Parameters.AddWithValue("@ci", set.CreatorId);
                 query.Parameters.AddWithValue("@c", set.Creator);
-                query.Parameters.AddWithValue("@sy", synced.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                query.Parameters.AddWithValue("@gi", set.GenreId);
+                query.Parameters.AddWithValue("@li", set.LanguageId);
+                query.Parameters.AddWithValue("@ss", set.Source);
+                query.Parameters.AddWithValue("@tg", set.Tags);
+                query.Parameters.AddWithValue("@r", set.RankedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? null);
+                query.Parameters.AddWithValue("@sy", set.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss.fff"));
                 query.ExecuteNonQuery();
 
                 query.CommandText = "DELETE FROM gosu_beatmaps WHERE setId = @i";
@@ -297,12 +450,13 @@ namespace Bot
                 query.Parameters.Add("@d2", MySqlDbType.Float);
                 query.Parameters.Add("@d3", MySqlDbType.Float);
                 query.Parameters.Add("@d4", MySqlDbType.Float);
-                query.Parameters.Add("@b", MySqlDbType.Float);
+                query.Parameters.Add("@b", MySqlDbType.Double);
                 query.Parameters.Add("@l", MySqlDbType.Int32);
-                query.Parameters.Add("@d0", MySqlDbType.Float);
+                query.Parameters.Add("@d0", MySqlDbType.Double);
                 query.Parameters.Add("@h1", MySqlDbType.String);
-                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star, hash_md5) " +
-                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0, @h1)";
+                query.Parameters.Add("@h2", MySqlDbType.String);
+                query.CommandText = "INSERT INTO gosu_beatmaps (setId, id, name, mode, hp, cs, od, ar, bpm, length, star, hash_md5, hash_sha2, author, status) " +
+                    "VALUES (@i, @s, @a, @ci, @d1, @d2, @d3, @d4, @b, @l, @d0, @h1, @h2, @c, @gi)";
                 foreach (var beatmap in set.Beatmaps)
                 {
                     query.Parameters["@s"].Value = beatmap.BeatmapInfo.OnlineBeatmapID;
@@ -312,13 +466,15 @@ namespace Bot
                     query.Parameters["@d2"].Value = beatmap.BeatmapInfo.BaseDifficulty.CircleSize;
                     query.Parameters["@d3"].Value = beatmap.BeatmapInfo.BaseDifficulty.OverallDifficulty;
                     query.Parameters["@d4"].Value = beatmap.BeatmapInfo.BaseDifficulty.ApproachRate;
-                    query.Parameters["@b"].Value = beatmap.ControlPointInfo.BPMMode;
-                    // https://github.com/ppy/osu/blob/e93d0cbb3ab7daf6c2ef4a80c755f429a5d88609/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L109
-                    var lastObject = beatmap.HitObjects.LastOrDefault();
-                    var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
-                    query.Parameters["@l"].Value = (int)(endTime - (beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0)) / 1000;
+                    query.Parameters["@b"].Value = double.IsInfinity(beatmap.ControlPointInfo.BPMMode)
+                        ? 0
+                        : beatmap.ControlPointInfo.BPMMode;
+                    query.Parameters["@l"].Value = beatmap.BeatmapInfo.OnlineInfo.Length;
                     query.Parameters["@d0"].Value = beatmap.BeatmapInfo.StarDifficulty;
                     query.Parameters["@h1"].Value = beatmap.BeatmapInfo.MD5Hash;
+                    query.Parameters["@h2"].Value = beatmap.BeatmapInfo.Hash;
+                    query.Parameters["@c"].Value = beatmap.BeatmapInfo.Metadata.AuthorString;
+                    query.Parameters["@gi"].Value = beatmap.StatusId;
                     query.ExecuteNonQuery();
                 }
 
@@ -336,7 +492,7 @@ namespace Bot
 
             try
             {
-                var wr = Request.Create(string.Format(url, r, page));
+                var wr = Request.Context.Create(string.Format(url, r, page));
                 using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
                 {
                     return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
