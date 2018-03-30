@@ -192,8 +192,8 @@ namespace Bot
         {
             Title,
             TitleUnicode,
-            Artist,
-            ArtistUnicode,
+            $"({Artist})",
+            $"({ArtistUnicode})",
             Source,
             Tags
         }.Concat(new[]
@@ -201,10 +201,11 @@ namespace Bot
                 Creator
             }.Concat(Beatmaps.Select(i => i.BeatmapInfo.Metadata.AuthorString))
             .GroupBy(i => i)
-            .Select(i => i.Key))
+            .Select(i => $"({i.Key})"))
         .Concat(Beatmaps.Select(i => i.BeatmapInfo.Version)
             .GroupBy(i => i)
-            .Select(i => i.Key))
+            .Where(i => !string.IsNullOrEmpty(i.Key))
+            .Select(i => $"[{i.Key}]"))
         .ToArray();
 
         public List<Bot.Beatmap> Beatmaps = new List<Beatmap>();
