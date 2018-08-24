@@ -34,6 +34,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Catch">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Catch.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Mania">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Mania.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Osu">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Osu.dll</HintPath>
+    </Reference>
+    <Reference Include="osu.Game.Rulesets.Taiko">
+      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Taiko.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
