@@ -2,7 +2,6 @@
 using osu.Framework.Extensions;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Formats;
-using osu.Game.Beatmaps.IO;
 using osu.Game.Rulesets;
 using osu.Game.Rulesets.Objects.Types;
 using System;
@@ -193,7 +192,7 @@ namespace Bot
         {
             var set = new Set { SetId = id };
             using (var fs = File.OpenRead(path))
-            using (var osz = new OszArchiveReader(fs))
+            using (var osz = new osu.Game.IO.Archives.ZipArchiveReader(fs))
             {
                 if (!osz.Filenames.Any(f => f.EndsWith(@".osu")))
                 {
@@ -210,7 +209,7 @@ namespace Bot
                         raw.CopyTo(ms);
                         ms.Position = 0;
 
-                        var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder(sr).DecodeBeatmap(sr);
+                        var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder<Beatmap>(sr).Decode(sr);
 
                         beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
                         beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
@@ -229,7 +228,7 @@ namespace Bot
                             Length = (endTime - startTime) / 1000.0
                         };
 
-                        set.Beatmaps.Add(new Beatmap(beatmap));
+                        set.Beatmaps.Add(beatmap);
                     }
                 }
             }

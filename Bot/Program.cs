@@ -11,9 +11,6 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
-using osu.Game.Beatmaps.IO;
-using osu.Game.Rulesets.Objects.Types;
-using osu.Game.Beatmaps.Formats;
 
 namespace Bot
 {

@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Utility;
-using osu.Game.Beatmaps.IO;
 using osu.Game.Beatmaps.Formats;
 using osu.Game.Database;
 using osu.Game.Beatmaps;

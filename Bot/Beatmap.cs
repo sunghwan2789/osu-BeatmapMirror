@@ -21,7 +21,5 @@ namespace Bot
                 statudId = Math.Max(0, value);
             }
         }
-
-        public Beatmap(osu.Game.Beatmaps.Beatmap original = null) : base(original) { }
     }
 }

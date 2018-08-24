@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using osu.Game.Beatmaps.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -88,7 +87,7 @@ namespace Utility
         private bool ValidateOsz(string path)
         {
             using (var fs = File.OpenRead(path))
-            using (var zs = new OszArchiveReader(fs))
+            using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
             {
                 return true;
             }
