@@ -25,6 +25,7 @@ namespace Utility
         public Request()
         {
             Cookie = new CookieContainer();
+            Cookie.Add(new System.Net.Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
         }
 
         public HttpWebRequest Create(string url, bool post = false)
