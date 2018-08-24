@@ -58,7 +58,7 @@
       <Version>6.9.9</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.3</Version>
+      <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="ppy.osu.Framework">
       <Version>2018.824.0</Version>

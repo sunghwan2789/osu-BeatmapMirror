@@ -80,10 +80,7 @@
       <Version>6.9.9</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>10.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="SharpZipLib">
-      <Version>0.86.0</Version>
+      <Version>11.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
