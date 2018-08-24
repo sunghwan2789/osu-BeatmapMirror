@@ -163,7 +163,7 @@ namespace Manager
                             });
                             break;
                         }
-                        var beatmap = GetAPIData("s=" + id).First();
+                        var beatmap = Request.GetBeatmapsAPI("s=" + id).First();
                         // 품질 관리
                         if (beatmap["favourite_count"].Value<int>() < Settings.FavoriteMinimum)
                         {
@@ -289,24 +289,6 @@ namespace Manager
             {
                 // 비트맵 업로드가 연결이 끊긴 상태에서도 작동하기 위함
                 // Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
-            }
-        }
-
-        private static JArray GetAPIData(string query)
-        {
-            const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
-
-            try
-            {
-                var wr = new Request().Create(string.Format(url, Settings.APIKey, query));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                {
-                    return JArray.Parse(rp.ReadToEnd());
-                }
-            }
-            catch (WebException)
-            {
-                return GetAPIData(query);
             }
         }
     }
