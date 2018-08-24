@@ -209,7 +209,7 @@ namespace Bot
                         raw.CopyTo(ms);
                         ms.Position = 0;
 
-                        var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder<Beatmap>(sr).Decode(sr);
+                        var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder<osu.Game.Beatmaps.Beatmap>(sr).Decode(sr);
 
                         beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
                         beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
@@ -228,7 +228,7 @@ namespace Bot
                             Length = (endTime - startTime) / 1000.0
                         };
 
-                        set.Beatmaps.Add(beatmap);
+                        set.Beatmaps.Add(new Beatmap(beatmap));
                     }
                 }
             }
