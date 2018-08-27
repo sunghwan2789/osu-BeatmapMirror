@@ -35,22 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="osu.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.dll</HintPath>
-    </Reference>
-    <Reference Include="osu.Game.Rulesets.Catch">
-      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Catch.dll</HintPath>
-    </Reference>
-    <Reference Include="osu.Game.Rulesets.Mania">
-      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Mania.dll</HintPath>
-    </Reference>
-    <Reference Include="osu.Game.Rulesets.Osu">
-      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Osu.dll</HintPath>
-    </Reference>
-    <Reference Include="osu.Game.Rulesets.Taiko">
-      <HintPath>..\osu\osu.Desktop\bin\Debug\netcoreapp2.1\osu.Game.Rulesets.Taiko.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -75,6 +59,26 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Catch\osu.Game.Rulesets.Catch.csproj">
+      <Project>{58f6c80c-1253-4a0e-a465-b8c85ebeadf3}</Project>
+      <Name>osu.Game.Rulesets.Catch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Mania\osu.Game.Rulesets.Mania.csproj">
+      <Project>{48f4582b-7687-4621-9cbe-5c24197cb536}</Project>
+      <Name>osu.Game.Rulesets.Mania</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj">
+      <Project>{435f8614-f6fd-4f8e-900f-f568904b932e}</Project>
+      <Name>osu.Game.Rulesets.Osu</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Taiko\osu.Game.Rulesets.Taiko.csproj">
+      <Project>{a6710d1f-8ca3-4b69-b073-f516b75c6362}</Project>
+      <Name>osu.Game.Rulesets.Taiko</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game\osu.Game.csproj">
+      <Project>{88ee1919-3b42-4bbb-99c8-c41a5662984b}</Project>
+      <Name>osu.Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utility\Utility.csproj">
       <Project>{10ADDFA9-4C3D-4046-8B50-AF5EDD49FA73}</Project>
       <Name>Utility</Name>
@@ -86,12 +90,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="ppy.osu.Framework">
-      <Version>2018.824.0</Version>
-    </PackageReference>
-    <PackageReference Include="SharpCompress">
-      <Version>0.22.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
