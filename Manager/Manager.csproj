@@ -67,6 +67,26 @@
       <Project>{20416ee6-0971-4c24-910e-2c2eb251ac45}</Project>
       <Name>Bot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Catch\osu.Game.Rulesets.Catch.csproj">
+      <Project>{58f6c80c-1253-4a0e-a465-b8c85ebeadf3}</Project>
+      <Name>osu.Game.Rulesets.Catch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Mania\osu.Game.Rulesets.Mania.csproj">
+      <Project>{48f4582b-7687-4621-9cbe-5c24197cb536}</Project>
+      <Name>osu.Game.Rulesets.Mania</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj">
+      <Project>{435f8614-f6fd-4f8e-900f-f568904b932e}</Project>
+      <Name>osu.Game.Rulesets.Osu</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Taiko\osu.Game.Rulesets.Taiko.csproj">
+      <Project>{a6710d1f-8ca3-4b69-b073-f516b75c6362}</Project>
+      <Name>osu.Game.Rulesets.Taiko</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\osu\osu.Game\osu.Game.csproj">
+      <Project>{88ee1919-3b42-4bbb-99c8-c41a5662984b}</Project>
+      <Name>osu.Game</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Summary\Summary.csproj">
       <Project>{6b90463b-e103-409b-9b8e-89e5f559c6f4}</Project>
       <Name>Summary</Name>
