@@ -101,40 +101,11 @@ namespace Utility
             }
         }
 
-
-        public static string DBServer
+        public static string DBConnectionString
         {
             get
             {
-                return Get("DB", "Server");
-            }
-        }
-        public static MySqlConnectionProtocol DBProtocol
-        {
-            get
-            {
-                return (MySqlConnectionProtocol)Enum.Parse(typeof(MySqlConnectionProtocol), Get("DB", "Protocol"), true);
-            }
-        }
-        public static string DBUserId
-        {
-            get
-            {
-                return Get("DB", "UserId");
-            }
-        }
-        public static string DBPassword
-        {
-            get
-            {
-                return Get("DB", "Password");
-            }
-        }
-        public static string DBDatabase
-        {
-            get
-            {
-                return Get("DB", "Database");
+                return Get("DB", "ConnectionString");
             }
         }
 

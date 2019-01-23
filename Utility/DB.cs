@@ -10,20 +10,9 @@ namespace Utility
 {
     public class DB
     {
-        private static string connectionString;
-        private static string ConnectionString => connectionString
-            ?? (connectionString = new MySqlConnectionStringBuilder
-            {
-                Server = Settings.DBServer,
-                ConnectionProtocol = Settings.DBProtocol,
-                UserID = Settings.DBUserId,
-                Password = Settings.DBPassword,
-                Database = Settings.DBDatabase,
-            }.ConnectionString);
-
         public static MySqlConnection Connect()
         {
-            var conn = new MySqlConnection(ConnectionString);
+            var conn = new MySqlConnection(Settings.DBConnectionString);
             conn.Open();
             return conn;
         }
