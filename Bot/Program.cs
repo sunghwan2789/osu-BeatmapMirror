@@ -417,9 +417,9 @@ namespace Bot
             using (var tr = conn.BeginTransaction())
             using (var query = conn.CreateCommand())
             {
-                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, genreId, languageId, source, tags, rankedAt, synced) " +
-                    "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @gi, @li, @ss, @tg, @r, @sy) " +
-                    "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, genreId = @gi, languageId = @li, source = @ss, tags = @tg, rankedAt = @r, synced = @sy";
+                query.CommandText = "INSERT INTO gosu_sets (id, status, artist, artistU, title, titleU, creatorId, creator, genreId, languageId, source, tags, rankedAt, synced, keyword) " +
+                    "VALUES (@i, @s, @a, @au, @t, @tu, @ci, @c, @gi, @li, @ss, @tg, @r, @sy, @k) " +
+                    "ON DUPLICATE KEY UPDATE status = @s, artist = @a, artistU = @au, title = @t, titleU = @tu, creator = @c, genreId = @gi, languageId = @li, source = @ss, tags = @tg, rankedAt = @r, synced = @sy, keyword = @k";
                 if (set.SyncOption.HasFlag(SyncOption.KeepSyncedAt))
                 {
                     query.CommandText = query.CommandText.Replace("= @sy", "= synced");
@@ -438,6 +438,7 @@ namespace Bot
                 query.Parameters.AddWithValue("@tg", set.Tags);
                 query.Parameters.AddWithValue("@r", set.RankedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? null);
                 query.Parameters.AddWithValue("@sy", set.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+                query.Parameters.AddWithValue("@k", set.ToString());
                 query.ExecuteNonQuery();
 
                 query.CommandText = "DELETE FROM gosu_beatmaps WHERE setId = @i";
@@ -474,10 +475,6 @@ namespace Bot
                     query.Parameters["@gi"].Value = beatmap.StatusId;
                     query.ExecuteNonQuery();
                 }
-
-                query.CommandText = "UPDATE gosu_sets SET keyword = @t where id = @i";
-                query.Parameters["@t"].Value = set.ToString();
-                query.ExecuteNonQuery();
 
                 tr.Commit();
             }
