@@ -67,36 +67,40 @@ namespace Utility
             return Cookie.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
         }
 
-        private bool LoginValidate(HttpWebRequest wr)
+        private bool LoginValidate(HttpResponseMessage response)
         {
-            using (var rp = (HttpWebResponse)wr.GetResponse())
+            if (!response.Headers.TryGetValues("Set-Cookie", out var cookies))
             {
-                return rp.Cookies["last_login"] != null;
+                return false;
             }
+
+            return cookies.Any(cookie => cookie.Contains("last_login"));
         }
 
         public async Task<string> LoginAsync(string id, string pw)
         {
-            const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
-
-            var wr = Create(url, true);
-            using (var sw = new StreamWriter(wr.GetRequestStream()))
+            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
             {
-                sw.Write($"login=Login&username={Uri.EscapeDataString(id)}" +
-                    $"&password={Uri.EscapeDataString(pw)}&autologin=on");
+                new KeyValuePair<string, string>("login", "Login"),
+                new KeyValuePair<string, string>("username", id),
+                new KeyValuePair<string, string>("password", pw),
+                new KeyValuePair<string, string>("autologin", "on"),
+            })))
+            {
+                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
             }
-
-            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
         }
 
         public async Task<string> LoginAsync(string sid)
         {
-            const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
-
             AddCookie(Settings.SessionKey, sid);
 
-            var wr = Create(url, true);
-            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
+            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+            })))
+            {
+                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+            }
         }
 
         private bool ValidateOsz(string path)
