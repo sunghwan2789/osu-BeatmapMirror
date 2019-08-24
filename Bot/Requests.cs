@@ -19,7 +19,7 @@ namespace Bot
     {
         /// <summary>
         /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름, 갱신 날짜)를 가져옴.
-        /// 여기서 기본 정보는 <code>LastUpdate, Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
+        /// 여기서 기본 정보는 <code>LastUpdate, Status, Creator, CreatorId, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
@@ -57,6 +57,7 @@ namespace Bot
                         Title = i.Value<string>("title"),
                         Artist = i.Value<string>("artist"),
                         Creator = i.Value<string>("creator"),
+                        CreatorId = i.Value<int>("creator_id"),
                         //StatusId = i.Value<int>("approved"),
                         RankedAt = rankedAt,
                         UpdatedAt = updatedAt,
@@ -77,6 +78,7 @@ namespace Bot
                     set.Title = i.Value<string>("title");
                     set.Artist = i.Value<string>("artist");
                     set.Creator = i.Value<string>("creator");
+                    set.CreatorId = i.Value<int>("creator_id");
                     //set.StatusId = i.Value<int>("approved");
                     set.RankedAt = rankedAt;
                     set.UpdatedAt = updatedAt;
@@ -113,7 +115,7 @@ namespace Bot
 
         /// <summary>
         /// DB를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름)를 가져옴.
-        /// 여기서 기본 정보는 <code>Status, Creator, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
+        /// 여기서 기본 정보는 <code>Status, Creator, CreatorId, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
@@ -128,7 +130,7 @@ namespace Bot
                         beatmap.name, set.synced, beatmap.hash_md5,
                         beatmap.hash_sha2, set.rankedAt, set.genreId,
                         set.languageId, beatmap.star, beatmap.author,
-                        set.title, set.artist, beatmap.status
+                        set.title, set.artist, beatmap.status, set.creatorId,
                     FROM gosu_beatmaps beatmap 
                     LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId 
                     WHERE beatmap.setId = @s";
@@ -146,6 +148,7 @@ namespace Bot
                                 Title = result.GetString(12),
                                 Artist = result.GetString(13),
                                 Creator = result.GetString(1),
+                                CreatorId = result.GetInt32(15),
                                 StatusId = result.GetInt32(0),
                                 RankedAt = result.IsDBNull(7) ? (DateTime?) null : result.GetDateTime(7),
                                 UpdatedAt = result.GetDateTime(4),

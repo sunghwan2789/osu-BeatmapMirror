@@ -319,6 +319,7 @@ namespace Bot
                 local.Title = set.Title;
                 local.Artist = set.Artist;
                 local.Creator = set.Creator;
+                local.CreatorId = set.CreatorId;
                 local.StatusId = set.StatusId;
                 local.RankedAt = set.RankedAt;
                 //local.Favorites = set.Favorites;
