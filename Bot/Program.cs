@@ -393,7 +393,7 @@ namespace Bot
 
                 return true;
             }
-            catch (HttpRequestException)
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
             {
                 return await Sync(set);
             }

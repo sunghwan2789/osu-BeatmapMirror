@@ -66,7 +66,7 @@ namespace Manager
                 Log.Write(Id + " RECV " + s);
                 await Process(JObject.Parse(s));
             }
-            catch (HttpRequestException e)
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
             {
                 Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
                 Send("error", "wait");

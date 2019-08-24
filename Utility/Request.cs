@@ -40,7 +40,10 @@ namespace Utility
                 },
             };
 
-            Client = new HttpClient(Handler);
+            Client = new HttpClient(Handler)
+            {
+                Timeout = TimeSpan.FromSeconds(Settings.ResponseTimeout),
+            };
         }
 
         public void AddCookie(string name, string content)
@@ -155,36 +158,37 @@ namespace Utility
 
         public async Task<JArray> GetBeatmapsAPIAsync(string query)
         {
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
+            try
             {
-                if (!response.IsSuccessStatusCode)
+                using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
                 {
-                    return await GetBeatmapsAPIAsync(query);
-                }
+                    response.EnsureSuccessStatusCode();
 
-                try
-                {
                     return JArray.Parse(await response.Content.ReadAsStringAsync());
                 }
-                catch (JsonReaderException e)
-                {
-                    return await GetBeatmapsAPIAsync(query);
-                }
+            }
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException || e is JsonReaderException)
+            {
+                return await GetBeatmapsAPIAsync(query);
             }
         }
 
         public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1)
         {
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
+            try
             {
-                if (!response.IsSuccessStatusCode)
+                using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
                 {
-                    return await GrabSetIDFromBeatmapListAsync(r, page);
-                }
+                    response.EnsureSuccessStatusCode();
 
-                var data = await response.Content.ReadAsStringAsync();
-                return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
-                    .Select(setId => int.Parse(setId.Groups[1].Value));
+                    var data = await response.Content.ReadAsStringAsync();
+                    return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
+                        .Select(setId => int.Parse(setId.Groups[1].Value));
+                }
+            }
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
+            {
+                return await GrabSetIDFromBeatmapListAsync(r, page);
             }
         }
     }
