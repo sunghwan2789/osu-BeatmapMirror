@@ -78,7 +78,7 @@ namespace Manager
             {
                 case "login":
                 {
-                    const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+                    const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
 
                     var wr = Request.Create(url, true);
                     var data = request["data"].Value<JObject>();
@@ -114,7 +114,7 @@ namespace Manager
                 }
                 case "logout":
                 {
-                    const string url = "http://osu.ppy.sh/forum/ucp.php?mode=logout&sid=";
+                    const string url = "https://osu.ppy.sh/forum/ucp.php?mode=logout&sid=";
 
                     var session = Request.GetCookie(Settings.SessionKey);
                     if (session != null)
@@ -149,7 +149,7 @@ namespace Manager
 
                     // 맵퍼 본인 확인 절차
                     string mid, mname;
-                    var wr = Request.Create("http://osu.ppy.sh/s/" + id);
+                    var wr = Request.Create("https://osu.ppy.sh/s/" + id);
                     using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
                         var creatorGrab = Regex.Match(sr.ReadToEnd(), Settings.CreatorExpression);

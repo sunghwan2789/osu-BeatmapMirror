@@ -339,7 +339,7 @@ namespace Bot
                             (
                                 lBeatmap.BeatmapInfo.Version.Equals(oBeatmap.BeatmapInfo.Version)
                                 // 비트맵 이름은 공백인데 Normal로 등록된 경우
-                                // http://osu.ppy.sh/s/1785
+                                // https://osu.ppy.sh/s/1785
                                 || (
                                     string.IsNullOrEmpty(lBeatmap.BeatmapInfo.Version)
                                     && oBeatmap.BeatmapInfo.Version.Equals("Normal")
@@ -482,7 +482,7 @@ namespace Bot
 
         private static IEnumerable<int> GrabSetIDFromBeatmapList(int r, int page = 1)
         {
-            const string url = "http://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
+            const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
 
             try
             {

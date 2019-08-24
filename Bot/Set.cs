@@ -159,7 +159,7 @@ namespace Bot
 
                 try
                 {
-                    var wr = Request.Context.Create("http://osu.ppy.sh/s/" + SetId);
+                    var wr = Request.Context.Create("https://osu.ppy.sh/s/" + SetId);
                     using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
                     {
                         var beatmapPage = rp.ReadToEnd();

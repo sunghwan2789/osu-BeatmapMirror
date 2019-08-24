@@ -64,7 +64,7 @@ namespace Utility
 
         public string GetCookie(string name)
         {
-            return Cookie.GetCookies(new Uri("http://osu.ppy.sh"))[name]?.Value;
+            return Cookie.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
         }
 
         private bool LoginValidate(HttpWebRequest wr)
@@ -77,7 +77,7 @@ namespace Utility
 
         public string Login(string id, string pw)
         {
-            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+            const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
 
             var wr = Create(url, true);
             using (var sw = new StreamWriter(wr.GetRequestStream()))
@@ -91,7 +91,7 @@ namespace Utility
 
         public string Login(string sid)
         {
-            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
+            const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
 
             AddCookie(Settings.SessionKey, sid);
 
@@ -119,7 +119,7 @@ namespace Utility
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
         public string Download(int id, Action<int, long> onprogress, bool skipDownload = false)
         {
-            var url = "http://osu.ppy.sh/d/" + id;
+            var url = "https://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             if (skipDownload)
@@ -159,7 +159,7 @@ namespace Utility
 
         public JArray GetBeatmapsAPI(string query)
         {
-            const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
+            const string url = "https://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
 
             try
             {
