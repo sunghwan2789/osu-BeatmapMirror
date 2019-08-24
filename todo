@@ -1,0 +1,1072 @@
+bot health
+650594가 변경된 것 같습니다.
+Updated: 2018-02-06 19:06:47 ==> 2018-02-08 13:11:48
+Ranked: null ==> null
+Status: 0 ==> 0
+Beatmaps: 2 ==> 2
+650594를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+563569가 변경된 것 같습니다.
+Updated: 2018-02-02 02:27:00 ==> 2018-02-01 23:59:39
+Ranked: 2018-02-08 12:49:23 ==> 2018-02-08 12:49:23
+Status: 3 ==> 3
+Beatmaps: 6 ==> 6
+563569를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+2018-02-08 13:18:48.565 672965 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1455172' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1455172' for key 'PRIMARY'
+672965가 깨진 것 같습니다.
+672965를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:19:11.548 672965 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1455172' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1455172' for key 'PRIMARY'
+2018-02-08 13:22:16.056 372271 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1011136' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1011136' for key 'PRIMARY'
+372271가 깨진 것 같습니다.
+372271를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:22:38.403 372271 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1011136' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1011136' for key 'PRIMARY'
+2018-02-08 13:27:57.523 708332 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1497544' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1497544' for key 'PRIMARY'
+708332가 깨진 것 같습니다.
+708332를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:29:29.548 708332 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1497544' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1497544' for key 'PRIMARY'
+2018-02-08 13:39:39.218 101796 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '281440' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '281440' for key 'PRIMARY'
+101796가 깨진 것 같습니다.
+101796를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:43:31.874 101796 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '281440' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '281440' for key 'PRIMARY'
+657903가 변경된 것 같습니다.
+Updated: 2017-10-20 21:50:11 ==> 2018-01-23 06:09:07
+Ranked: null ==> null
+Status: 0 ==> 0
+Beatmaps: 5 ==> 5
+657903를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:48:25.614 657903 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+657903가 깨진 것 같습니다.
+657903를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 13:48:28.433 657903 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 14:01:29.197 581970 System.FormatException: 입력 문자열의 형식이 잘못되었습니다.
+   위치: System.Number.ParseDouble(String value, NumberStyles options, NumberFormatInfo numfmt)
+   위치: System.Double.Parse(String s, IFormatProvider provider)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleTimingPoints(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 272
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 76
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 입력 문자열의 형식이 잘못되었습니다.
+581970가 깨진 것 같습니다.
+581970를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:03:54.678 581970 System.FormatException: 입력 문자열의 형식이 잘못되었습니다.
+   위치: System.Number.ParseDouble(String value, NumberStyles options, NumberFormatInfo numfmt)
+   위치: System.Double.Parse(String s, IFormatProvider provider)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleTimingPoints(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 272
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 76
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 입력 문자열의 형식이 잘못되었습니다.
+2018-02-08 14:34:06.816 574097 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1221041' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1221041' for key 'PRIMARY'
+574097가 깨진 것 같습니다.
+574097를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:35:40.317 574097 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1221041' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1221041' for key 'PRIMARY'
+2018-02-08 14:36:51.991 463594 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1261526' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1261526' for key 'PRIMARY'
+463594가 깨진 것 같습니다.
+463594를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:37:02.959 463594 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1261526' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1261526' for key 'PRIMARY'
+2018-02-08 14:47:04.298 290587 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '668609' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '668609' for key 'PRIMARY'
+290587가 깨진 것 같습니다.
+290587를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:47:34.162 290587 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '668609' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '668609' for key 'PRIMARY'
+2018-02-08 14:51:24.401 72046 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+72046가 깨진 것 같습니다.
+72046를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:55:08.744 72046 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 14:57:38.848 515192 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1094131' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1094131' for key 'PRIMARY'
+515192가 깨진 것 같습니다.
+515192를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 14:57:55.318 515192 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '1094131' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '1094131' for key 'PRIMARY'
+2018-02-08 15:11:13.919 478093 System.OverflowException: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+   위치: System.Convert.ToInt32(Double value)
+   위치: System.Double.System.IConvertible.ToInt32(IFormatProvider provider)
+   위치: System.Convert.ToInt32(Object value)
+   위치: MySql.Data.Types.MySqlInt32.MySql.Data.Types.IMySqlValue.WriteValue(MySqlPacket packet, Boolean binary, Object val, Int32 length)
+   위치: MySql.Data.MySqlClient.MySqlParameter.Serialize(MySqlPacket packet, Boolean binary, MySqlConnectionStringBuilder settings)
+   위치: MySql.Data.MySqlClient.Statement.SerializeParameter(MySqlParameterCollection parameters, MySqlPacket packet, String parmName, Int32 parameterIndex)
+   위치: MySql.Data.MySqlClient.Statement.InternalBindParameters(String sql, MySqlParameterCollection parameters, MySqlPacket packet)
+   위치: MySql.Data.MySqlClient.Statement.BindParameters()
+   위치: MySql.Data.MySqlClient.PreparableStatement.Execute()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+478093가 깨진 것 같습니다.
+478093를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:12:08.688 478093 System.OverflowException: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+   위치: System.Convert.ToInt32(Double value)
+   위치: System.Double.System.IConvertible.ToInt32(IFormatProvider provider)
+   위치: System.Convert.ToInt32(Object value)
+   위치: MySql.Data.Types.MySqlInt32.MySql.Data.Types.IMySqlValue.WriteValue(MySqlPacket packet, Boolean binary, Object val, Int32 length)
+   위치: MySql.Data.MySqlClient.MySqlParameter.Serialize(MySqlPacket packet, Boolean binary, MySqlConnectionStringBuilder settings)
+   위치: MySql.Data.MySqlClient.Statement.SerializeParameter(MySqlParameterCollection parameters, MySqlPacket packet, String parmName, Int32 parameterIndex)
+   위치: MySql.Data.MySqlClient.Statement.InternalBindParameters(String sql, MySqlParameterCollection parameters, MySqlPacket packet)
+   위치: MySql.Data.MySqlClient.Statement.BindParameters()
+   위치: MySql.Data.MySqlClient.PreparableStatement.Execute()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+2018-02-08 15:17:16.034 94931 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '255595' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '255595' for key 'PRIMARY'
+94931가 깨진 것 같습니다.
+94931를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:17:45.092 94931 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '255595' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '255595' for key 'PRIMARY'
+323302가 변경된 것 같습니다.
+Updated: 2016-08-28 21:44:51 ==> 2018-02-08 13:43:52
+Ranked: null ==> null
+Status: 0 ==> 0
+Beatmaps: 3 ==> 2
+323302를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:43:54.951 196953 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '467109' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '467109' for key 'PRIMARY'
+196953가 깨진 것 같습니다.
+196953를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:45:08.229 196953 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '467109' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '467109' for key 'PRIMARY'
+2018-02-08 15:47:21.386 408318 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '887057' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '887057' for key 'PRIMARY'
+408318가 깨진 것 같습니다.
+408318를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:47:32.806 408318 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '887057' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '887057' for key 'PRIMARY'
+2018-02-08 15:54:03.685 33331 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+33331가 깨진 것 같습니다.
+33331를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 15:54:41.552 33331 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 16:10:14.661 343470 CORRUPTED ENTRY
+2018-02-08 16:10:14.661 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+343470가 깨진 것 같습니다.
+343470를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:12:03.711 343470 CORRUPTED ENTRY
+2018-02-08 16:12:03.711 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 16:12:56.961 301397 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '675845' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '675845' for key 'PRIMARY'
+301397가 깨진 것 같습니다.
+301397를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:14:10.560 301397 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '675845' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '675845' for key 'PRIMARY'
+2018-02-08 16:16:29.446 344049 CORRUPTED ENTRY
+2018-02-08 16:16:29.446 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+344049가 깨진 것 같습니다.
+344049를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:16:29.832 344049 Ionic.Zip.BadReadException: Could not read block - no data!  (position 0x00000000)
+   위치: Ionic.Zip.SharedUtilities._ReadFourBytes(Stream s, String message)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 16:18:06.373 351336 System.ArgumentException: 요청한 값 'All'을(를) 찾을 수 없습니다.
+   위치: System.Enum.EnumResult.SetFailure(ParseFailureKind failure, String failureMessageID, Object failureMessageFormatArgument)
+   위치: System.Enum.TryParseEnum(Type enumType, String value, Boolean ignoreCase, EnumResult& parseResult)
+   위치: System.Enum.Parse(Type enumType, String value, Boolean ignoreCase)
+   위치: System.Enum.Parse(Type enumType, String value)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleGeneral(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 107
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 61
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 요청한 값 'All'을(를) 찾을 수 없습니다.
+351336가 깨진 것 같습니다.
+351336를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:18:16.280 351336 System.ArgumentException: 요청한 값 'All'을(를) 찾을 수 없습니다.
+   위치: System.Enum.EnumResult.SetFailure(ParseFailureKind failure, String failureMessageID, Object failureMessageFormatArgument)
+   위치: System.Enum.TryParseEnum(Type enumType, String value, Boolean ignoreCase, EnumResult& parseResult)
+   위치: System.Enum.Parse(Type enumType, String value, Boolean ignoreCase)
+   위치: System.Enum.Parse(Type enumType, String value)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleGeneral(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 107
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 61
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 요청한 값 'All'을(를) 찾을 수 없습니다.
+2018-02-08 16:21:23.645 331476 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '753306' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '753306' for key 'PRIMARY'
+331476가 깨진 것 같습니다.
+331476를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:21:41.745 331476 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '753306' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '753306' for key 'PRIMARY'
+2018-02-08 16:29:08.471 304431 CORRUPTED ENTRY
+2018-02-08 16:29:08.471 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+304431가 깨진 것 같습니다.
+304431를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:31:12.895 304431 CORRUPTED ENTRY
+2018-02-08 16:31:12.895 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+192166가 변경된 것 같습니다.
+Updated: 2015-06-07 02:15:23 ==> 2016-11-13 04:16:19
+Ranked: null ==> null
+Status: 0 ==> 0
+Beatmaps: 6 ==> 4
+192166를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:31:25.566 192166 CORRUPTED ENTRY
+2018-02-08 16:31:25.566 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+192166가 깨진 것 같습니다.
+192166를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:31:45.527 192166 CORRUPTED ENTRY
+2018-02-08 16:31:45.527 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 16:32:57.626 290876 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '661587' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '661587' for key 'PRIMARY'
+290876가 깨진 것 같습니다.
+290876를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:33:12.905 290876 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '661587' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '661587' for key 'PRIMARY'
+286344가 변경된 것 같습니다.
+Updated: 2015-05-23 17:25:58 ==> 2016-02-17 17:11:29
+Ranked: null ==> null
+Status: 0 ==> 0
+Beatmaps: 6 ==> 6
+286344를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:33:28.181 286344 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+286344가 깨진 것 같습니다.
+286344를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:33:28.567 286344 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 16:34:28.525 127440 System.FormatException: 입력 문자열의 형식이 잘못되었습니다.
+   위치: System.Number.ParseDouble(String value, NumberStyles options, NumberFormatInfo numfmt)
+   위치: System.Double.Parse(String s, IFormatProvider provider)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleTimingPoints(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 272
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 76
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 입력 문자열의 형식이 잘못되었습니다.
+127440가 깨진 것 같습니다.
+127440를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:34:44.718 127440 System.FormatException: 입력 문자열의 형식이 잘못되었습니다.
+   위치: System.Number.ParseDouble(String value, NumberStyles options, NumberFormatInfo numfmt)
+   위치: System.Double.Parse(String s, IFormatProvider provider)
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.handleTimingPoints(String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 272
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ProcessSection(Section section, String line) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 76
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.ParseContent(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 71
+   위치: osu.Game.Beatmaps.Formats.LegacyBeatmapDecoder.ParseBeatmap(StreamReader stream, Beatmap beatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyBeatmapDecoder.cs:줄 43
+   위치: osu.Game.Beatmaps.Formats.Decoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 67
+   위치: osu.Game.Beatmaps.Formats.LegacyDecoder.DecodeBeatmap(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\LegacyDecoder.cs:줄 35
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: 입력 문자열의 형식이 잘못되었습니다.
+2018-02-08 16:38:00.662 249553 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+249553가 깨진 것 같습니다.
+249553를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:39:03.619 249553 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 16:39:23.590 213082 CORRUPTED ENTRY
+2018-02-08 16:39:23.590 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+213082가 깨진 것 같습니다.
+213082를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:39:23.972 213082 Ionic.Zip.BadReadException: Could not read block - no data!  (position 0x00000000)
+   위치: Ionic.Zip.SharedUtilities._ReadFourBytes(Stream s, String message)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 16:41:40.625 168262 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '661631' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '661631' for key 'PRIMARY'
+168262가 깨진 것 같습니다.
+168262를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:42:00.807 168262 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '661631' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '661631' for key 'PRIMARY'
+2018-02-08 16:45:05.854 265905 CORRUPTED ENTRY
+2018-02-08 16:45:05.854 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+265905가 깨진 것 같습니다.
+265905를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:45:06.251 265905 Ionic.Zip.BadReadException: Could not read block - no data!  (position 0x00000000)
+   위치: Ionic.Zip.SharedUtilities._ReadFourBytes(Stream s, String message)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 16:50:29.155 91004 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '246544' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '246544' for key 'PRIMARY'
+91004가 깨진 것 같습니다.
+91004를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:52:27.054 91004 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '246544' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '246544' for key 'PRIMARY'
+2018-02-08 16:56:18.804 19307 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '563045' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '563045' for key 'PRIMARY'
+19307가 깨진 것 같습니다.
+19307를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 16:57:09.276 19307 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '563045' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '563045' for key 'PRIMARY'
+2018-02-08 17:06:19.642 180786 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '434268' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '434268' for key 'PRIMARY'
+180786가 깨진 것 같습니다.
+180786를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:07:05.907 180786 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '434268' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '434268' for key 'PRIMARY'
+2018-02-08 17:10:31.991 57523 CORRUPTED ENTRY
+2018-02-08 17:10:31.991 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+57523가 깨진 것 같습니다.
+57523를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:10:35.874 57523 CORRUPTED ENTRY
+2018-02-08 17:10:35.874 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:10:53.990 27564 CORRUPTED ENTRY
+2018-02-08 17:10:53.990 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+27564가 깨진 것 같습니다.
+27564를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:11:03.310 27564 CORRUPTED ENTRY
+2018-02-08 17:11:03.310 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:15:57.193 140301 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+140301가 깨진 것 같습니다.
+140301를 내려받을까요? (Y/N): 자야되니까 자동 체크 합니다!!!!!!!!!!!!!!!!!!!!!!!
+2018-02-08 17:16:08.831 140301 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 17:24:10.894 72370 CORRUPTED ENTRY
+2018-02-08 17:24:10.894 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+72370가 깨진 것 같습니다.
+72370를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:24:11.270 72370 Ionic.Zip.BadReadException: Could not read block - no data!  (position 0x00000000)
+   위치: Ionic.Zip.SharedUtilities._ReadFourBytes(Stream s, String message)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 17:26:13.509 113273 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+113273가 깨진 것 같습니다.
+113273를 내려받을까요? (Y/N): 자야되니까 자동 체크 합니다!!!!!!!!!!!!!!!!!!!!!!!
+2018-02-08 17:26:25.757 113273 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 17:28:32.445 98919 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '285962' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '285962' for key 'PRIMARY'
+98919가 깨진 것 같습니다.
+98919를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:28:44.226 98919 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '285962' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '285962' for key 'PRIMARY'
+2018-02-08 17:30:39.337 110296 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+110296가 깨진 것 같습니다.
+110296를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:30:39.741 110296 Ionic.Zip.BadReadException: Could not read block - no data!  (position 0x00000000)
+   위치: Ionic.Zip.SharedUtilities._ReadFourBytes(Stream s, String message)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 17:32:33.796 8075 CORRUPTED ENTRY
+2018-02-08 17:32:33.796 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+8075가 깨진 것 같습니다.
+8075를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:32:35.822 8075 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 17:34:55.796 60284 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '248090' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '248090' for key 'PRIMARY'
+60284가 깨진 것 같습니다.
+60284를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:36:48.049 60284 MySql.Data.MySqlClient.MySqlException (0x80004005): Duplicate entry '248090' for key 'PRIMARY'
+   위치: MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   위치: MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   위치: MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   위치: MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: Duplicate entry '248090' for key 'PRIMARY'
+2018-02-08 17:47:43.560 5096 System.OverflowException: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+   위치: System.Convert.ToInt32(Double value)
+   위치: System.Double.System.IConvertible.ToInt32(IFormatProvider provider)
+   위치: System.Convert.ToInt32(Object value)
+   위치: MySql.Data.Types.MySqlInt32.MySql.Data.Types.IMySqlValue.WriteValue(MySqlPacket packet, Boolean binary, Object val, Int32 length)
+   위치: MySql.Data.MySqlClient.MySqlParameter.Serialize(MySqlPacket packet, Boolean binary, MySqlConnectionStringBuilder settings)
+   위치: MySql.Data.MySqlClient.Statement.SerializeParameter(MySqlParameterCollection parameters, MySqlPacket packet, String parmName, Int32 parameterIndex)
+   위치: MySql.Data.MySqlClient.Statement.InternalBindParameters(String sql, MySqlParameterCollection parameters, MySqlPacket packet)
+   위치: MySql.Data.MySqlClient.Statement.BindParameters()
+   위치: MySql.Data.MySqlClient.PreparableStatement.Execute()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+5096가 깨진 것 같습니다.
+5096를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:48:26.956 5096 System.OverflowException: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+   위치: System.Convert.ToInt32(Double value)
+   위치: System.Double.System.IConvertible.ToInt32(IFormatProvider provider)
+   위치: System.Convert.ToInt32(Object value)
+   위치: MySql.Data.Types.MySqlInt32.MySql.Data.Types.IMySqlValue.WriteValue(MySqlPacket packet, Boolean binary, Object val, Int32 length)
+   위치: MySql.Data.MySqlClient.MySqlParameter.Serialize(MySqlPacket packet, Boolean binary, MySqlConnectionStringBuilder settings)
+   위치: MySql.Data.MySqlClient.Statement.SerializeParameter(MySqlParameterCollection parameters, MySqlPacket packet, String parmName, Int32 parameterIndex)
+   위치: MySql.Data.MySqlClient.Statement.InternalBindParameters(String sql, MySqlParameterCollection parameters, MySqlPacket packet)
+   위치: MySql.Data.MySqlClient.Statement.BindParameters()
+   위치: MySql.Data.MySqlClient.PreparableStatement.Execute()
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   위치: MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   위치: Bot.Program.Register(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 478
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 381: 값이 너무 크거나 작아 Int32 형식에 맞지 않습니다.
+2018-02-08 17:49:50.988 22153 CORRUPTED ENTRY
+2018-02-08 17:49:50.988 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+22153가 깨진 것 같습니다.
+22153를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:50:09.103 22153 CORRUPTED ENTRY
+2018-02-08 17:50:09.103 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:50:14.419 41078 CORRUPTED ENTRY
+2018-02-08 17:50:14.419 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+41078가 깨진 것 같습니다.
+41078를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:50:26.371 41078 CORRUPTED ENTRY
+2018-02-08 17:50:26.371 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:52:11.217 5730 CORRUPTED ENTRY
+2018-02-08 17:52:11.217 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+5730가 깨진 것 같습니다.
+5730를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:52:27.924 5730 CORRUPTED ENTRY
+2018-02-08 17:52:27.924 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:52:53.431 365 CORRUPTED ENTRY
+2018-02-08 17:52:53.431 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+365가 깨진 것 같습니다.
+365를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:52:53.810 365 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 17:54:56.222 30573 CORRUPTED ENTRY
+2018-02-08 17:54:56.222 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+30573가 깨진 것 같습니다.
+30573를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:55:18.180 30573 CORRUPTED ENTRY
+2018-02-08 17:55:18.180 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+2018-02-08 17:55:51.086 50462 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+50462가 깨진 것 같습니다.
+50462를 내려받을까요? (Y/N): 자야되니까 자동 체크 합니다!!!!!!!!!!!!!!!!!!!!!!!
+2018-02-08 17:57:07.649 50462 System.IO.IOException: Unknown file format
+   위치: osu.Game.Beatmaps.Formats.Decoder.GetDecoder(StreamReader stream) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\osu\osu.Game\Beatmaps\Formats\Decoder.cs:줄 36
+   위치: Bot.Requests.GetSetFromLocal(Int32 id, String path) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Requests.cs:줄 213
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 320: Unknown file format
+2018-02-08 17:58:05.244 24030 CORRUPTED ENTRY
+2018-02-08 17:58:05.245 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+24030가 깨진 것 같습니다.
+24030를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:58:07.569 24030 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+2018-02-08 17:59:00.134 8460 CORRUPTED ENTRY
+2018-02-08 17:59:00.134 System.EntryPointNotFoundException: 온라인 비트맵과 정보가 일치하지 않습니다.
+   위치: Bot.Program.<>c__DisplayClass3_0.<Sync>b__0(Beatmap oBeatmap) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 359
+   위치: System.Linq.Enumerable.WhereSelectListIterator`2.MoveNext()
+   위치: System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   위치: System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   위치: Bot.Program.Sync(Set set) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 331
+8460가 깨진 것 같습니다.
+8460를 내려받을까요? (Y/N): 미등록 비트맵은 자동으로 내려받습니다...
+2018-02-08 17:59:02.387 8460 Ionic.Zip.BadReadException:   Bad signature (0x6D74683C) at position  0x00000000
+   위치: Ionic.Zip.ZipEntry.ReadHeader(ZipEntry ze, Encoding defaultEncoding)
+   위치: Ionic.Zip.ZipEntry.ReadEntry(ZipContainer zc, Boolean first)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance_Orig(ZipFile zf)
+   위치: Ionic.Zip.ZipFile.ReadIntoInstance(ZipFile zf): Cannot read that as a ZipFile
+10406가 변경된 것 같습니다.
+Updated: 2012-07-04 23:42:52 ==> 2010-08-01 23:12:57
+Ranked: 2010-08-05 03:09:29 ==> 2010-08-05 03:09:29
+Status: 2 ==> 1
+Beatmaps: 4 ==> 4
+10406를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+12909가 변경된 것 같습니다.
+Updated: 2012-07-04 23:24:20 ==> 2010-02-10 21:31:39
+Ranked: 2010-02-12 22:43:51 ==> 2010-02-12 22:43:51
+Status: 2 ==> 1
+Beatmaps: 4 ==> 4
+12909를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+9641가 변경된 것 같습니다.
+Updated: 2012-07-04 23:23:31 ==> 2010-01-25 02:24:50
+Ranked: 2010-02-06 14:05:02 ==> 2010-02-06 14:05:02
+Status: 2 ==> 1
+Beatmaps: 4 ==> 4
+9641를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+10435가 변경된 것 같습니다.
+Updated: 2012-07-04 23:02:58 ==> 2009-12-01 05:06:26
+Ranked: 2009-12-01 08:00:00 ==> 2009-12-01 08:00:00
+Status: 2 ==> 1
+Beatmaps: 5 ==> 5
+10435를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+16990가 변경된 것 같습니다.
+Updated: 2011-08-16 12:16:55 ==> 2011-08-15 23:21:41
+Ranked: 2011-08-16 12:15:55 ==> 2011-08-16 12:15:55
+Status: 2 ==> 1
+Beatmaps: 6 ==> 6
+16990를 내려받을까요? (Y/N): 등록된 비트맵은 첫 시도에 있는 파일로 등록을 시도합니다...
+2018-02-08 19:07:39.773 Now 20387, 1 Left, 05:59:29.1952780 Passed
+2018-02-08 19:07:39.774 System.NotImplementedException: 메서드 또는 연산이 구현되지 않았습니다.
+   위치: Bot.Program.Main(String[] args) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 195
+2018-02-08 19:07:39.774 672965ls 372271ls 708332ls 101796ls 657903ls 581970ls 574097ls 463594ls 290587ls 72046ls 515192ls 478093ls 94931ls 196953ls 408318ls 33331ls 343470ls 301397ls 344049ls 351336ls 331476ls 304431ls 192166ls 290876ls 286344ls 127440ls 249553ls 213082ls 168262ls 265905ls 91004ls 19307ls 180786ls 57523ls 27564ls 140301ls 72370ls 113273ls 98919ls 110296ls 8075ls 60284ls 5096ls 22153ls 41078ls 5730ls 365ls 30573ls 50462ls 24030ls 8460ls
+
+
+처리되지 않은 예외: System.NotImplementedException: 메서드 또는 연산이 구현되지 않았습니다.
+   위치: Bot.Program.Main(String[] args) 파일 C:\Users\Administrator\Sources\C#\osu!BeatmapMirror\Bot\Program.cs:줄 195
+
+
+
+
+
+
+
+
+
+
+
+
+b       MySql Duplicate BeatmapId
+u       Unknown file format
+f       FormatException
+o       OverflowException
+c       CORRUPTED
+a       ArgumentException
+d       DCMA'd
+672965b
+372271b
+708332b
+101796b
+657903u
+581970f
+574097b
+463594b
+290587b
+72046u
+515192b
+478093o
+94931b
+196953b
+408318b
+33331u
+343470c
+301397b
+344049c
+351336a
+331476b
+304431c
+192166c
+290876b
+286344d
+127440f
+249553u
+213082c
+168262b
+265905c
+91004b
+19307b
+180786b
+57523c
+27564c
+!!140301u
+72370c
+!!113273u
+98919b
+110296u
+8075c
+60284b
+5096o
+22153c
+41078c
+5730c
+365c
+30573c
+!!50462u
+24030c
+8460c
+
+
+
+
+
+
+
+
+
+
+
+

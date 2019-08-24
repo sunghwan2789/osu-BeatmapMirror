@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -65,7 +66,7 @@ namespace Manager
                 Log.Write(Id + " RECV " + s);
                 await Process(JObject.Parse(s));
             }
-            catch (WebException e)
+            catch (HttpRequestException e)
             {
                 Log.Write(Id + " " + e.GetBaseException() + ": " + e.Message);
                 Send("error", "wait");
