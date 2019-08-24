@@ -72,6 +72,7 @@ namespace Utility
                 new KeyValuePair<string, string>("autologin", "on"),
             })))
             {
+                response.EnsureSuccessStatusCode();
                 return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
             }
         }
@@ -84,6 +85,7 @@ namespace Utility
             {
             })))
             {
+                response.EnsureSuccessStatusCode();
                 return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
             }
         }
@@ -91,7 +93,10 @@ namespace Utility
         public async Task LogoutAsync()
         {
             var session = GetCookie(Settings.SessionKey);
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}")) { }
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}"))
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
 
         private bool ValidateOsz(string path)
