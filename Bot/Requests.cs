@@ -119,7 +119,7 @@ namespace Bot
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static Set GetSetFromDB(int id)
+        public static async Task<Set> GetSetFromDBAsync(int id)
         {
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
@@ -137,7 +137,7 @@ namespace Bot
                 query.Parameters.AddWithValue("@s", id);
                 using (var result = query.ExecuteReader())
                 {
-                    while (result.Read())
+                    while (await result.ReadAsync())
                     {
                         if (!inited)
                         {

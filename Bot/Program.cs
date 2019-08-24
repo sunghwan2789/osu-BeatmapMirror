@@ -59,7 +59,7 @@ namespace Bot
                         var records = new List<Tuple<int, DateTime, DateTime>>();
                         using (var result = query.ExecuteReader())
                         {
-                            while (result.Read())
+                            while (await result.ReadAsync())
                             {
                                 var setId = result.GetInt32(0);
                                 var synced = result.GetDateTime(1);
@@ -113,7 +113,7 @@ namespace Bot
                         }
                         using (var result = query.ExecuteReader())
                         {
-                            while (result.Read())
+                            while (await result.ReadAsync())
                             {
                                 queue.Enqueue(result.GetInt32(0));
                             }
@@ -131,8 +131,8 @@ namespace Bot
                         //}
 
                         var id = queue.Dequeue();
-                        var set = await Requests.GetSetFromAPIAsync(id) ?? Requests.GetSetFromDB(id);
-                        var saved = Requests.GetSetFromDB(id);
+                        var set = await Requests.GetSetFromAPIAsync(id) ?? await Requests.GetSetFromDBAsync(id);
+                        var saved = await Requests.GetSetFromDBAsync(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         //if ((
                         //        (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
@@ -198,7 +198,7 @@ namespace Bot
                 foreach (Match arg in Regex.Matches(string.Join(" ", args), @"(\d+)([^\s]*)"))
                 {
                     Set set = await Requests.GetSetFromAPIAsync(Convert.ToInt32(arg.Groups[1].Value))
-                        ?? Requests.GetSetFromDB(Convert.ToInt32(arg.Groups[1].Value));
+                        ?? await Requests.GetSetFromDBAsync(Convert.ToInt32(arg.Groups[1].Value));
                     if (set == null)
                     {
                         faults.Add(arg.Groups[1].Value);
@@ -267,7 +267,7 @@ namespace Bot
                             break;
                         }
 
-                        var saved = Requests.GetSetFromDB(id);
+                        var saved = await Requests.GetSetFromDBAsync(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         if ((
                                 (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))

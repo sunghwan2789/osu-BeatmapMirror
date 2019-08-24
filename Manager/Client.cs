@@ -217,8 +217,9 @@ namespace Manager
             try
             {
                 var pushed = DateTime.Now;
-                await Request.DownloadAsync(id, (received, total) =>
+                await Request.DownloadAsync(id, new Progress<(int received, long total)>(tuple =>
                 {
+                    var (received, total) = tuple;
                     if (received == 0)
                     {
                         Send("upload", new Dictionary<string, object>
@@ -237,7 +238,7 @@ namespace Manager
                             { "got", received }
                         });
                     }
-                });
+                }));
                 Send("upload", new Dictionary<string, string>
                 {
                     { "state", "downloaded" }

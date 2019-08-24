@@ -112,7 +112,7 @@ namespace Utility
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public async Task<string> DownloadAsync(int id, Action<int, long> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
         {
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
@@ -141,12 +141,12 @@ namespace Utility
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                onprogress?.Invoke(received, data.Length);
-                while ((got = data.Read(buffer, 0, buffer.Length)) > 0)
+                onprogress?.Report((received, data.Length));
+                while ((got = await data.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
                     fs.Write(buffer, 0, got);
                     received += got;
-                    onprogress?.Invoke(received, data.Length);
+                    onprogress?.Report((received, data.Length));
                 }
             }
             return await DownloadAsync(id, onprogress, true);
