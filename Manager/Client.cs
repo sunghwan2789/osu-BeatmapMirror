@@ -141,6 +141,7 @@ namespace Manager
 
         private async Task UploadAsync(int id)
         {
+            // 이미 있는 맵인지 확인
             using (var query = DB.Command)
             {
                 query.CommandText = "SELECT 1 FROM gosu_beatmaps WHERE setId = @i";
@@ -161,46 +162,39 @@ namespace Manager
                 { "state", "fetching" }
             });
 
-            // 맵퍼 본인 확인 절차
-            string mid, mname;
-            var wr = Request.Create("https://osu.ppy.sh/s/" + id);
-            using (var sr = new StreamReader(wr.GetResponse().GetResponseStream()))
+            // 비트맵 존재 확인
+            var beatmap = (await Request.GetBeatmapsAPIAsync($"s={id}")).FirstOrDefault();
+            if (beatmap == null)
             {
-                var creatorGrab = Regex.Match(sr.ReadToEnd(), Settings.CreatorExpression);
-                if (!creatorGrab.Success)
+                Send("upload", new Dictionary<string, string>
                 {
-                    Send("upload", new Dictionary<string, string>
-                    {
-                        { "state", "rejected" },
-                        { "detail", "nomap" }
-                    });
-                    return;
-                }
-                var beatmap = (await Request.GetBeatmapsAPIAsync("s=" + id)).First();
-                // 품질 관리
-                if (beatmap["favourite_count"].Value<int>() < Settings.FavoriteMinimum)
-                {
-                    Send("upload", new Dictionary<string, string>
-                    {
-                        { "state", "rejected" },
-                        { "detail", "favorite" }
-                    });
-                    return;
-                }
-                // 랭크된 비트맵은 자동 동기화함
-                //if (beatmap["approved"].Value<int>() > 0)
-                //{
-                //    Send("upload", new Dictionary<string, string>
-                //    {
-                //        { "state", "rejected" },
-                //        { "detail", "will" }
-                //    });
-                //    break;
-                //}
-
-                mid = creatorGrab.Groups["id"].Value;
-                mname = creatorGrab.Groups["name"].Value;
+                    { "state", "rejected" },
+                    { "detail", "nomap" }
+                });
+                return;
             }
+
+            // 품질 관리
+            if (beatmap["favourite_count"].Value<int>() < Settings.FavoriteMinimum)
+            {
+                Send("upload", new Dictionary<string, string>
+                {
+                    { "state", "rejected" },
+                    { "detail", "favorite" }
+                });
+                return;
+            }
+
+            // 랭크된 비트맵은 자동 동기화함
+            //if (beatmap["approved"].Value<int>() > 0)
+            //{
+            //    Send("upload", new Dictionary<string, string>
+            //    {
+            //        { "state", "rejected" },
+            //        { "detail", "will" }
+            //    });
+            //    break;
+            //}
 
             // 비로그인 유저는 내가 짬날 때 업로드
             if (Request.GetCookie(Settings.SessionKey) == null)

@@ -43,21 +43,6 @@ namespace Utility
             Client = new HttpClient(Handler);
         }
 
-        public HttpWebRequest Create(string url, bool post = false)
-        {
-            var wr = WebRequest.CreateHttp(url);
-            wr.ServicePoint.Expect100Continue = false;
-            wr.CookieContainer = Cookie;
-            wr.Timeout = Settings.ResponseTimeout;
-            wr.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.BypassCache);
-            if (post)
-            {
-                wr.Method = "POST";
-                wr.ContentType = "application/x-www-form-urlencoded";
-            }
-            return wr;
-        }
-
         public void AddCookie(string name, string content)
         {
             Cookie.Add(new Cookie(name, content, "/", "osu.ppy.sh"));
