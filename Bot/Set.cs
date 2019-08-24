@@ -138,40 +138,7 @@ namespace Bot
                 creator = value;
             }
         }
-        public int CreatorId
-        {
-            get
-            {
-                // 먼저, DB에서 해당 비트맵셋의 creatorID를 가져옵니다.
-                // 전에 내려받은 비트맵을 갱신하는 경우, 캐시 사용
-                using (var query = DB.Command)
-                {
-                    query.CommandText = "SELECT creatorId FROM gosu_sets WHERE id = @id";
-                    query.Parameters.AddWithValue("@id", SetId);
-                    using (var result = query.ExecuteReader())
-                    {
-                        if (result.Read())
-                        {
-                            return result.GetInt32(0);
-                        }
-                    }
-                }
-
-                try
-                {
-                    var wr = Request.Context.Create("http://osu.ppy.sh/s/" + SetId);
-                    using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                    {
-                        var beatmapPage = rp.ReadToEnd();
-                        return Convert.ToInt32(Regex.Match(beatmapPage, Settings.CreatorExpression).Groups["id"].Value);
-                    }
-                }
-                catch (WebException)
-                {
-                    return CreatorId;
-                }
-            }
-        }
+        public int CreatorId { get; set; }
 
         public int GenreId { get; set; }
         public int LanguageId { get; set; }

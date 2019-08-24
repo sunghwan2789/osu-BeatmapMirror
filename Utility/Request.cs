@@ -6,14 +6,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Utility
 {
     public class Request
     {
+        public HttpClient Client;
         public CookieContainer Cookie;
+        public CloudFlareHandler Handler;
 
         public static Request Context { get; set; }
 
@@ -25,22 +29,17 @@ namespace Utility
         public Request()
         {
             Cookie = new CookieContainer();
-            Cookie.Add(new System.Net.Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
-        }
+            Cookie.Add(new Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
 
-        public HttpWebRequest Create(string url, bool post = false)
-        {
-            var wr = WebRequest.CreateHttp(url);
-            wr.ServicePoint.Expect100Continue = false;
-            wr.CookieContainer = Cookie;
-            wr.Timeout = Settings.ResponseTimeout;
-            wr.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.BypassCache);
-            if (post)
+            Handler = new CloudFlareHandler(new HttpClientHandler
             {
-                wr.Method = "POST";
-                wr.ContentType = "application/x-www-form-urlencoded";
-            }
-            return wr;
+                CookieContainer = Cookie,
+            });
+
+            Client = new HttpClient(Handler)
+            {
+                Timeout = TimeSpan.FromSeconds(Settings.ResponseTimeout),
+            };
         }
 
         public void AddCookie(string name, string content)
@@ -50,39 +49,49 @@ namespace Utility
 
         public string GetCookie(string name)
         {
-            return Cookie.GetCookies(new Uri("http://osu.ppy.sh"))[name]?.Value;
+            return Cookie.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
         }
 
-        private bool LoginValidate(HttpWebRequest wr)
+        private bool LoginValidate(HttpResponseMessage response)
         {
-            using (var rp = (HttpWebResponse)wr.GetResponse())
+            if (!response.Headers.TryGetValues("Set-Cookie", out var cookies))
             {
-                return rp.Cookies["last_login"] != null;
+                return false;
+            }
+
+            return cookies.Any(cookie => cookie.Contains("last_login"));
+        }
+
+        public async Task<string> LoginAsync(string id, string pw)
+        {
+            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+                new KeyValuePair<string, string>("login", "Login"),
+                new KeyValuePair<string, string>("username", id),
+                new KeyValuePair<string, string>("password", pw),
+                new KeyValuePair<string, string>("autologin", "on"),
+            })))
+            {
+                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
             }
         }
 
-        public string Login(string id, string pw)
+        public async Task<string> LoginAsync(string sid)
         {
-            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
-
-            var wr = Create(url, true);
-            using (var sw = new StreamWriter(wr.GetRequestStream()))
-            {
-                sw.Write($"login=Login&username={Uri.EscapeDataString(id)}" +
-                    $"&password={Uri.EscapeDataString(pw)}&autologin=on");
-            }
-
-            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
-        }
-
-        public string Login(string sid)
-        {
-            const string url = "http://osu.ppy.sh/forum/ucp.php?mode=login";
-
             AddCookie(Settings.SessionKey, sid);
 
-            var wr = Create(url, true);
-            return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
+            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+            })))
+            {
+                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+            }
+        }
+
+        public async Task LogoutAsync()
+        {
+            var session = GetCookie(Settings.SessionKey);
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}")) { }
         }
 
         private bool ValidateOsz(string path)
@@ -100,12 +109,11 @@ namespace Utility
         /// <param name="id">비트맵셋 ID</param>
         /// <param name="onprogress"><code>(received, total) => { ... }</code></param>
         /// <param name="skipDownload">파일을 내려받고 검증할 때 <code>true</code></param>
-        /// <exception cref="WebException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public string Download(int id, Action<int, long> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadAsync(int id, Action<int, long> onprogress, bool skipDownload = false)
         {
-            var url = "http://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             if (skipDownload)
@@ -124,40 +132,59 @@ namespace Utility
                 throw new Exception("올바른 비트맵 파일이 아님");
             }
 
-            var wr = Create(url);
-            using (var rp = (HttpWebResponse) wr.GetResponse())
-            using (var rs = rp.GetResponseStream())
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}"))
+            using (var data = await response.Content.ReadAsStreamAsync())
             {
+                response.EnsureSuccessStatusCode();
+
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                onprogress?.Invoke(received, rp.ContentLength);
-                while ((got = rs.Read(buffer, 0, buffer.Length)) > 0)
+                onprogress?.Invoke(received, data.Length);
+                while ((got = data.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     fs.Write(buffer, 0, got);
                     received += got;
-                    onprogress?.Invoke(received, rp.ContentLength);
+                    onprogress?.Invoke(received, data.Length);
                 }
             }
-            return Download(id, onprogress, true);
+            return await DownloadAsync(id, onprogress, true);
         }
 
-        public JArray GetBeatmapsAPI(string query)
+        public async Task<JArray> GetBeatmapsAPIAsync(string query)
         {
-            const string url = "http://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
-
             try
             {
-                var wr = Create(string.Format(url, Settings.APIKey, query));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
                 {
-                    return JArray.Parse(rp.ReadToEnd());
+                    response.EnsureSuccessStatusCode();
+
+                    return JArray.Parse(await response.Content.ReadAsStringAsync());
                 }
             }
-            catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException || e is JsonReaderException)
             {
-                return GetBeatmapsAPI(query);
+                return await GetBeatmapsAPIAsync(query);
+            }
+        }
+
+        public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1)
+        {
+            try
+            {
+                using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    var data = await response.Content.ReadAsStringAsync();
+                    return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
+                        .Select(setId => int.Parse(setId.Groups[1].Value));
+                }
+            }
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
+            {
+                return await GrabSetIDFromBeatmapListAsync(r, page);
             }
         }
     }

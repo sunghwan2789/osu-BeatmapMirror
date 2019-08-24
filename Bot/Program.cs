@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace Bot
 {
@@ -18,17 +19,17 @@ namespace Bot
     {
         private static List<string> faults = new List<string>();
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
-                Request.Context.Login(Settings.OsuId, Settings.OsuPw) :
-                Request.Context.Login(Settings.Session);
+                await Request.Context.LoginAsync(Settings.OsuId, Settings.OsuPw) :
+                await Request.Context.LoginAsync(Settings.Session);
             if (Settings.Session == null)
             {
                 Console.WriteLine("login failed");
-                Main(args);
+                await Main(args);
                 return;
             }
 
@@ -130,7 +131,7 @@ namespace Bot
                         //}
 
                         var id = queue.Dequeue();
-                        var set = Requests.GetSetFromAPI(id) ?? Requests.GetSetFromDB(id);
+                        var set = await Requests.GetSetFromAPIAsync(id) ?? Requests.GetSetFromDB(id);
                         var saved = Requests.GetSetFromDB(id);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         //if ((
@@ -160,7 +161,7 @@ namespace Bot
                             Console.WriteLine();
                         }
                         // 1차 시도
-                        if (Sync(set))
+                        if (await Sync(set))
                         {
                             continue;
                         }
@@ -179,7 +180,7 @@ namespace Bot
                         }
                         Console.WriteLine();
                         // 2차부터는 그냥 나중에 수동으로 하는 거루...
-                        if (Sync(set))
+                        if (await Sync(set))
                         {
                             continue;
                         }
@@ -196,7 +197,7 @@ namespace Bot
 
                 foreach (Match arg in Regex.Matches(string.Join(" ", args), @"(\d+)([^\s]*)"))
                 {
-                    Set set = Requests.GetSetFromAPI(Convert.ToInt32(arg.Groups[1].Value))
+                    Set set = await Requests.GetSetFromAPIAsync(Convert.ToInt32(arg.Groups[1].Value))
                         ?? Requests.GetSetFromDB(Convert.ToInt32(arg.Groups[1].Value));
                     if (set == null)
                     {
@@ -215,7 +216,7 @@ namespace Bot
                             set.SyncOption |= SyncOption.KeepSyncedAt;
                         }
                     }
-                    if (!Sync(set))
+                    if (!await Sync(set))
                     {
                         faults.Add(arg.Groups[1].Value);
                     }
@@ -239,7 +240,7 @@ namespace Bot
                 var page = 1;
                 do
                 {
-                    var ids = GrabSetIDFromBeatmapList(r, page);
+                    var ids = await Request.Context.GrabSetIDFromBeatmapListAsync(r, page);
                     if (!ids.Any())
                     {
                         break;
@@ -247,7 +248,7 @@ namespace Bot
 
                     foreach (var id in ids)
                     {
-                        var set = Requests.GetSetFromAPI(id);
+                        var set = await Requests.GetSetFromAPIAsync(id);
                         if (set == null)
                         {
                             // ID NOT FOUND BUT CONTINUE
@@ -281,7 +282,7 @@ namespace Bot
             }
             while (bucket.Any())
             {
-                if (!Sync(bucket.Pop()))
+                if (!await Sync(bucket.Pop()))
                 {
                     // 동기화에 실패한 비트맵을 다음 번에 다시 확인해 보아야 한다.
                     lastCheckTime = Settings.LastCheckTime;
@@ -307,17 +308,18 @@ namespace Bot
         /// <param name="skipDownload"></param>
         /// <param name="keepSynced"></param>
         /// <returns></returns>
-        private static bool Sync(Set set)
+        private static async Task<bool> Sync(Set set)
         {
             try
             {
-                var path = Request.Context.Download(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
+                var path = await Request.Context.DownloadAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
                 Log.Write(set.SetId + " DOWNLOADED");
 
                 var local = Requests.GetSetFromLocal(set.SetId, path);
                 local.Title = set.Title;
                 local.Artist = set.Artist;
                 local.Creator = set.Creator;
+                local.CreatorId = set.CreatorId;
                 local.StatusId = set.StatusId;
                 local.RankedAt = set.RankedAt;
                 //local.Favorites = set.Favorites;
@@ -339,7 +341,7 @@ namespace Bot
                             (
                                 lBeatmap.BeatmapInfo.Version.Equals(oBeatmap.BeatmapInfo.Version)
                                 // 비트맵 이름은 공백인데 Normal로 등록된 경우
-                                // http://osu.ppy.sh/s/1785
+                                // https://osu.ppy.sh/s/1785
                                 || (
                                     string.IsNullOrEmpty(lBeatmap.BeatmapInfo.Version)
                                     && oBeatmap.BeatmapInfo.Version.Equals("Normal")
@@ -391,9 +393,9 @@ namespace Bot
 
                 return true;
             }
-            catch (WebException)
+            catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
             {
-                return Sync(set);
+                return await Sync(set);
             }
             catch (EntryPointNotFoundException e)
             {
@@ -477,25 +479,6 @@ namespace Bot
                 }
 
                 tr.Commit();
-            }
-        }
-
-        private static IEnumerable<int> GrabSetIDFromBeatmapList(int r, int page = 1)
-        {
-            const string url = "http://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
-
-            try
-            {
-                var wr = Request.Context.Create(string.Format(url, r, page));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                {
-                    return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
-                           select Convert.ToInt32(i.Groups[1].Value);
-                }
-            }
-            catch (WebException)
-            {
-                return GrabSetIDFromBeatmapList(r, page);
             }
         }
     }

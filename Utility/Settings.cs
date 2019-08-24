@@ -1,9 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -396,6 +399,36 @@ namespace Utility
             {
                 _LastSummaryTime = LastSummaryTime;
                 Set("KEY", "LastSummaryTime", value.ToString("s"));
+            }
+        }
+
+        public static string UserAgent
+        {
+            get => Get("KEY", "UserAgent");
+            set => Set("KEY", "UserAgent", value);
+        }
+
+        public static CookieCollection CFSession
+        {
+            get
+            {
+                CookieCollection cookies = null;
+                try
+                {
+                    using (var fs = new FileStream(Path + ".cfsession", FileMode.OpenOrCreate, FileAccess.Read))
+                    {
+                        cookies = new BinaryFormatter().Deserialize(fs) as CookieCollection;
+                    }
+                }
+                catch {}
+                return cookies ?? new CookieCollection();
+            }
+            set
+            {
+                using (var fs = new FileStream(Path + ".cfsession", FileMode.Truncate, FileAccess.Write))
+                {
+                    new BinaryFormatter().Serialize(fs, value);
+                }
             }
         }
     }
