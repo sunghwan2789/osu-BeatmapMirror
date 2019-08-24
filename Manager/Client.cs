@@ -58,12 +58,12 @@ namespace Manager
             Socket.Dispose();
         }
 
-        private void Process(string s)
+        private async Task Process(string s)
         {
             try
             {
                 Log.Write(Id + " RECV " + s);
-                Process(JObject.Parse(s));
+                await Process(JObject.Parse(s));
             }
             catch (WebException e)
             {
@@ -72,7 +72,7 @@ namespace Manager
             }
         }
 
-        private void Process(JObject request)
+        private async Task Process(JObject request)
         {
             switch (request["action"].Value<string>())
             {
@@ -162,7 +162,7 @@ namespace Manager
                             });
                             break;
                         }
-                        var beatmap = Request.GetBeatmapsAPI("s=" + id).First();
+                        var beatmap = (await Request.GetBeatmapsAPIAsync("s=" + id)).First();
                         // 품질 관리
                         if (beatmap["favourite_count"].Value<int>() < Settings.FavoriteMinimum)
                         {
@@ -208,7 +208,7 @@ namespace Manager
                     try
                     {
                         var pushed = DateTime.Now;
-                        Request.Download(id, (received, total) =>
+                        await Request.DownloadAsync(id, (received, total) =>
                         {
                             if (received == 0)
                             {

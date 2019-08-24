@@ -23,7 +23,7 @@ namespace Bot
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static Set GetSetFromAPI(int id)
+        public static async Task<Set> GetSetFromAPIAsync(int id)
         {
             DateTime ConvertAPIDateTimeToLocal(DateTime dateTime)
             {
@@ -39,7 +39,7 @@ namespace Bot
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
             var inited = false;
-            foreach (JObject i in Request.Context.GetBeatmapsAPI("s=" + id))
+            foreach (JObject i in await Request.Context.GetBeatmapsAPIAsync("s=" + id))
             {
                 var rankedAt = i.Value<DateTime?>("approved_date");
                 if (rankedAt != null)

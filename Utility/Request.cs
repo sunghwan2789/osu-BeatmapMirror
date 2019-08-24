@@ -75,7 +75,7 @@ namespace Utility
             }
         }
 
-        public string Login(string id, string pw)
+        public async Task<string> LoginAsync(string id, string pw)
         {
             const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
 
@@ -89,7 +89,7 @@ namespace Utility
             return LoginValidate(wr) ? GetCookie(Settings.SessionKey) : null;
         }
 
-        public string Login(string sid)
+        public async Task<string> LoginAsync(string sid)
         {
             const string url = "https://osu.ppy.sh/forum/ucp.php?mode=login";
 
@@ -117,7 +117,7 @@ namespace Utility
         /// <exception cref="WebException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public string Download(int id, Action<int, long> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadAsync(int id, Action<int, long> onprogress, bool skipDownload = false)
         {
             var url = "https://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
@@ -154,10 +154,10 @@ namespace Utility
                     onprogress?.Invoke(received, rp.ContentLength);
                 }
             }
-            return Download(id, onprogress, true);
+            return await DownloadAsync(id, onprogress, true);
         }
 
-        public JArray GetBeatmapsAPI(string query)
+        public async Task<JArray> GetBeatmapsAPIAsync(string query)
         {
             const string url = "https://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
 
@@ -171,7 +171,7 @@ namespace Utility
             }
             catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
             {
-                return GetBeatmapsAPI(query);
+                return await GetBeatmapsAPIAsync(query);
             }
         }
     }
