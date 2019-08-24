@@ -130,7 +130,7 @@ namespace Bot
                         beatmap.name, set.synced, beatmap.hash_md5,
                         beatmap.hash_sha2, set.rankedAt, set.genreId,
                         set.languageId, beatmap.star, beatmap.author,
-                        set.title, set.artist, beatmap.status, set.creatorId,
+                        set.title, set.artist, beatmap.status, set.creatorId
                     FROM gosu_beatmaps beatmap 
                     LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId 
                     WHERE beatmap.setId = @s";
