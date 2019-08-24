@@ -119,12 +119,11 @@ namespace Utility
         /// <param name="id">비트맵셋 ID</param>
         /// <param name="onprogress"><code>(received, total) => { ... }</code></param>
         /// <param name="skipDownload">파일을 내려받고 검증할 때 <code>true</code></param>
-        /// <exception cref="WebException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
         public async Task<string> DownloadAsync(int id, Action<int, long> onprogress, bool skipDownload = false)
         {
-            var url = "https://osu.ppy.sh/d/" + id;
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             if (skipDownload)
@@ -143,20 +142,21 @@ namespace Utility
                 throw new Exception("올바른 비트맵 파일이 아님");
             }
 
-            var wr = Create(url);
-            using (var rp = (HttpWebResponse) wr.GetResponse())
-            using (var rs = rp.GetResponseStream())
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}"))
+            using (var data = await response.Content.ReadAsStreamAsync())
             {
+                response.EnsureSuccessStatusCode();
+
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                onprogress?.Invoke(received, rp.ContentLength);
-                while ((got = rs.Read(buffer, 0, buffer.Length)) > 0)
+                onprogress?.Invoke(received, data.Length);
+                while ((got = data.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     fs.Write(buffer, 0, got);
                     received += got;
-                    onprogress?.Invoke(received, rp.ContentLength);
+                    onprogress?.Invoke(received, data.Length);
                 }
             }
             return await DownloadAsync(id, onprogress, true);
@@ -164,38 +164,36 @@ namespace Utility
 
         public async Task<JArray> GetBeatmapsAPIAsync(string query)
         {
-            const string url = "https://osu.ppy.sh/api/get_beatmaps?k={0}&{1}";
-
-            try
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
             {
-                var wr = Create(string.Format(url, Settings.APIKey, query));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                if (!response.IsSuccessStatusCode)
                 {
-                    return JArray.Parse(rp.ReadToEnd());
+                    return await GetBeatmapsAPIAsync(query);
                 }
-            }
-            catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
-            {
-                return await GetBeatmapsAPIAsync(query);
+
+                try
+                {
+                    return JArray.Parse(await response.Content.ReadAsStringAsync());
+                }
+                catch (JsonReaderException e)
+                {
+                    return await GetBeatmapsAPIAsync(query);
+                }
             }
         }
 
         public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1)
         {
-            const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
-
-            try
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
             {
-                var wr = Create(string.Format(url, r, page));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                if (!response.IsSuccessStatusCode)
                 {
-                    return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
-                           select Convert.ToInt32(i.Groups[1].Value);
+                    return await GrabSetIDFromBeatmapListAsync(r, page);
                 }
-            }
-            catch (WebException)
-            {
-                return await GrabSetIDFromBeatmapListAsync(r, page);
+
+                var data = await response.Content.ReadAsStringAsync();
+                return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
+                    .Select(setId => int.Parse(setId.Groups[1].Value));
             }
         }
     }

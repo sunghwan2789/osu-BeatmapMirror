@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace Bot
 {
@@ -391,7 +392,7 @@ namespace Bot
 
                 return true;
             }
-            catch (WebException)
+            catch (HttpRequestException)
             {
                 return await Sync(set);
             }
