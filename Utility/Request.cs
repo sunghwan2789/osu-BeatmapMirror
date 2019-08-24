@@ -133,7 +133,7 @@ namespace Utility
             }
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}"))
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}", HttpCompletionOption.ResponseHeadersRead))
             using (var data = await response.Content.ReadAsStreamAsync())
             {
                 response.EnsureSuccessStatusCode();
@@ -141,12 +141,13 @@ namespace Utility
                 int got;
                 var received = 0;
                 var buffer = new byte[4096];
-                onprogress?.Report((received, data.Length));
+                var total = response.Content.Headers.ContentLength.Value;
+                onprogress?.Report((received, total));
                 while ((got = await data.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    fs.Write(buffer, 0, got);
+                    await fs.WriteAsync(buffer, 0, got);
                     received += got;
-                    onprogress?.Report((received, data.Length));
+                    onprogress?.Report((received, total));
                 }
             }
             return await DownloadAsync(id, onprogress, true);
