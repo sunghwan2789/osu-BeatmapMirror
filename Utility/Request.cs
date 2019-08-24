@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Cache;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Utility
@@ -176,6 +177,25 @@ namespace Utility
             catch (Exception e) when (e is WebException || e is JsonReaderException || e is IOException)
             {
                 return await GetBeatmapsAPIAsync(query);
+            }
+        }
+
+        public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1)
+        {
+            const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
+
+            try
+            {
+                var wr = Create(string.Format(url, r, page));
+                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
+                {
+                    return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
+                           select Convert.ToInt32(i.Groups[1].Value);
+                }
+            }
+            catch (WebException)
+            {
+                return await GrabSetIDFromBeatmapListAsync(r, page);
             }
         }
     }

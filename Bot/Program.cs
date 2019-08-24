@@ -239,7 +239,7 @@ namespace Bot
                 var page = 1;
                 do
                 {
-                    var ids = GrabSetIDFromBeatmapList(r, page);
+                    var ids = await Request.Context.GrabSetIDFromBeatmapListAsync(r, page);
                     if (!ids.Any())
                     {
                         break;
@@ -477,25 +477,6 @@ namespace Bot
                 }
 
                 tr.Commit();
-            }
-        }
-
-        private static IEnumerable<int> GrabSetIDFromBeatmapList(int r, int page = 1)
-        {
-            const string url = "https://osu.ppy.sh/p/beatmaplist?r={0}&page={1}";
-
-            try
-            {
-                var wr = Request.Context.Create(string.Format(url, r, page));
-                using (var rp = new StreamReader(wr.GetResponse().GetResponseStream()))
-                {
-                    return from Match i in Regex.Matches(rp.ReadToEnd(), Settings.SetIdExpression)
-                           select Convert.ToInt32(i.Groups[1].Value);
-                }
-            }
-            catch (WebException)
-            {
-                return GrabSetIDFromBeatmapList(r, page);
             }
         }
     }
