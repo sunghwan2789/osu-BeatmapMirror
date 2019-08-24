@@ -104,6 +104,12 @@ namespace Utility
             }
         }
 
+        public async Task LogoutAsync()
+        {
+            var session = GetCookie(Settings.SessionKey);
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}")) { }
+        }
+
         private bool ValidateOsz(string path)
         {
             using (var fs = File.OpenRead(path))
