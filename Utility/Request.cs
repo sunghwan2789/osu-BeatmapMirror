@@ -1,5 +1,4 @@
-﻿using CloudFlareUtilities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ namespace Utility
     {
         public HttpClient Client;
         public CookieContainer Cookie;
-        public ClearanceHandler Handler;
+        public CloudFlareHandler Handler;
 
         public static Request Context { get; set; }
 
@@ -30,15 +29,12 @@ namespace Utility
         public Request()
         {
             Cookie = new CookieContainer();
-            Cookie.Add(new System.Net.Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
+            Cookie.Add(new Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
 
-            Handler = new ClearanceHandler
+            Handler = new CloudFlareHandler(new HttpClientHandler
             {
-                InnerHandler = new HttpClientHandler
-                {
-                    CookieContainer = Cookie,
-                },
-            };
+                CookieContainer = Cookie,
+            });
 
             Client = new HttpClient(Handler)
             {
