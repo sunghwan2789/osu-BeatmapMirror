@@ -23,9 +23,9 @@ namespace Bot
         {
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            if (string.IsNullOrEmpty(Settings.Session)
+            if (!(string.IsNullOrEmpty(Settings.Session)
                 ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw)
-                : await OsuLegacyClient.Context.LoginAsync(Settings.Session))
+                : await OsuLegacyClient.Context.LoginAsync(Settings.Session)))
             {
                 Console.WriteLine("login failed");
                 await Main(args);
