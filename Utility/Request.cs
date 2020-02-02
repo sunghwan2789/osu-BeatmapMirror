@@ -64,13 +64,18 @@ namespace Utility
 
         public async Task<string> LoginAsync(string id, string pw)
         {
-            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            var request = new HttpRequestMessage(HttpMethod.Post, $"https://osu.ppy.sh/forum/ucp.php?mode=login")
             {
-                new KeyValuePair<string, string>("login", "Login"),
-                new KeyValuePair<string, string>("username", id),
-                new KeyValuePair<string, string>("password", pw),
-                new KeyValuePair<string, string>("autologin", "on"),
-            })))
+                Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+                {
+                    new KeyValuePair<string, string>("login", "Login"),
+                    new KeyValuePair<string, string>("username", id),
+                    new KeyValuePair<string, string>("password", pw),
+                    new KeyValuePair<string, string>("autologin", "on"),
+                }),
+            };
+            request.Headers.Referrer = new Uri("https://osu.ppy.sh/");
+            using (var response = await Client.SendAsync(request))
             {
                 response.EnsureSuccessStatusCode();
                 return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
