@@ -28,6 +28,7 @@ namespace Bot
                 : await OsuLegacyClient.Context.LoginAsync(Settings.Session)))
             {
                 Console.WriteLine("login failed");
+                Settings.Session = null;
                 await Main(args);
                 return;
             }
