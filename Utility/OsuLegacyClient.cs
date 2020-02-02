@@ -19,14 +19,17 @@ namespace Utility
         private const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
         private const string COOKIE_USER_NAME = "last_login";
 
-        private readonly CookieContainer CookieContainer;
-        private readonly CloudFlareHandler Handler;
-        private readonly HttpClient Client;
+        private Uri BaseAddress => new Uri("https://osu.ppy.sh/");
+        private TimeSpan Timeout => TimeSpan.FromMilliseconds(Settings.ResponseTimeout);
+
+        private CookieContainer CookieContainer { get; }
+        private CloudFlareHandler Handler { get; }
+        private HttpClient Client { get; }
 
         public string Session => GetCookie(COOKIE_SESSION);
         public string UserNumber => GetCookie(COOKIE_USER_NUMBER);
         public string UserName => GetCookie(COOKIE_USER_NAME);
-        public bool IsAuthorized => !string.IsNullOrEmpty(UserName);
+        public bool IsAuthenticated { get; private set; }
 
         public static OsuLegacyClient Context { get; } = new OsuLegacyClient();
 
@@ -42,53 +45,56 @@ namespace Utility
 
             Client = new HttpClient(Handler)
             {
-                Timeout = TimeSpan.FromSeconds(Settings.ResponseTimeout),
+                BaseAddress = BaseAddress,
+                Timeout = Timeout,
             };
-            Client.DefaultRequestHeaders.Add("Referer", "https://osu.ppy.sh/");
+            Client.DefaultRequestHeaders.Add("Referer", BaseAddress.AbsoluteUri);
         }
 
         public void AddCookie(string name, string content)
         {
-            CookieContainer.Add(new Cookie(name, content, "/", "osu.ppy.sh"));
+            CookieContainer.Add(new Cookie(name, content, "/", BaseAddress.Host));
         }
 
         public string GetCookie(string name)
         {
-            return CookieContainer.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
+            return CookieContainer.GetCookies(BaseAddress)[name]?.Value;
         }
 
-        public async Task<bool> LoginAsync(string id, string pw)
+        public Task<bool> LoginAsync(string id, string pw)
         {
-            using (var response = await Client.PostAsync("https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            return LoginAsync(new KeyValuePair<string, string>[]
             {
                 new KeyValuePair<string, string>("login", "Login"),
                 new KeyValuePair<string, string>("username", id),
                 new KeyValuePair<string, string>("password", pw),
                 new KeyValuePair<string, string>("autologin", "on"),
                 new KeyValuePair<string, string>("redirect", "/p/beatmaplist"),
-            })))
-            {
-                response.EnsureSuccessStatusCode();
-                return IsAuthorized;
-            }
+            });
         }
 
-        public async Task<bool> LoginAsync(string sid)
+        public Task<bool> LoginAsync(string sid)
         {
             AddCookie(COOKIE_SESSION, sid);
+            return LoginAsync(new List<KeyValuePair<string, string>>());
+        }
 
-            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-            {
-            })))
+        private async Task<bool> LoginAsync(IEnumerable<KeyValuePair<string, string>> data)
+        {
+            using (var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data)))
             {
                 response.EnsureSuccessStatusCode();
-                return IsAuthorized;
+                var content = await response.Content.ReadAsStringAsync();
+                IsAuthenticated = CheckAuthenticated(content);
+                return IsAuthenticated;
             }
+
+            bool CheckAuthenticated(string content) => !content.Contains("incorrect password");
         }
 
         public async Task LogoutAsync()
         {
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={Session}"))
+            using (var response = await Client.GetAsync($"forum/ucp.php?mode=logout&sid={Session}"))
             {
                 response.EnsureSuccessStatusCode();
             }
@@ -133,7 +139,7 @@ namespace Utility
             }
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}", HttpCompletionOption.ResponseHeadersRead))
+            using (var response = await Client.GetAsync($"d/{id}", HttpCompletionOption.ResponseHeadersRead))
             using (var data = await response.Content.ReadAsStreamAsync())
             {
                 response.EnsureSuccessStatusCode();
@@ -157,7 +163,7 @@ namespace Utility
         {
             try
             {
-                using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
+                using (var response = await Client.GetAsync($"api/get_beatmaps?k={Settings.APIKey}&{query}"))
                 {
                     response.EnsureSuccessStatusCode();
 
@@ -174,7 +180,7 @@ namespace Utility
         {
             try
             {
-                using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
+                using (var response = await Client.GetAsync($"p/beatmaplist?r={r}&page={page}"))
                 {
                     response.EnsureSuccessStatusCode();
 

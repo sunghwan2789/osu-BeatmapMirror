@@ -198,7 +198,7 @@ namespace Manager
             //}
 
             // 비로그인 유저는 내가 짬날 때 업로드
-            if (!Request.IsAuthorized)
+            if (!Request.IsAuthenticated)
             {
                 using (var query = DB.Command)
                 {
