@@ -26,13 +26,9 @@ namespace Utility
         public string Session => GetCookie(COOKIE_SESSION);
         public string UserNumber => GetCookie(COOKIE_USER_NUMBER);
         public string UserName => GetCookie(COOKIE_USER_NAME);
+        public bool IsAuthorized => !string.IsNullOrEmpty(UserName);
 
-        public static OsuLegacyClient Context { get; set; }
-
-        static OsuLegacyClient()
-        {
-            Context = new OsuLegacyClient();
-        }
+        public static OsuLegacyClient Context { get; } = new OsuLegacyClient();
 
         public OsuLegacyClient()
         {
@@ -89,8 +85,6 @@ namespace Utility
                 return IsAuthorized;
             }
         }
-
-        public bool IsAuthorized => !string.IsNullOrEmpty(UserName);
 
         public async Task LogoutAsync()
         {
