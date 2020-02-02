@@ -28,7 +28,7 @@ namespace Utility
         public string Session => GetCookie(COOKIE_SESSION);
         public string UserNumber => GetCookie(COOKIE_USER_NUMBER);
         public string UserName => GetCookie(COOKIE_USER_NAME);
-        public bool IsAuthenticated { get; private set; }
+        public bool IsAuthenticated => !string.IsNullOrEmpty(UserName);
 
         public static OsuLegacyClient Context { get; } = new OsuLegacyClient();
 
@@ -60,35 +60,33 @@ namespace Utility
             return CookieContainer.GetCookies(BaseAddress)[name]?.Value;
         }
 
-        public Task<bool> LoginAsync(string id, string pw)
+        public async Task<bool> LoginAsync(string id, string pw)
         {
-            return LoginAsync(new KeyValuePair<string, string>[]
+            var data = new KeyValuePair<string, string>[]
             {
                 new KeyValuePair<string, string>("login", "Login"),
                 new KeyValuePair<string, string>("username", id),
                 new KeyValuePair<string, string>("password", pw),
                 new KeyValuePair<string, string>("autologin", "on"),
-                new KeyValuePair<string, string>("redirect", "/p/beatmaplist"),
-            });
-        }
+                new KeyValuePair<string, string>("redirect", "/"),
+            };
 
-        public Task<bool> LoginAsync(string sid)
-        {
-            AddCookie(COOKIE_SESSION, sid);
-            return LoginAsync(new List<KeyValuePair<string, string>>());
-        }
-
-        private async Task<bool> LoginAsync(IEnumerable<KeyValuePair<string, string>> data)
-        {
             using (var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data)))
             {
                 response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                IsAuthenticated = CheckAuthenticated(content);
                 return IsAuthenticated;
             }
+        }
 
-            bool CheckAuthenticated(string content) => !content.Contains("incorrect password");
+        public async Task<bool> LoginAsync(string sid)
+        {
+            AddCookie(COOKIE_SESSION, sid);
+
+            using (var response = await Client.GetAsync(""))
+            {
+                response.EnsureSuccessStatusCode();
+                return IsAuthenticated;
+            }
         }
 
         public async Task LogoutAsync()
