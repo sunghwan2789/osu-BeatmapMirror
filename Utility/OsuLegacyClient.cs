@@ -15,6 +15,11 @@ namespace Utility
 {
     public class OsuLegacyClient
     {
+        public const string COOKIE_SESSION = "phpbb3_2cjk5_sid";
+        public const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
+        public const string COOKIE_USER_NAME = "last_login";
+
+
         private readonly CookieContainer CookieContainer;
         private readonly CloudFlareHandler Handler;
         private readonly HttpClient Client;
@@ -53,17 +58,7 @@ namespace Utility
             return CookieContainer.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
         }
 
-        private bool LoginValidate(HttpResponseMessage response)
-        {
-            if (!response.Headers.TryGetValues("Set-Cookie", out var cookies))
-            {
-                return false;
-            }
-
-            return cookies.Any(cookie => cookie.Contains("last_login"));
-        }
-
-        public async Task<string> LoginAsync(string id, string pw)
+        public async Task<bool> LoginAsync(string id, string pw)
         {
             using (var response = await Client.PostAsync("https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
             {
@@ -71,29 +66,32 @@ namespace Utility
                 new KeyValuePair<string, string>("username", id),
                 new KeyValuePair<string, string>("password", pw),
                 new KeyValuePair<string, string>("autologin", "on"),
+                new KeyValuePair<string, string>("redirect", "/p/beatmaplist"),
             })))
             {
                 response.EnsureSuccessStatusCode();
-                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+                return IsAuthorized;
             }
         }
 
-        public async Task<string> LoginAsync(string sid)
+        public async Task<bool> LoginAsync(string sid)
         {
-            AddCookie(Settings.SessionKey, sid);
+            AddCookie(COOKIE_SESSION, sid);
 
             using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
             {
             })))
             {
                 response.EnsureSuccessStatusCode();
-                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+                return IsAuthorized;
             }
         }
 
+        public bool IsAuthorized => !string.IsNullOrEmpty(GetCookie(COOKIE_USER_NAME));
+
         public async Task LogoutAsync()
         {
-            var session = GetCookie(Settings.SessionKey);
+            var session = GetCookie(COOKIE_SESSION);
             using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}"))
             {
                 response.EnsureSuccessStatusCode();

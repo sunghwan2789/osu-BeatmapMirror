@@ -128,9 +128,9 @@ namespace Manager
             {
                 Send("login", new Dictionary<string, string>
                 {
-                    { "id", Request.GetCookie("phpbb3_2cjk5_u") },
-                    { "name", Request.GetCookie("last_login") },
-                    { "sid", Request.GetCookie(Settings.SessionKey) },
+                    { "id", Request.GetCookie(OsuLegacyClient.COOKIE_USER_NUMBER) },
+                    { "name", Request.GetCookie(OsuLegacyClient.COOKIE_USER_NAME) },
+                    { "sid", Request.GetCookie(OsuLegacyClient.COOKIE_SESSION) },
                 });
             }
         }
@@ -198,7 +198,7 @@ namespace Manager
             //}
 
             // 비로그인 유저는 내가 짬날 때 업로드
-            if (Request.GetCookie(Settings.SessionKey) == null)
+            if (!Request.IsAuthorized)
             {
                 using (var query = DB.Command)
                 {
