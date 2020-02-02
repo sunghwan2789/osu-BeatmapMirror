@@ -99,15 +99,6 @@ namespace Utility
             }
         }
 
-        private bool ValidateOsz(string path)
-        {
-            using (var fs = File.OpenRead(path))
-            using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
-            {
-                return true;
-            }
-        }
-
         /// <summary>
         /// osu!에서 비트맵셋을 내려받고 올바른 파일인지 확인합니다.
         /// </summary>
@@ -117,19 +108,19 @@ namespace Utility
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public async Task<string> DownloadAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadBeatmapsetAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
         {
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             if (skipDownload)
             {
-                if (File.Exists(path) && ValidateOsz(path))
+                if (File.Exists(path) && Verify())
                 {
                     return path;
                 }
 
                 path = path.Remove(path.LastIndexOf(".download"));
-                if (ValidateOsz(path))
+                if (Verify())
                 {
                     return path;
                 }
@@ -155,7 +146,16 @@ namespace Utility
                     onprogress?.Report((received, total));
                 }
             }
-            return await DownloadAsync(id, onprogress, true);
+            return await DownloadBeatmapsetAsync(id, onprogress, true);
+            
+            bool Verify()
+            {
+                using (var fs = File.OpenRead(path))
+                using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
+                {
+                    return true;
+                }
+            }
         }
 
         public async Task<JArray> GetBeatmapsAPIAsync(string query)

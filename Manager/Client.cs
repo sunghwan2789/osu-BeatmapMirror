@@ -217,7 +217,7 @@ namespace Manager
             try
             {
                 var pushed = DateTime.Now;
-                await Request.DownloadAsync(id, new Progress<(int received, long total)>(tuple =>
+                await Request.DownloadBeatmapsetAsync(id, new Progress<(int received, long total)>(tuple =>
                 {
                     var (received, total) = tuple;
                     if (received == 0)

@@ -312,7 +312,7 @@ namespace Bot
         {
             try
             {
-                var path = await OsuLegacyClient.Context.DownloadAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
+                var path = await OsuLegacyClient.Context.DownloadBeatmapsetAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
                 Log.Write(set.SetId + " DOWNLOADED");
 
                 var local = Requests.GetSetFromLocal(set.SetId, path);
