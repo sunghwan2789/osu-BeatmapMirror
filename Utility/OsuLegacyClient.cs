@@ -19,8 +19,7 @@ namespace Utility
         private const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
         private const string COOKIE_USER_NAME = "last_login";
 
-        private Uri BaseAddress => new Uri("https://osu.ppy.sh/");
-        private TimeSpan Timeout => TimeSpan.FromMilliseconds(Settings.ResponseTimeout);
+        private static Uri BaseAddress => new Uri("https://osu.ppy.sh/");
 
         private CookieContainer CookieContainer { get; }
         private CloudFlareHandler Handler { get; }
@@ -46,7 +45,7 @@ namespace Utility
             Client = new HttpClient(Handler)
             {
                 BaseAddress = BaseAddress,
-                Timeout = Timeout,
+                Timeout = Settings.ResponseTimeout,
             };
             Client.DefaultRequestHeaders.Add("Referer", BaseAddress.AbsoluteUri);
         }
