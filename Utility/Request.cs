@@ -15,9 +15,9 @@ namespace Utility
 {
     public class Request
     {
-        public HttpClient Client;
-        public CookieContainer Cookie;
-        public CloudFlareHandler Handler;
+        private readonly CookieContainer CookieContainer;
+        private readonly CloudFlareHandler Handler;
+        private readonly HttpClient Client;
 
         public static Request Context { get; set; }
 
@@ -28,12 +28,12 @@ namespace Utility
 
         public Request()
         {
-            Cookie = new CookieContainer();
-            Cookie.Add(new Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
+            CookieContainer = new CookieContainer();
+            AddCookie("osu_site_v", "old");
 
             Handler = new CloudFlareHandler(new HttpClientHandler
             {
-                CookieContainer = Cookie,
+                CookieContainer = CookieContainer,
             });
 
             Client = new HttpClient(Handler)
@@ -44,12 +44,12 @@ namespace Utility
 
         public void AddCookie(string name, string content)
         {
-            Cookie.Add(new Cookie(name, content, "/", "osu.ppy.sh"));
+            CookieContainer.Add(new Cookie(name, content, "/", "osu.ppy.sh"));
         }
 
         public string GetCookie(string name)
         {
-            return Cookie.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
+            return CookieContainer.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
         }
 
         private bool LoginValidate(HttpResponseMessage response)
