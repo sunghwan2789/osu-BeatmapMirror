@@ -38,7 +38,7 @@ namespace Utility
 
             var sessionCookies = SessionCookies.FromCookieContainer(HttpClientHandler.CookieContainer, request.RequestUri);
 
-            if (!oldSessionCookies.Equals(sessionCookies))
+            if (sessionCookies.Valid && !oldSessionCookies.Equals(sessionCookies))
             {
                 Settings.CFSession = sessionCookies.AsCookieCollection();
             }
