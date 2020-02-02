@@ -1,115 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A1A18C3A-42F1-451E-891D-17712761538B}</ProjectGuid>
+    <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Manager</RootNamespace>
-    <AssemblyName>Manager</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="Server.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Server.Designer.cs">
-      <DependentUpon>Server.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="MySql.Data" Version="8.0.15" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\Bot\Bot.csproj" />
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Catch\osu.Game.Rulesets.Catch.csproj" />
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Mania\osu.Game.Rulesets.Mania.csproj" />
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj" />
+    <ProjectReference Include="..\osu\osu.Game.Rulesets.Taiko\osu.Game.Rulesets.Taiko.csproj" />
+    <ProjectReference Include="..\osu\osu.Game\osu.Game.csproj" />
+    <ProjectReference Include="..\Summary\Summary.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Bot\Bot.csproj">
-      <Project>{20416ee6-0971-4c24-910e-2c2eb251ac45}</Project>
-      <Name>Bot</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\osu\osu.Game.Rulesets.Catch\osu.Game.Rulesets.Catch.csproj">
-      <Project>{58f6c80c-1253-4a0e-a465-b8c85ebeadf3}</Project>
-      <Name>osu.Game.Rulesets.Catch</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\osu\osu.Game.Rulesets.Mania\osu.Game.Rulesets.Mania.csproj">
-      <Project>{48f4582b-7687-4621-9cbe-5c24197cb536}</Project>
-      <Name>osu.Game.Rulesets.Mania</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\osu\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj">
-      <Project>{435f8614-f6fd-4f8e-900f-f568904b932e}</Project>
-      <Name>osu.Game.Rulesets.Osu</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\osu\osu.Game.Rulesets.Taiko\osu.Game.Rulesets.Taiko.csproj">
-      <Project>{a6710d1f-8ca3-4b69-b073-f516b75c6362}</Project>
-      <Name>osu.Game.Rulesets.Taiko</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\osu\osu.Game\osu.Game.csproj">
-      <Project>{88ee1919-3b42-4bbb-99c8-c41a5662984b}</Project>
-      <Name>osu.Game</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Summary\Summary.csproj">
-      <Project>{6b90463b-e103-409b-9b8e-89e5f559c6f4}</Project>
-      <Name>Summary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utility\Utility.csproj">
-      <Project>{10addfa9-4c3d-4046-8b50-af5edd49fa73}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MySql.Data">
-      <Version>8.0.15</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
