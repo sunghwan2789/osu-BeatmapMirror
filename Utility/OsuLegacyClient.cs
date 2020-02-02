@@ -13,20 +13,20 @@ using System.Threading.Tasks;
 
 namespace Utility
 {
-    public class Request
+    public class OsuLegacyClient
     {
         private readonly CookieContainer CookieContainer;
         private readonly CloudFlareHandler Handler;
         private readonly HttpClient Client;
 
-        public static Request Context { get; set; }
+        public static OsuLegacyClient Context { get; set; }
 
-        static Request()
+        static OsuLegacyClient()
         {
-            Context = new Request();
+            Context = new OsuLegacyClient();
         }
 
-        public Request()
+        public OsuLegacyClient()
         {
             CookieContainer = new CookieContainer();
             AddCookie("osu_site_v", "old");
@@ -40,6 +40,7 @@ namespace Utility
             {
                 Timeout = TimeSpan.FromSeconds(Settings.ResponseTimeout),
             };
+            Client.DefaultRequestHeaders.Add("Referer", "https://osu.ppy.sh/");
         }
 
         public void AddCookie(string name, string content)
@@ -64,18 +65,13 @@ namespace Utility
 
         public async Task<string> LoginAsync(string id, string pw)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, $"https://osu.ppy.sh/forum/ucp.php?mode=login")
+            using (var response = await Client.PostAsync("https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
             {
-                Content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-                {
-                    new KeyValuePair<string, string>("login", "Login"),
-                    new KeyValuePair<string, string>("username", id),
-                    new KeyValuePair<string, string>("password", pw),
-                    new KeyValuePair<string, string>("autologin", "on"),
-                }),
-            };
-            request.Headers.Referrer = new Uri("https://osu.ppy.sh/");
-            using (var response = await Client.SendAsync(request))
+                new KeyValuePair<string, string>("login", "Login"),
+                new KeyValuePair<string, string>("username", id),
+                new KeyValuePair<string, string>("password", pw),
+                new KeyValuePair<string, string>("autologin", "on"),
+            })))
             {
                 response.EnsureSuccessStatusCode();
                 return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;

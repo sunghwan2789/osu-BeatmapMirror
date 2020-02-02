@@ -24,8 +24,8 @@ namespace Bot
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
-                await Request.Context.LoginAsync(Settings.OsuId, Settings.OsuPw) :
-                await Request.Context.LoginAsync(Settings.Session);
+                await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw) :
+                await OsuLegacyClient.Context.LoginAsync(Settings.Session);
             if (Settings.Session == null)
             {
                 Console.WriteLine("login failed");
@@ -240,7 +240,7 @@ namespace Bot
                 var page = 1;
                 do
                 {
-                    var ids = await Request.Context.GrabSetIDFromBeatmapListAsync(r, page);
+                    var ids = await OsuLegacyClient.Context.GrabSetIDFromBeatmapListAsync(r, page);
                     if (!ids.Any())
                     {
                         break;
@@ -312,7 +312,7 @@ namespace Bot
         {
             try
             {
-                var path = await Request.Context.DownloadAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
+                var path = await OsuLegacyClient.Context.DownloadAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
                 Log.Write(set.SetId + " DOWNLOADED");
 
                 var local = Requests.GetSetFromLocal(set.SetId, path);

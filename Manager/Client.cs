@@ -21,13 +21,13 @@ namespace Manager
     {
         private WebSocket Socket;
         private int Id;
-        private Request Request;
+        private OsuLegacyClient Request;
 
         public Client(WebSocket socket)
         {
             Socket = socket;
             Id = Socket.GetHashCode();
-            Request = new Request();
+            Request = new OsuLegacyClient();
         }
 
         public async Task Listen()
