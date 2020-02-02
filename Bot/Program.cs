@@ -23,15 +23,15 @@ namespace Bot
         {
             System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            Settings.Session = string.IsNullOrEmpty(Settings.Session) ?
-                await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw) :
-                await OsuLegacyClient.Context.LoginAsync(Settings.Session);
-            if (Settings.Session == null)
+            if (string.IsNullOrEmpty(Settings.Session)
+                ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw)
+                : await OsuLegacyClient.Context.LoginAsync(Settings.Session))
             {
                 Console.WriteLine("login failed");
                 await Main(args);
                 return;
             }
+            Settings.Session = OsuLegacyClient.Context.Session;
 
             if (args.Length > 0)
             {

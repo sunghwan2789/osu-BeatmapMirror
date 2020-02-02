@@ -15,14 +15,17 @@ namespace Utility
 {
     public class OsuLegacyClient
     {
-        public const string COOKIE_SESSION = "phpbb3_2cjk5_sid";
-        public const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
-        public const string COOKIE_USER_NAME = "last_login";
-
+        private const string COOKIE_SESSION = "phpbb3_2cjk5_sid";
+        private const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
+        private const string COOKIE_USER_NAME = "last_login";
 
         private readonly CookieContainer CookieContainer;
         private readonly CloudFlareHandler Handler;
         private readonly HttpClient Client;
+
+        public string Session => GetCookie(COOKIE_SESSION);
+        public string UserNumber => GetCookie(COOKIE_USER_NUMBER);
+        public string UserName => GetCookie(COOKIE_USER_NAME);
 
         public static OsuLegacyClient Context { get; set; }
 
@@ -87,12 +90,11 @@ namespace Utility
             }
         }
 
-        public bool IsAuthorized => !string.IsNullOrEmpty(GetCookie(COOKIE_USER_NAME));
+        public bool IsAuthorized => !string.IsNullOrEmpty(UserName);
 
         public async Task LogoutAsync()
         {
-            var session = GetCookie(COOKIE_SESSION);
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}"))
+            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={Session}"))
             {
                 response.EnsureSuccessStatusCode();
             }

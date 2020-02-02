@@ -115,22 +115,22 @@ namespace Manager
             await LoginAsync(Request.LoginAsync(sid));
         }
 
-        private async Task LoginAsync(Task<string> loginTask)
+        private async Task LoginAsync(Task<bool> loginTask)
         {
-            if (await loginTask == null)
+            if (await loginTask)
             {
                 Send("login", new Dictionary<string, string>
                 {
-                    { "error", "true" }
+                    { "id", Request.UserNumber },
+                    { "name", Request.UserName },
+                    { "sid", Request.Session },
                 });
             }
             else
             {
                 Send("login", new Dictionary<string, string>
                 {
-                    { "id", Request.GetCookie(OsuLegacyClient.COOKIE_USER_NUMBER) },
-                    { "name", Request.GetCookie(OsuLegacyClient.COOKIE_USER_NAME) },
-                    { "sid", Request.GetCookie(OsuLegacyClient.COOKIE_SESSION) },
+                    { "error", "true" }
                 });
             }
         }
