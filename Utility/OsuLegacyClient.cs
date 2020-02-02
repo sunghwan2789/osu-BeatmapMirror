@@ -13,98 +13,87 @@ using System.Threading.Tasks;
 
 namespace Utility
 {
-    public class Request
+    public class OsuLegacyClient
     {
-        public HttpClient Client;
-        public CookieContainer Cookie;
-        public CloudFlareHandler Handler;
+        private const string COOKIE_SESSION = "phpbb3_2cjk5_sid";
+        private const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
+        private const string COOKIE_USER_NAME = "last_login";
 
-        public static Request Context { get; set; }
+        private static Uri BaseAddress => new Uri("https://osu.ppy.sh/");
 
-        static Request()
+        private CookieContainer CookieContainer { get; }
+        private CloudFlareHandler Handler { get; }
+        private HttpClient Client { get; }
+
+        public string Session => GetCookie(COOKIE_SESSION);
+        public string UserNumber => GetCookie(COOKIE_USER_NUMBER);
+        public string UserName => GetCookie(COOKIE_USER_NAME);
+        public bool IsAuthenticated => !string.IsNullOrEmpty(UserName);
+
+        public static OsuLegacyClient Context { get; } = new OsuLegacyClient();
+
+        public OsuLegacyClient()
         {
-            Context = new Request();
-        }
-
-        public Request()
-        {
-            Cookie = new CookieContainer();
-            Cookie.Add(new Cookie("osu_site_v", "old", "/", "osu.ppy.sh"));
+            CookieContainer = new CookieContainer();
+            AddCookie("osu_site_v", "old");
 
             Handler = new CloudFlareHandler(new HttpClientHandler
             {
-                CookieContainer = Cookie,
+                CookieContainer = CookieContainer,
             });
 
             Client = new HttpClient(Handler)
             {
-                Timeout = TimeSpan.FromSeconds(Settings.ResponseTimeout),
+                BaseAddress = BaseAddress,
+                Timeout = Settings.ResponseTimeout,
             };
+            Client.DefaultRequestHeaders.Add("Referer", BaseAddress.AbsoluteUri);
         }
 
         public void AddCookie(string name, string content)
         {
-            Cookie.Add(new Cookie(name, content, "/", "osu.ppy.sh"));
+            CookieContainer.Add(new Cookie(name, content, "/", BaseAddress.Host));
         }
 
         public string GetCookie(string name)
         {
-            return Cookie.GetCookies(new Uri("https://osu.ppy.sh"))[name]?.Value;
+            return CookieContainer.GetCookies(BaseAddress)[name]?.Value;
         }
 
-        private bool LoginValidate(HttpResponseMessage response)
+        public async Task<bool> LoginAsync(string id, string pw)
         {
-            if (!response.Headers.TryGetValues("Set-Cookie", out var cookies))
-            {
-                return false;
-            }
-
-            return cookies.Any(cookie => cookie.Contains("last_login"));
-        }
-
-        public async Task<string> LoginAsync(string id, string pw)
-        {
-            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            var data = new KeyValuePair<string, string>[]
             {
                 new KeyValuePair<string, string>("login", "Login"),
                 new KeyValuePair<string, string>("username", id),
                 new KeyValuePair<string, string>("password", pw),
                 new KeyValuePair<string, string>("autologin", "on"),
-            })))
+                new KeyValuePair<string, string>("redirect", "/"),
+            };
+
+            using (var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data)))
             {
                 response.EnsureSuccessStatusCode();
-                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+                return IsAuthenticated;
             }
         }
 
-        public async Task<string> LoginAsync(string sid)
+        public async Task<bool> LoginAsync(string sid)
         {
-            AddCookie(Settings.SessionKey, sid);
+            AddCookie(COOKIE_SESSION, sid);
 
-            using (var response = await Client.PostAsync($"https://osu.ppy.sh/forum/ucp.php?mode=login", new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-            {
-            })))
+            using (var response = await Client.GetAsync(""))
             {
                 response.EnsureSuccessStatusCode();
-                return LoginValidate(response) ? GetCookie(Settings.SessionKey) : null;
+                return IsAuthenticated;
             }
         }
 
         public async Task LogoutAsync()
         {
-            var session = GetCookie(Settings.SessionKey);
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/forum/ucp.php?mode=logout&sid={session}"))
+            using (var response = await Client.GetAsync($"forum/ucp.php?mode=logout&sid={Session}"))
             {
                 response.EnsureSuccessStatusCode();
-            }
-        }
-
-        private bool ValidateOsz(string path)
-        {
-            using (var fs = File.OpenRead(path))
-            using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
-            {
-                return true;
             }
         }
 
@@ -117,19 +106,19 @@ namespace Utility
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public async Task<string> DownloadAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadBeatmapsetAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
         {
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
             if (skipDownload)
             {
-                if (File.Exists(path) && ValidateOsz(path))
+                if (File.Exists(path) && Verify())
                 {
                     return path;
                 }
 
                 path = path.Remove(path.LastIndexOf(".download"));
-                if (ValidateOsz(path))
+                if (Verify())
                 {
                     return path;
                 }
@@ -138,7 +127,7 @@ namespace Utility
             }
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var response = await Client.GetAsync($"https://osu.ppy.sh/d/{id}", HttpCompletionOption.ResponseHeadersRead))
+            using (var response = await Client.GetAsync($"d/{id}", HttpCompletionOption.ResponseHeadersRead))
             using (var data = await response.Content.ReadAsStreamAsync())
             {
                 response.EnsureSuccessStatusCode();
@@ -155,14 +144,23 @@ namespace Utility
                     onprogress?.Report((received, total));
                 }
             }
-            return await DownloadAsync(id, onprogress, true);
+            return await DownloadBeatmapsetAsync(id, onprogress, true);
+            
+            bool Verify()
+            {
+                using (var fs = File.OpenRead(path))
+                using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
+                {
+                    return true;
+                }
+            }
         }
 
         public async Task<JArray> GetBeatmapsAPIAsync(string query)
         {
             try
             {
-                using (var response = await Client.GetAsync($"https://osu.ppy.sh/api/get_beatmaps?k={Settings.APIKey}&{query}"))
+                using (var response = await Client.GetAsync($"api/get_beatmaps?k={Settings.APIKey}&{query}"))
                 {
                     response.EnsureSuccessStatusCode();
 
@@ -179,7 +177,7 @@ namespace Utility
         {
             try
             {
-                using (var response = await Client.GetAsync($"https://osu.ppy.sh/p/beatmaplist?r={r}&page={page}"))
+                using (var response = await Client.GetAsync($"p/beatmaplist?r={r}&page={page}"))
                 {
                     response.EnsureSuccessStatusCode();
 

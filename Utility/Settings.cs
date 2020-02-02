@@ -147,7 +147,7 @@ namespace Utility
         /// <summary>
         /// 인터넷 탐색시 응답 시간 제한
         /// </summary>
-        public static int ResponseTimeout
+        public static TimeSpan ResponseTimeout
         {
             get
             {
@@ -166,7 +166,7 @@ namespace Utility
                         _ResponseTimeout = 5 * 1000;
                     }
                 }
-                return _ResponseTimeout;
+                return TimeSpan.FromMilliseconds(_ResponseTimeout);
             }
         }
         public static int FavoriteMinimum
@@ -191,7 +191,7 @@ namespace Utility
                 return _FavoriteMinimum;
             }
         }
-        public static int SyncInterval
+        public static TimeSpan SyncInterval
         {
             get
             {
@@ -211,7 +211,7 @@ namespace Utility
                         _SyncInterval = 60 * 60 * 3 * 1000;
                     }
                 }
-                return _SyncInterval;
+                return TimeSpan.FromMilliseconds(_SyncInterval);
             }
         }
         public static IEnumerable<int> BeatmapList

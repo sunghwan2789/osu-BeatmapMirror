@@ -21,13 +21,13 @@ namespace Manager
     {
         private WebSocket Socket;
         private int Id;
-        private Request Request;
+        private OsuLegacyClient Request;
 
         public Client(WebSocket socket)
         {
             Socket = socket;
             Id = Socket.GetHashCode();
-            Request = new Request();
+            Request = new OsuLegacyClient();
         }
 
         public async Task Listen()
@@ -115,22 +115,22 @@ namespace Manager
             await LoginAsync(Request.LoginAsync(sid));
         }
 
-        private async Task LoginAsync(Task<string> loginTask)
+        private async Task LoginAsync(Task<bool> loginTask)
         {
-            if (await loginTask == null)
+            if (await loginTask)
             {
                 Send("login", new Dictionary<string, string>
                 {
-                    { "error", "true" }
+                    { "id", Request.UserNumber },
+                    { "name", Request.UserName },
+                    { "sid", Request.Session },
                 });
             }
             else
             {
                 Send("login", new Dictionary<string, string>
                 {
-                    { "id", Request.GetCookie("phpbb3_2cjk5_u") },
-                    { "name", Request.GetCookie("last_login") },
-                    { "sid", Request.GetCookie(Settings.SessionKey) },
+                    { "error", "true" }
                 });
             }
         }
@@ -198,7 +198,7 @@ namespace Manager
             //}
 
             // 비로그인 유저는 내가 짬날 때 업로드
-            if (Request.GetCookie(Settings.SessionKey) == null)
+            if (!Request.IsAuthenticated)
             {
                 using (var query = DB.Command)
                 {
@@ -217,7 +217,7 @@ namespace Manager
             try
             {
                 var pushed = DateTime.Now;
-                await Request.DownloadAsync(id, new Progress<(int received, long total)>(tuple =>
+                await Request.DownloadBeatmapsetAsync(id, new Progress<(int received, long total)>(tuple =>
                 {
                     var (received, total) = tuple;
                     if (received == 0)

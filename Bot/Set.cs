@@ -153,7 +153,7 @@ namespace Bot
             ? (RankedAt ?? UpdatedAt)
             : UpdatedAt;
 
-        public SyncOption SyncOption = SyncOption.Default;
+        public SyncOption SyncOption { get; set; }
 
         public string[] SearchableTerms => new[]
         {
