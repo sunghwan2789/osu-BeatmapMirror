@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Utility
 {
@@ -35,10 +33,10 @@ namespace Utility
             WritePrivateProfileString(section, key, value, Path);
         }
 
-
         private static string _Prefix = null;
         private static byte _TLSOnly = 2;
         private static string _Fallback = null;
+
         /// <summary>
         /// 이 서버에 접속하기 위해 사용할 주소
         /// </summary>
@@ -61,6 +59,7 @@ namespace Utility
                 return _Prefix;
             }
         }
+
         /// <summary>
         /// 안전한 연결만 허용할지를 정합니다.
         /// </summary>
@@ -86,6 +85,7 @@ namespace Utility
                 return _TLSOnly == 1;
             }
         }
+
         /// <summary>
         /// 비정상적인 접속시 안내할 페이지 주소
         /// </summary>
@@ -112,13 +112,13 @@ namespace Utility
             }
         }
 
-
         private static string _Storage = null;
         private static string _LogPath = null;
         private static int _ResponseTimeout = -1;
         private static int _FavoriteMinimum = -1;
         private static int _SyncInterval = -1;
         private static IEnumerable<int> _BeatmapList = null;
+
         /// <summary>
         /// 비트맵셋 파일 저장소
         /// </summary>
@@ -133,6 +133,7 @@ namespace Utility
                 return _Storage;
             }
         }
+
         public static string LogPath
         {
             get
@@ -144,6 +145,7 @@ namespace Utility
                 return _LogPath;
             }
         }
+
         /// <summary>
         /// 인터넷 탐색시 응답 시간 제한
         /// </summary>
@@ -169,6 +171,7 @@ namespace Utility
                 return TimeSpan.FromMilliseconds(_ResponseTimeout);
             }
         }
+
         public static int FavoriteMinimum
         {
             get
@@ -191,6 +194,7 @@ namespace Utility
                 return _FavoriteMinimum;
             }
         }
+
         public static TimeSpan SyncInterval
         {
             get
@@ -214,6 +218,7 @@ namespace Utility
                 return TimeSpan.FromMilliseconds(_SyncInterval);
             }
         }
+
         public static IEnumerable<int> BeatmapList
         {
             get
@@ -226,11 +231,11 @@ namespace Utility
             }
         }
 
-
         private static string _SessionKey = null;
         private static string _SessionExpression = null;
         private static string _CreatorExpression = null;
         private static string _SetIdExpression = "";
+
         /// <summary>
         /// osu! 세션 쿠키의 이름
         /// </summary>
@@ -245,6 +250,7 @@ namespace Utility
                 return _SessionKey;
             }
         }
+
         /// <summary>
         /// osu! 세션의 정보를 긁는 정규식
         /// </summary>
@@ -259,6 +265,7 @@ namespace Utility
                 return _SessionExpression;
             }
         }
+
         /// <summary>
         /// osu! 비트맵 페이지에서 맵퍼 정보를 긁는 정규식
         /// </summary>
@@ -273,6 +280,7 @@ namespace Utility
                 return _CreatorExpression;
             }
         }
+
         /// <summary>
         /// osu! 비트맵 목록 페이지에서 맵셋 ID를 긁는 정규식
         /// </summary>
@@ -288,13 +296,13 @@ namespace Utility
             }
         }
 
-
         private static string _Session = null;
         private static string _OsuId = null;
         private static string _OsuPw = null;
         private static string _APIKey = null;
         private static DateTime _LastCheckTime = DateTime.MinValue;
         private static DateTime _LastSummaryTime = DateTime.MinValue;
+
         /// <summary>
         /// 동기화 봇이 사용하는 세션 값
         /// </summary>
@@ -314,6 +322,7 @@ namespace Utility
                 Set("KEY", "Session", value);
             }
         }
+
         public static string OsuId
         {
             get
@@ -325,6 +334,7 @@ namespace Utility
                 return _OsuId;
             }
         }
+
         public static string OsuPw
         {
             get
@@ -336,6 +346,7 @@ namespace Utility
                 return _OsuPw;
             }
         }
+
         public static string APIKey
         {
             get
@@ -347,6 +358,7 @@ namespace Utility
                 return _APIKey;
             }
         }
+
         public static DateTime LastCheckTime
         {
             get
@@ -374,6 +386,7 @@ namespace Utility
                 Set("KEY", "LastCheckTime", value.ToString("s"));
             }
         }
+
         public static DateTime LastSummaryTime
         {
             get
@@ -420,7 +433,7 @@ namespace Utility
                         cookies = new BinaryFormatter().Deserialize(fs) as CookieCollection;
                     }
                 }
-                catch {}
+                catch { }
                 return cookies ?? new CookieCollection();
             }
             set

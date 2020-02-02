@@ -1,22 +1,8 @@
-﻿using System;
+﻿using osu.Game.Beatmaps;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Utility;
-using osu.Game.Beatmaps.Formats;
-using osu.Game.Database;
-using osu.Game.Beatmaps;
-using osu.Game.Rulesets;
-using System.Reflection;
-using osu.Framework.Extensions;
 
 namespace Bot
 {
@@ -25,6 +11,7 @@ namespace Bot
         public int SetId { get; set; }
 
         private int? statusId = null;
+
         /// <summary>
         /// 맵셋의 랭크 상태를 나타냅니다.
         /// <list type="number">
@@ -77,6 +64,7 @@ namespace Bot
 
         //public string Title => Encoding.ASCII.GetString(Encoding.UTF8.GetBytes(Metadata.Title));
         private string title = null;
+
         public string Title
         {
             get
@@ -88,6 +76,7 @@ namespace Bot
                 title = value;
             }
         }
+
         public string TitleUnicode
         {
             get
@@ -101,7 +90,9 @@ namespace Bot
                 return string.IsNullOrEmpty(unicode) || Title.Equals(unicode) ? null : unicode;
             }
         }
+
         private string artist = null;
+
         public string Artist
         {
             get
@@ -113,6 +104,7 @@ namespace Bot
                 artist = value;
             }
         }
+
         public string ArtistUnicode
         {
             get
@@ -126,7 +118,9 @@ namespace Bot
                 return string.IsNullOrEmpty(unicode) || Artist.Equals(unicode) ? null : unicode;
             }
         }
+
         private string creator = null;
+
         public string Creator
         {
             get
@@ -138,6 +132,7 @@ namespace Bot
                 creator = value;
             }
         }
+
         public int CreatorId { get; set; }
 
         public int GenreId { get; set; }
@@ -149,6 +144,7 @@ namespace Bot
 
         public DateTime? RankedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
         public DateTime InfoChangedAt => (RankedAt ?? UpdatedAt) > UpdatedAt
             ? (RankedAt ?? UpdatedAt)
             : UpdatedAt;
@@ -177,14 +173,9 @@ namespace Bot
 
         public List<Bot.Beatmap> Beatmaps = new List<Beatmap>();
 
-
         public override string ToString()
         {
             return Regex.Replace(string.Join(" ", SearchableTerms), @"\s+", " ").ToUpper();
         }
-
-
-
-
     }
 }

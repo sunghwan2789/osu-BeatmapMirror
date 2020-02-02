@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Utility;
 
@@ -61,13 +54,14 @@ namespace Manager
                     Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
                     Log.Write("BEATMAP SYNC PROCESS ===========");
                 }
-                catch {}
+                catch { }
                 scheduler.Wait();
                 scheduler.Dispose();
             }
         }
 
         private HttpListener Listener;
+
         private async void Listen()
         {
             while (Listener.IsListening)

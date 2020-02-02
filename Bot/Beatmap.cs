@@ -1,15 +1,11 @@
-﻿using osu.Game.Beatmaps.ControlPoints;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Bot
 {
-    class Beatmap : osu.Game.Beatmaps.Beatmap
+    internal class Beatmap : osu.Game.Beatmaps.Beatmap
     {
         private int statudId = 0;
+
         public int StatusId
         {
             get
@@ -22,7 +18,9 @@ namespace Bot
             }
         }
 
-        public Beatmap() { }
+        public Beatmap()
+        {
+        }
 
         public Beatmap(osu.Game.Beatmaps.Beatmap original)
         {

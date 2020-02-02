@@ -5,19 +5,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Utility;
 
 namespace Manager
 {
-    class Client
+    internal class Client
     {
         private WebSocket Socket;
         private int Id;

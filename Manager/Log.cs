@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utility;
 
 namespace Manager
 {
-    class Log
+    internal class Log
     {
         private static readonly StreamWriter Writer = new StreamWriter(Settings.LogPath, true);
         private static readonly object Locker = new object();

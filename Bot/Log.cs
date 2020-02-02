@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Bot
 {
-    class Log
+    internal class Log
     {
         public static StreamWriter Writer = new StreamWriter(Console.OpenStandardOutput(), Encoding.Default);
         private static readonly object Locker = new object();

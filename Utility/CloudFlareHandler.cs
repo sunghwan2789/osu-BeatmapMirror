@@ -1,11 +1,6 @@
 ﻿using CloudflareSolverRe;
 using CloudflareSolverRe.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,7 +21,9 @@ namespace Utility
             }
         }
 
-        public CloudFlareHandler() : this(new HttpClientHandler()) { }
+        public CloudFlareHandler() : this(new HttpClientHandler())
+        {
+        }
 
         public CloudFlareHandler(HttpMessageHandler innerHandler) : base(new ClearanceHandler(innerHandler, Settings.UserAgent))
         {

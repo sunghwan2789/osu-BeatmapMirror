@@ -1,21 +1,16 @@
 ﻿using Newtonsoft.Json.Linq;
 using osu.Framework.Extensions;
 using osu.Game.Beatmaps;
-using osu.Game.Beatmaps.Formats;
-using osu.Game.Rulesets;
 using osu.Game.Rulesets.Objects.Types;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Utility;
 
 namespace Bot
 {
-    class Requests
+    internal class Requests
     {
         /// <summary>
         /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름, 갱신 날짜)를 가져옴.
@@ -131,8 +126,8 @@ namespace Bot
                         beatmap.hash_sha2, set.rankedAt, set.genreId,
                         set.languageId, beatmap.star, beatmap.author,
                         set.title, set.artist, beatmap.status, set.creatorId
-                    FROM gosu_beatmaps beatmap 
-                    LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId 
+                    FROM gosu_beatmaps beatmap
+                    LEFT JOIN gosu_sets `set` ON set.id = beatmap.setId
                     WHERE beatmap.setId = @s";
                 query.Parameters.AddWithValue("@s", id);
                 using (var result = query.ExecuteReader())
@@ -150,7 +145,7 @@ namespace Bot
                                 Creator = result.GetString(1),
                                 CreatorId = result.GetInt32(15),
                                 StatusId = result.GetInt32(0),
-                                RankedAt = result.IsDBNull(7) ? (DateTime?) null : result.GetDateTime(7),
+                                RankedAt = result.IsDBNull(7) ? (DateTime?)null : result.GetDateTime(7),
                                 UpdatedAt = result.GetDateTime(4),
                                 GenreId = result.GetInt32(8),
                                 LanguageId = result.GetInt32(9)
@@ -184,7 +179,6 @@ namespace Bot
             }
             return set;
         }
-
 
         /// <summary>
         /// 내려받은 맵셋 파일을 통해 자세한 정보를 가져옴

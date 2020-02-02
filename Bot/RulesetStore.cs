@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bot
 {
-    class RulesetStore
+    internal class RulesetStore
     {
         private static readonly Dictionary<Assembly, Type> loaded_assemblies = new Dictionary<Assembly, Type>();
 
@@ -49,7 +47,7 @@ namespace Bot
 
         private static void AddMissingRulesets()
         {
-            var instances = loaded_assemblies.Values.Select(r => (Ruleset) Activator.CreateInstance(r, (RulesetInfo) null)).ToList();
+            var instances = loaded_assemblies.Values.Select(r => (Ruleset)Activator.CreateInstance(r, (RulesetInfo)null)).ToList();
 
             var ctxRulesetInfo = new List<RulesetInfo>();
 
@@ -64,7 +62,6 @@ namespace Bot
             foreach (var r in instances.Where(r => r.LegacyID < 0))
                 if (ctxRulesetInfo.FirstOrDefault(ri => ri.InstantiationInfo == r.RulesetInfo.InstantiationInfo) == null)
                     ctxRulesetInfo.Add(r.RulesetInfo);
-
 
             //perform a consistency check
             foreach (var r in ctxRulesetInfo)

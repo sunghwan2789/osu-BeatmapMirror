@@ -1,21 +1,17 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utility;
 using System.IO;
-using System.Net;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using MySql.Data.MySqlClient;
-using System.Diagnostics;
-using System.Net.Http;
+using System.Threading.Tasks;
+using Utility;
 
 namespace Bot
 {
-    static class Program
+    internal static class Program
     {
         private static List<string> faults = new List<string>();
 
@@ -294,7 +290,7 @@ namespace Bot
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception ex = (Exception) e.ExceptionObject;
+            Exception ex = (Exception)e.ExceptionObject;
             Log.Level = 3;
             Log.Write(Console.Title);
             Log.Write(ex.GetBaseException().ToString());
