@@ -42,7 +42,7 @@ docker-compose up -d --build
 ### See
 
 ```
-docker-compose exec db mysql -uroot -e "SELECT * FROM gosu_beatmapsets;"
+docker-compose exec db mysql -uroot -Dobm -e "SELECT * FROM gosu_beatmapsets;"
 type storage\logs\obm.log
 dir storage\beatmapsets
 ```
