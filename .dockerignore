@@ -1,0 +1,6 @@
+.vs*
+.git*
+*/*/bin
+*/*/obj
+docker*
+storage

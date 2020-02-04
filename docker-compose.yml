@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  db:
+    build: ./docker/db
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: obm
+    expose:
+      - "3306"
+    volumes:
+      - dbdata:C:/ProgramData/MySQL/data
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./storage/configs:C:/configs
+      - ./storage/beatmapsets:C:/beatmapsets
+      - ./storage/logs:C:/logs
+
+volumes:
+  dbdata:
