@@ -10,6 +10,7 @@ Currently, **osu! Beatmap Mirror** needs latest version of Windows.
 
 ```
 git clone --recurse-submodule git@github.com:sunghwan2789/osu-BeatmapMirror.git
+cd osu-BeatmapMirror
 ```
 
 ### Configure
