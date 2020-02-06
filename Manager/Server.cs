@@ -36,37 +36,38 @@ namespace Manager
                 listener.Prefixes.Add(prefix);
             }
 
-            stoppingToken.Register(() => listener?.Stop());
-
             Logger.LogInformation("Start listening.");
             listener.Start();
             try
             {
-                while (listener.IsListening && !stoppingToken.IsCancellationRequested)
+                using (stoppingToken.Register(() => listener.Stop()))
                 {
-                    var context = await listener.GetContextAsync();
-                    if (!context.Request.IsWebSocketRequest ||
-                        (Settings.TLSOnly && !context.Request.IsSecureConnection))
+                    while (listener.IsListening && !stoppingToken.IsCancellationRequested)
                     {
-                        if (string.IsNullOrEmpty(Settings.Fallback))
+                        var context = await listener.GetContextAsync();
+                        if (!context.Request.IsWebSocketRequest ||
+                            (Settings.TLSOnly && !context.Request.IsSecureConnection))
                         {
-                            context.Response.StatusCode = 400;
+                            if (string.IsNullOrEmpty(Settings.Fallback))
+                            {
+                                context.Response.StatusCode = 400;
+                            }
+                            else
+                            {
+                                context.Response.Redirect(Settings.Fallback);
+                            }
+                            context.Response.Close();
+                            continue;
                         }
-                        else
-                        {
-                            context.Response.Redirect(Settings.Fallback);
-                        }
-                        context.Response.Close();
-                        continue;
-                    }
 
-                    try
-                    {
-                        var wsContext = await context.AcceptWebSocketAsync(null);
-                        //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
-                        new Client(wsContext.WebSocket).Listen();
+                        try
+                        {
+                            var wsContext = await context.AcceptWebSocketAsync(null);
+                            //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
+                            new Client(wsContext.WebSocket).Listen();
+                        }
+                        catch { }
                     }
-                    catch { }
                 }
             }
             catch (OperationCanceledException) { }
@@ -78,7 +79,6 @@ namespace Manager
             {
                 Logger.LogInformation("Stopping listening.");
                 listener.Close();
-                listener = null;
                 ApplicationLifetime.StopApplication();
             }
         }
