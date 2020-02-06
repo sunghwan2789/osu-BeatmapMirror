@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -10,57 +12,74 @@ using Utility;
 
 namespace Manager
 {
-    internal class Server : IHostedService
+    internal class Server : BackgroundService
     {
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Server(IHostApplicationLifetime applicationLifetime, ILogger<Server> logger)
         {
-            Listener = new HttpListener();
-            Listener.Prefixes.Add("http://" + Settings.Prefix);
-            Listener.Prefixes.Add("https://" + Settings.Prefix);
-            Listener.Start();
-
-            Listen();
-            return Task.CompletedTask;
+            ApplicationLifetime = applicationLifetime;
+            Logger = logger;
         }
 
-        private HttpListener Listener;
+        private IHostApplicationLifetime ApplicationLifetime { get; }
+        private ILogger Logger { get; }
 
-        private async void Listen()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (Listener.IsListening)
-            {
-                var context = await Listener.GetContextAsync();
-                if (!context.Request.IsWebSocketRequest ||
-                    (Settings.TLSOnly && !context.Request.IsSecureConnection))
-                {
-                    if (string.IsNullOrEmpty(Settings.Fallback))
-                    {
-                        context.Response.StatusCode = 400;
-                    }
-                    else
-                    {
-                        context.Response.Redirect(Settings.Fallback);
-                    }
-                    context.Response.Close();
-                    continue;
-                }
+            await Task.Yield();
 
-                try
-                {
-                    var wsContext = await context.AcceptWebSocketAsync(null);
-                    //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
-                    new Client(wsContext.WebSocket).Listen();
-                }
-                catch { }
+            var listener = new HttpListener
+            {
+                IgnoreWriteExceptions = true,
+            };
+            foreach (var prefix in Settings.Prefix.Split(','))
+            {
+                listener.Prefixes.Add(prefix);
             }
-        }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            using (Listener)
+            stoppingToken.Register(() => listener?.Stop());
+
+            Logger.LogInformation("Start listening.");
+            listener.Start();
+            try
             {
-                Listener.Close();
-                return Task.CompletedTask;
+                while (listener.IsListening && !stoppingToken.IsCancellationRequested)
+                {
+                    var context = await listener.GetContextAsync();
+                    if (!context.Request.IsWebSocketRequest ||
+                        (Settings.TLSOnly && !context.Request.IsSecureConnection))
+                    {
+                        if (string.IsNullOrEmpty(Settings.Fallback))
+                        {
+                            context.Response.StatusCode = 400;
+                        }
+                        else
+                        {
+                            context.Response.Redirect(Settings.Fallback);
+                        }
+                        context.Response.Close();
+                        continue;
+                    }
+
+                    try
+                    {
+                        var wsContext = await context.AcceptWebSocketAsync(null);
+                        //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
+                        new Client(wsContext.WebSocket).Listen();
+                    }
+                    catch { }
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occured while listening.");
+            }
+            finally
+            {
+                Logger.LogInformation("Stopping listening.");
+                listener.Close();
+                listener = null;
+                ApplicationLifetime.StopApplication();
             }
         }
     }
