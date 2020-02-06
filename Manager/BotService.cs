@@ -34,7 +34,7 @@ namespace Manager
 
                     Logger.LogInformation("Start bot.");
                     var stopwatch = Stopwatch.StartNew();
-                    var process = Process.Start(new ProcessStartInfo
+                    using var process = Process.Start(new ProcessStartInfo
                     {
                         FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
                         CreateNoWindow = true,
@@ -43,15 +43,15 @@ namespace Manager
                     });
                     var output = new StringBuilder();
 
-                    stoppingToken.Register(() => process?.CloseMainWindow());
-                    await Task.WhenAll(
-                        process.WaitForExitAsync(stoppingToken),
-                        process.OutputReadToEndAsync(output, stoppingToken)
-                    );
+                    using (stoppingToken.Register(() => process.CloseMainWindow()))
+                    {
+                        await Task.WhenAll(
+                            process.WaitForExitAsync(stoppingToken),
+                            process.OutputReadToEndAsync(output, stoppingToken)
+                        );
+                    }
 
                     stopwatch.Stop();
-                    process.Dispose();
-                    process = null;
 
                     Logger.LogInformation($"Bot have run for {stopwatch.Elapsed}.{Environment.NewLine}{output}");
 
