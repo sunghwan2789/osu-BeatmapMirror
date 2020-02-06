@@ -1,63 +1,26 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 using Utility;
 
 namespace Manager
 {
-    partial class Server : ServiceBase
+    internal class Server : IHostedService
     {
-        public Server()
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            InitializeComponent();
-        }
-
-        protected override void OnStart(string[] args)
-        {
-            // 동기화 봇
-            Task.Run(() => RunBot());
-
-            // 웹소켓 서버
             Listener = new HttpListener();
             Listener.Prefixes.Add("http://" + Settings.Prefix);
             Listener.Prefixes.Add("https://" + Settings.Prefix);
             Listener.Start();
 
             Listen();
-        }
-
-        private void RunBot()
-        {
-            while (true)
-            {
-                var scheduler = Task.Delay(Settings.SyncInterval);
-                var process = new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
-                        Arguments = "manage",
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    }
-                };
-                process.Start();
-                process.WaitForExit();
-                process.Dispose();
-
-                try
-                {
-                    var output = File.ReadAllText(Settings.LogPath + ".bot.log");
-                    Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
-                    Log.Write("BEATMAP SYNC PROCESS ===========");
-                }
-                catch { }
-                scheduler.Wait();
-                scheduler.Dispose();
-            }
+            return Task.CompletedTask;
         }
 
         private HttpListener Listener;
@@ -92,9 +55,13 @@ namespace Manager
             }
         }
 
-        protected override void OnStop()
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            Listener.Close();
+            using (Listener)
+            {
+                Listener.Close();
+                return Task.CompletedTask;
+            }
         }
     }
 }
