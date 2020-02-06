@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Utility;
+using Utility.Extensions;
 
 namespace Manager
 {
@@ -29,26 +30,25 @@ namespace Manager
                 {
                     var scheduler = Task.Delay(Settings.SyncInterval, stoppingToken);
 
-                    Logger.LogInformation($"Start");
-                    using var process = Process.Start(new ProcessStartInfo
+                    Logger.LogInformation("Start");
+                    var process = Process.Start(new ProcessStartInfo
                     {
                         FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
-                        Arguments = "manage",
                         CreateNoWindow = true,
                         UseShellExecute = false,
+                        RedirectStandardOutput = true,
                     });
+                    var output = new StringBuilder();
+
                     stoppingToken.Register(() => process?.CloseMainWindow());
-                    process.WaitForExit();
+                    await Task.WhenAll(
+                        process.WaitForExitAsync(stoppingToken),
+                        process.OutputReadToEndAsync(output, stoppingToken)
+                    );
 
-                    try
-                    {
-                        var data = File.ReadAllText($"{Settings.LogPath}.bot.log");
-                        File.Delete(data);
-                        Logger.LogInformation(data);
-                    }
-                    catch { }
-
-                    Logger.LogInformation($"Exited");
+                    process.Dispose();
+                    process = null;
+                    Logger.LogInformation($"Exited{Environment.NewLine}{output}");
 
                     await scheduler;
                 }
