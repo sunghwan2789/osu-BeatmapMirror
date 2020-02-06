@@ -30,7 +30,8 @@ namespace Manager
                 {
                     var scheduler = Task.Delay(Settings.SyncInterval, stoppingToken);
 
-                    Logger.LogInformation("Start");
+                    Logger.LogInformation("Start bot.");
+                    var stopwatch = Stopwatch.StartNew();
                     var process = Process.Start(new ProcessStartInfo
                     {
                         FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
@@ -46,9 +47,11 @@ namespace Manager
                         process.OutputReadToEndAsync(output, stoppingToken)
                     );
 
+                    stopwatch.Stop();
                     process.Dispose();
                     process = null;
-                    Logger.LogInformation($"Exited{Environment.NewLine}{output}");
+
+                    Logger.LogInformation($"Bot have run for {stopwatch.Elapsed}.{Environment.NewLine}{output}");
 
                     await scheduler;
                 }
