@@ -45,10 +45,14 @@ namespace Manager
 
                     using (stoppingToken.Register(() => process.CloseMainWindow()))
                     {
-                        await Task.WhenAll(
-                            process.WaitForExitAsync(stoppingToken),
-                            process.OutputReadToEndAsync(output, stoppingToken)
-                        );
+                        try
+                        {
+                            await Task.WhenAll(
+                                process.OutputReadToEndAsync(output),
+                                process.WaitForExitAsync()
+                            );
+                        }
+                        catch (OperationCanceledException) { }
                     }
 
                     stopwatch.Stop();
