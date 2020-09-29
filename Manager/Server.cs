@@ -14,14 +14,14 @@ namespace Manager
 {
     internal class Server : BackgroundService
     {
+        private IHostApplicationLifetime ApplicationLifetime { get; }
+        private ILogger Logger { get; }
+
         public Server(IHostApplicationLifetime applicationLifetime, ILogger<Server> logger)
         {
             ApplicationLifetime = applicationLifetime;
             Logger = logger;
         }
-
-        private IHostApplicationLifetime ApplicationLifetime { get; }
-        private ILogger Logger { get; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

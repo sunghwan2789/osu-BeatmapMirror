@@ -15,12 +15,12 @@ namespace Manager
 {
     internal class BotService : BackgroundService
     {
+        private ILogger Logger { get; }
+
         public BotService(ILogger<BotService> logger)
         {
             Logger = logger;
         }
-
-        private ILogger Logger { get; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
