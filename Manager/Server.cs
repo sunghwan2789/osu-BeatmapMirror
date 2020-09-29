@@ -1,100 +1,93 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 using Utility;
 
 namespace Manager
 {
-    partial class Server : ServiceBase
+    internal class Server : BackgroundService
     {
-        public Server()
+        private IHostApplicationLifetime ApplicationLifetime { get; }
+        private ILogger Logger { get; }
+
+        public Server(IHostApplicationLifetime applicationLifetime, ILogger<Server> logger)
         {
-            InitializeComponent();
+            ApplicationLifetime = applicationLifetime;
+            Logger = logger;
         }
 
-        protected override void OnStart(string[] args)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // 동기화 봇
-            Task.Run(() => RunBot());
+            // Release current synchronization context for next services.
+            await Task.Yield();
 
-            // 웹소켓 서버
-            Listener = new HttpListener();
-            Listener.Prefixes.Add("http://" + Settings.Prefix);
-            Listener.Prefixes.Add("https://" + Settings.Prefix);
-            Listener.Start();
-
-            Listen();
-        }
-
-        private void RunBot()
-        {
-            while (true)
+            using var listener = new HttpListener
             {
-                var scheduler = Task.Delay(Settings.SyncInterval);
-                var process = new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Bot.exe"),
-                        Arguments = "manage",
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    }
-                };
-                process.Start();
-                process.WaitForExit();
-                process.Dispose();
+                IgnoreWriteExceptions = true,
+            };
 
-                try
+            foreach (var prefix in Settings.Prefix.Split(','))
+            {
+                listener.Prefixes.Add($"http://{prefix}");
+                listener.Prefixes.Add($"https://{prefix}");
+            }
+
+            Logger.LogInformation("Start listening.");
+            listener.Start();
+
+            try
+            {
+                using var _ = stoppingToken.Register(() => listener.Stop());
+
+                while (listener.IsListening && !stoppingToken.IsCancellationRequested)
                 {
-                    var output = File.ReadAllText(Settings.LogPath + ".bot.log");
-                    Log.Write("=========== BEATMAP SYNC PROCESS\r\n" + output);
-                    Log.Write("BEATMAP SYNC PROCESS ===========");
+                    await ProcessRequestAsync(await listener.GetContextAsync());
                 }
-                catch { }
-                scheduler.Wait();
-                scheduler.Dispose();
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error occured while listening.");
+            }
+            finally
+            {
+                Logger.LogInformation("Stopping listening.");
+                listener.Close();
+                ApplicationLifetime.StopApplication();
             }
         }
 
-        private HttpListener Listener;
-
-        private async void Listen()
+        private async Task ProcessRequestAsync(HttpListenerContext context)
         {
-            while (Listener.IsListening)
+            if (!context.Request.IsWebSocketRequest
+                || (Settings.TLSOnly && !context.Request.IsSecureConnection))
             {
-                var context = await Listener.GetContextAsync();
-                if (!context.Request.IsWebSocketRequest ||
-                    (Settings.TLSOnly && !context.Request.IsSecureConnection))
+                if (string.IsNullOrEmpty(Settings.Fallback))
                 {
-                    if (string.IsNullOrEmpty(Settings.Fallback))
-                    {
-                        context.Response.StatusCode = 400;
-                    }
-                    else
-                    {
-                        context.Response.Redirect(Settings.Fallback);
-                    }
-                    context.Response.Close();
-                    continue;
+                    context.Response.StatusCode = 400;
                 }
-
-                try
+                else
                 {
-                    var wsContext = await context.AcceptWebSocketAsync(null);
-                    //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
-                    new Client(wsContext.WebSocket).Listen();
+                    context.Response.Redirect(Settings.Fallback);
                 }
-                catch { }
+                context.Response.Close();
+                return;
             }
-        }
 
-        protected override void OnStop()
-        {
-            Listener.Close();
+            try
+            {
+                var wsContext = await context.AcceptWebSocketAsync(null);
+                //Log.Write(wsContext.WebSocket.GetHashCode() + " AcceptWebSocketAsync");
+                new Client(wsContext.WebSocket).Listen();
+            }
+            catch { }
         }
     }
 }

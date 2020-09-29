@@ -1,20 +1,30 @@
-﻿using System.ServiceProcess;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.Console;
+using System.Threading.Tasks;
 
 namespace Manager
 {
     internal static class Program
     {
-        /// <summary>
-        /// 해당 응용 프로그램의 주 진입점입니다.
-        /// </summary>
-        private static void Main()
+        private static Task Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Server()
-            };
-            ServiceBase.Run(ServicesToRun);
+            return CreateHostBuilder(args).RunConsoleAsync();
         }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.Services.Configure<ConsoleLoggerOptions>(options =>
+                    {
+                        options.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
+                    });
+                })
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<BotService>();
+                    services.AddHostedService<Server>();
+                });
     }
 }
