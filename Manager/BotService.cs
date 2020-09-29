@@ -24,6 +24,7 @@ namespace Manager
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            // Release current synchronization context for next services.
             await Task.Yield();
 
             try
