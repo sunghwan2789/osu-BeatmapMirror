@@ -17,7 +17,7 @@ namespace Utility
         private const string COOKIE_USER_NUMBER = "phpbb3_2cjk5_u";
         private const string COOKIE_USER_NAME = "last_login";
 
-        private static Uri BaseAddress => new Uri("https://osu.ppy.sh/");
+        private static Uri BaseAddress => new Uri("https://old.ppy.sh/");
 
         private CookieContainer CookieContainer { get; }
         private CloudFlareHandler Handler { get; }
@@ -71,6 +71,7 @@ namespace Utility
 
             using (var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data)))
             {
+                var s = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
                 return IsAuthenticated;
             }
