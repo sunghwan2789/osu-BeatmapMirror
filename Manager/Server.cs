@@ -33,7 +33,8 @@ namespace Manager
             };
             foreach (var prefix in Settings.Prefix.Split(','))
             {
-                listener.Prefixes.Add(prefix);
+                listener.Prefixes.Add($"http://{prefix}");
+                listener.Prefixes.Add($"https://{prefix}");
             }
 
             Logger.LogInformation("Start listening.");
