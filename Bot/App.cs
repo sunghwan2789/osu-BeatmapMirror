@@ -24,8 +24,6 @@ namespace Bot
         private OsuLegacyClient OsuLegacyClient { get; }
         private Requests Requests { get; }
 
-        private List<string> Failures { get; } = new List<string>();
-
         public App(
             CommandLineArgs commandLineArgs,
             IHostApplicationLifetime applicationLifetime,
@@ -56,13 +54,9 @@ namespace Bot
 
                 await FetchAndSyncBeatmapsetsAsync(stoppingToken);
             }
-            catch (Exception ex)
+            catch (OperationCanceledException)
             {
-                Log.Level = 3;
-                Log.Write(Console.Title);
-                Log.Write(ex.GetBaseException().ToString());
-                Log.Write(string.Join("ls ", Failures) + "ls\n");
-                throw;
+                // noop
             }
             finally
             {
@@ -94,6 +88,8 @@ namespace Bot
 
         private async Task ProcessCommandLineToolsAsync(CancellationToken token = default)
         {
+            var failures = new List<string>();
+
             if (Args[0] == "/?")
             {
                 Console.WriteLine();
@@ -104,8 +100,7 @@ namespace Bot
                 Console.WriteLine("\ts");
                 Console.WriteLine("\t\tsynced 열의 값을 유지하면서 데이터베이스 갱신");
                 Console.WriteLine();
-                ApplicationLifetime.StopApplication();
-                return;
+                throw new OperationCanceledException();
             }
 
             if (Args[0] == "boo")
@@ -141,8 +136,7 @@ namespace Bot
                     }
                     tx.Commit();
                 }
-                ApplicationLifetime.StopApplication();
-                return;
+                throw new OperationCanceledException();
             }
 
             if (Args[0] == "health")
@@ -246,15 +240,14 @@ namespace Bot
                         continue;
                     }
 
-                    Failures.Add(id + "");
+                    failures.Add(id + "");
                     //}
                 }
-                if (Failures.Count > 0)
+                if (failures.Count > 0)
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException(string.Join("\t", failures.Select(i => $"{i}ls")));
                 }
-                ApplicationLifetime.StopApplication();
-                return;
+                throw new OperationCanceledException();
             }
 
             // 인자로 비트맵셋 ID를 주었을 때: 19293ls 2929ls ...
@@ -264,7 +257,7 @@ namespace Bot
                     ?? await Requests.GetSetFromDBAsync(Convert.ToInt32(arg.Groups[1].Value), token);
                 if (set == null)
                 {
-                    Failures.Add(arg.Groups[1].Value);
+                    failures.Add(arg.Groups[1].Value);
                     continue;
                 }
 
@@ -281,18 +274,17 @@ namespace Bot
                 }
                 if (!await Sync(set, token))
                 {
-                    Failures.Add(arg.Groups[1].Value);
+                    failures.Add(arg.Groups[1].Value);
                 }
             }
-            if (Failures.Count > 0)
+            if (failures.Count > 0)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException(string.Join("\t", failures.Select(i => $"{i}ls")));
             }
 
             if (Args[0] != "manage")
             {
-                ApplicationLifetime.StopApplication();
-                return;
+                throw new OperationCanceledException();
             }
             Log.Writer = new StreamWriter(File.Open(Settings.LogPath + ".bot.log", FileMode.Create));
         }
