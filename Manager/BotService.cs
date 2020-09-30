@@ -44,17 +44,15 @@ namespace Manager
                     });
                     var output = new StringBuilder();
 
-                    using (stoppingToken.Register(() => process.CloseMainWindow()))
+                    try
                     {
-                        try
-                        {
-                            await Task.WhenAll(
-                                process.OutputReadToEndAsync(output),
-                                process.WaitForExitAsync()
-                            );
-                        }
-                        catch (OperationCanceledException) { }
+                        using var _ = stoppingToken.Register(() => process.CloseMainWindow());
+                        await Task.WhenAll(
+                            process.OutputReadToEndAsync(output),
+                            process.WaitForExitAsync()
+                        );
                     }
+                    catch (OperationCanceledException) { }
 
                     stopwatch.Stop();
 
@@ -63,10 +61,10 @@ namespace Manager
                     await scheduler;
                 }
             }
-            catch (OperationCanceledException) { }
-            catch (Exception ex)
+            // Catch cancellations and just log it.
+            catch (OperationCanceledException)
             {
-                Logger.LogError(ex, "Exception occured while running service.");
+                Logger.LogInformation("Shutdown due to cancellation.");
             }
         }
     }

@@ -51,10 +51,12 @@ namespace Manager
                     await ProcessRequestAsync(await listener.GetContextAsync());
                 }
             }
-            catch (OperationCanceledException) { }
-            catch (Exception ex)
+            // Catch cancellations and just log it.
+            catch (Exception ex) when (
+                (ex is HttpListenerException && stoppingToken.IsCancellationRequested)
+                || (ex is OperationCanceledException))
             {
-                Logger.LogError(ex, "Error occured while listening.");
+                Logger.LogInformation("Shutdown listener due to cancellation.");
             }
             finally
             {
