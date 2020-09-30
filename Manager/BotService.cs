@@ -46,7 +46,8 @@ namespace Manager
 
                     try
                     {
-                        using var _ = stoppingToken.Register(() => process.CloseMainWindow());
+                        // CloseMainWindow() does not work... any better way? https://stackoverflow.com/a/39068126
+                        using var _ = stoppingToken.Register(() => process.Kill());
                         await Task.WhenAll(
                             process.OutputReadToEndAsync(output),
                             process.WaitForExitAsync()
