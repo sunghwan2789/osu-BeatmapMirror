@@ -66,6 +66,11 @@ namespace Manager
             {
                 Logger.LogInformation("Shutdown due to cancellation.");
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                throw;
+            }
         }
     }
 }

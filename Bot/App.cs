@@ -58,6 +58,11 @@ namespace Bot
             {
                 // noop
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                throw;
+            }
             finally
             {
                 ApplicationLifetime.StopApplication();

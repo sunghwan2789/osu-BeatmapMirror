@@ -58,6 +58,11 @@ namespace Manager
             {
                 Logger.LogInformation("Shutdown listener due to cancellation.");
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                throw;
+            }
             finally
             {
                 Logger.LogInformation("Stopping listening.");
