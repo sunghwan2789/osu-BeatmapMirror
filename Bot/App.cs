@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -62,16 +63,24 @@ namespace Bot
 
         private static async Task LoginAsync(CancellationToken token = default)
         {
-        RETRY:
-            if (!(string.IsNullOrEmpty(Settings.Session)
-                ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw)
-                : await OsuLegacyClient.Context.LoginAsync(Settings.Session)))
+            for (var tries = 5; tries > 0; tries -= 1)
             {
-                Console.WriteLine("login failed");
-                Settings.Session = null;
-                goto RETRY;
+                if (string.IsNullOrEmpty(Settings.Session)
+                    ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw)
+                    : await OsuLegacyClient.Context.LoginAsync(Settings.Session))
+                {
+                    Settings.Session = OsuLegacyClient.Context.Session;
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("login failed");
+                    Settings.Session = null;
+                    await Task.Delay(TimeSpan.FromSeconds(5), token);
+                }
             }
-            Settings.Session = OsuLegacyClient.Context.Session;
+
+            throw new AuthenticationException();
         }
 
         private async Task ProcessCommandLineToolsAsync(CancellationToken token = default)
