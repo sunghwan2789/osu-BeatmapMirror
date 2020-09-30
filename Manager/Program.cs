@@ -9,11 +9,13 @@ namespace Manager
     {
         private static Task Main(string[] args)
         {
-            return CreateHostBuilder(args).RunConsoleAsync();
+            return CreateHostBuilder(args).Build().RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseConsoleLifetime()
+                .UseWindowsService()
                 .ConfigureLogging(logging =>
                 {
                     logging.Services.Configure<ConsoleLoggerOptions>(options =>
