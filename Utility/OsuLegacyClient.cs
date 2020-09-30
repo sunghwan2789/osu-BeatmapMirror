@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Utility
@@ -58,42 +59,36 @@ namespace Utility
             return CookieContainer.GetCookies(BaseAddress)[name]?.Value;
         }
 
-        public async Task<bool> LoginAsync(string id, string pw)
+        public async Task<bool> LoginAsync(string id, string pw, CancellationToken token = default)
         {
-            var data = new KeyValuePair<string, string>[]
+            var data = new Dictionary<string, string>
             {
-                new KeyValuePair<string, string>("login", "Login"),
-                new KeyValuePair<string, string>("username", id),
-                new KeyValuePair<string, string>("password", pw),
-                new KeyValuePair<string, string>("autologin", "on"),
-                new KeyValuePair<string, string>("redirect", "/"),
+                ["login"] = "Login",
+                ["username"] = id,
+                ["password"] = pw,
+                ["autologin"] = "on",
+                ["redirect"] = "/",
             };
 
-            using (var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data)))
-            {
-                var s = await response.Content.ReadAsStringAsync();
-                response.EnsureSuccessStatusCode();
-                return IsAuthenticated;
-            }
+            using var response = await Client.PostAsync("forum/ucp.php?mode=login", new FormUrlEncodedContent(data), token);
+            var s = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+            return IsAuthenticated;
         }
 
-        public async Task<bool> LoginAsync(string sid)
+        public async Task<bool> LoginAsync(string sid, CancellationToken token = default)
         {
             AddCookie(COOKIE_SESSION, sid);
 
-            using (var response = await Client.GetAsync(""))
-            {
-                response.EnsureSuccessStatusCode();
-                return IsAuthenticated;
-            }
+            using var response = await Client.GetAsync("", token);
+            response.EnsureSuccessStatusCode();
+            return IsAuthenticated;
         }
 
-        public async Task LogoutAsync()
+        public async Task LogoutAsync(CancellationToken token = default)
         {
-            using (var response = await Client.GetAsync($"forum/ucp.php?mode=logout&sid={Session}"))
-            {
-                response.EnsureSuccessStatusCode();
-            }
+            using var response = await Client.GetAsync($"forum/ucp.php?mode=logout&sid={Session}", token);
+            response.EnsureSuccessStatusCode();
         }
 
         /// <summary>
@@ -105,7 +100,7 @@ namespace Utility
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="IOException"></exception>
         /// <exception cref="SharpZipBaseException">올바른 비트맵 파일이 아님.</exception>
-        public async Task<string> DownloadBeatmapsetAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload = false)
+        public async Task<string> DownloadBeatmapsetAsync(int id, IProgress<(int, long)> onprogress, bool skipDownload, CancellationToken token = default)
         {
             var path = Path.Combine(Settings.Storage, id + ".osz.download");
 
@@ -126,7 +121,7 @@ namespace Utility
             }
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
-            using (var response = await Client.GetAsync($"d/{id}", HttpCompletionOption.ResponseHeadersRead))
+            using (var response = await Client.GetAsync($"d/{id}", HttpCompletionOption.ResponseHeadersRead, token))
             using (var data = await response.Content.ReadAsStreamAsync())
             {
                 response.EnsureSuccessStatusCode();
@@ -136,58 +131,52 @@ namespace Utility
                 var buffer = new byte[4096];
                 var total = response.Content.Headers.ContentLength.Value;
                 onprogress?.Report((received, total));
-                while ((got = await data.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                while ((got = await data.ReadAsync(buffer, 0, buffer.Length, token)) > 0)
                 {
-                    await fs.WriteAsync(buffer, 0, got);
+                    await fs.WriteAsync(buffer, 0, got, token);
                     received += got;
                     onprogress?.Report((received, total));
                 }
             }
-            return await DownloadBeatmapsetAsync(id, onprogress, true);
+            return await DownloadBeatmapsetAsync(id, onprogress, true, token);
 
             bool Verify()
             {
-                using (var fs = File.OpenRead(path))
-                using (var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs))
-                {
-                    return true;
-                }
+                using var fs = File.OpenRead(path);
+                using var zs = new osu.Game.IO.Archives.ZipArchiveReader(fs);
+                return true;
             }
         }
 
-        public async Task<JArray> GetBeatmapsAPIAsync(string query)
+        public async Task<JArray> GetBeatmapsAPIAsync(string query, CancellationToken token = default)
         {
             try
             {
-                using (var response = await Client.GetAsync($"api/get_beatmaps?k={Settings.APIKey}&{query}"))
-                {
-                    response.EnsureSuccessStatusCode();
+                using var response = await Client.GetAsync($"api/get_beatmaps?k={Settings.APIKey}&{query}", token);
+                response.EnsureSuccessStatusCode();
 
-                    return JArray.Parse(await response.Content.ReadAsStringAsync());
-                }
+                return JArray.Parse(await response.Content.ReadAsStringAsync());
             }
             catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException || e is JsonReaderException)
             {
-                return await GetBeatmapsAPIAsync(query);
+                return await GetBeatmapsAPIAsync(query, token);
             }
         }
 
-        public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1)
+        public async Task<IEnumerable<int>> GrabSetIDFromBeatmapListAsync(int r, int page = 1, CancellationToken token = default)
         {
             try
             {
-                using (var response = await Client.GetAsync($"p/beatmaplist?r={r}&page={page}"))
-                {
-                    response.EnsureSuccessStatusCode();
+                using var response = await Client.GetAsync($"p/beatmaplist?r={r}&page={page}", token);
+                response.EnsureSuccessStatusCode();
 
-                    var data = await response.Content.ReadAsStringAsync();
-                    return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
-                        .Select(setId => int.Parse(setId.Groups[1].Value));
-                }
+                var data = await response.Content.ReadAsStringAsync();
+                return Regex.Matches(data, Settings.SetIdExpression).Cast<Match>()
+                    .Select(setId => int.Parse(setId.Groups[1].Value));
             }
             catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
             {
-                return await GrabSetIDFromBeatmapListAsync(r, page);
+                return await GrabSetIDFromBeatmapListAsync(r, page, token);
             }
         }
     }

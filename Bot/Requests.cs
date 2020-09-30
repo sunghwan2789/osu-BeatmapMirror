@@ -5,6 +5,7 @@ using osu.Game.Rulesets.Objects.Types;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Utility;
 
@@ -18,7 +19,7 @@ namespace Bot
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static async Task<Set> GetSetFromAPIAsync(int id)
+        public static async Task<Set> GetSetFromAPIAsync(int id, CancellationToken token = default)
         {
             DateTime ConvertAPIDateTimeToLocal(DateTime dateTime)
             {
@@ -34,7 +35,7 @@ namespace Bot
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
             var inited = false;
-            foreach (JObject i in await OsuLegacyClient.Context.GetBeatmapsAPIAsync("s=" + id))
+            foreach (JObject i in await OsuLegacyClient.Context.GetBeatmapsAPIAsync("s=" + id, token))
             {
                 var rankedAt = i.Value<DateTime?>("approved_date");
                 if (rankedAt != null)
@@ -114,7 +115,7 @@ namespace Bot
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static async Task<Set> GetSetFromDBAsync(int id)
+        public static async Task<Set> GetSetFromDBAsync(int id, CancellationToken token = default)
         {
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
@@ -132,7 +133,7 @@ namespace Bot
                 query.Parameters.AddWithValue("@s", id);
                 using (var result = query.ExecuteReader())
                 {
-                    while (await result.ReadAsync())
+                    while (await result.ReadAsync(token))
                     {
                         if (!inited)
                         {
@@ -199,34 +200,32 @@ namespace Bot
                 // https://github.com/ppy/osu/blob/v2018.201.0/osu.Game/Beatmaps/BeatmapManager.cs#L584
                 foreach (var entry in osz.Filenames.Where(i => i.EndsWith(@".osu")))
                 {
-                    using (var raw = osz.GetStream(entry))
-                    using (var ms = new MemoryStream()) //we need a memory stream so we can seek and shit
-                    using (var sr = new StreamReader(ms))
+                    using var raw = osz.GetStream(entry);
+                    using var ms = new MemoryStream();
+                    using var sr = new StreamReader(ms);
+                    raw.CopyTo(ms);
+                    ms.Position = 0;
+
+                    var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder<osu.Game.Beatmaps.Beatmap>(sr).Decode(sr);
+
+                    beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
+                    beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
+
+                    //RulesetInfo ruleset = RulesetStore.GetRuleset(beatmap.BeatmapInfo.RulesetID);
+
+                    // TODO: this should be done in a better place once we actually need to dynamically update it.
+                    //beatmap.BeatmapInfo.StarDifficulty = Math.Max(0, ruleset?.CreateInstance()?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0);
+
+                    // https://github.com/ppy/osu/blob/v2018.201.0/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L220
+                    var lastObject = beatmap.HitObjects.LastOrDefault();
+                    var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
+                    var startTime = beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0;
+                    beatmap.BeatmapInfo.OnlineInfo = new BeatmapOnlineInfo
                     {
-                        raw.CopyTo(ms);
-                        ms.Position = 0;
+                        Length = (endTime - startTime) / 1000.0
+                    };
 
-                        var beatmap = osu.Game.Beatmaps.Formats.Decoder.GetDecoder<osu.Game.Beatmaps.Beatmap>(sr).Decode(sr);
-
-                        beatmap.BeatmapInfo.Hash = ms.ComputeSHA2Hash();
-                        beatmap.BeatmapInfo.MD5Hash = ms.ComputeMD5Hash();
-
-                        //RulesetInfo ruleset = RulesetStore.GetRuleset(beatmap.BeatmapInfo.RulesetID);
-
-                        // TODO: this should be done in a better place once we actually need to dynamically update it.
-                        //beatmap.BeatmapInfo.StarDifficulty = Math.Max(0, ruleset?.CreateInstance()?.CreateDifficultyCalculator(beatmap).Calculate() ?? 0);
-
-                        // https://github.com/ppy/osu/blob/v2018.201.0/osu.Game/Screens/Select/BeatmapInfoWedge.cs#L220
-                        var lastObject = beatmap.HitObjects.LastOrDefault();
-                        var endTime = (lastObject as IHasEndTime)?.EndTime ?? lastObject?.StartTime ?? 0;
-                        var startTime = beatmap.HitObjects.FirstOrDefault()?.StartTime ?? 0;
-                        beatmap.BeatmapInfo.OnlineInfo = new BeatmapOnlineInfo
-                        {
-                            Length = (endTime - startTime) / 1000.0
-                        };
-
-                        set.Beatmaps.Add(new Beatmap(beatmap));
-                    }
+                    set.Beatmaps.Add(new Beatmap(beatmap));
                 }
             }
             return set;

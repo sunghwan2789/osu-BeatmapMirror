@@ -236,7 +236,7 @@ namespace Manager
                             { "got", received }
                         });
                     }
-                }));
+                }), false);
                 Send("upload", new Dictionary<string, string>
                 {
                     { "state", "downloaded" }

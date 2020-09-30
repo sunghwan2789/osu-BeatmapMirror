@@ -66,8 +66,8 @@ namespace Bot
             for (var tries = 5; tries > 0; tries -= 1)
             {
                 if (string.IsNullOrEmpty(Settings.Session)
-                    ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw)
-                    : await OsuLegacyClient.Context.LoginAsync(Settings.Session))
+                    ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw, token)
+                    : await OsuLegacyClient.Context.LoginAsync(Settings.Session, token))
                 {
                     Settings.Session = OsuLegacyClient.Context.Session;
                     return;
@@ -183,8 +183,8 @@ namespace Bot
                     //}
 
                     var id = queue.Dequeue();
-                    var set = await Requests.GetSetFromAPIAsync(id) ?? await Requests.GetSetFromDBAsync(id);
-                    var saved = await Requests.GetSetFromDBAsync(id);
+                    var set = await Requests.GetSetFromAPIAsync(id, token) ?? await Requests.GetSetFromDBAsync(id, token);
+                    var saved = await Requests.GetSetFromDBAsync(id, token);
                     // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                     //if ((
                     //        (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
@@ -213,7 +213,7 @@ namespace Bot
                         Console.WriteLine();
                     }
                     // 1차 시도
-                    if (await Sync(set))
+                    if (await Sync(set, token))
                     {
                         continue;
                     }
@@ -232,7 +232,7 @@ namespace Bot
                     }
                     Console.WriteLine();
                     // 2차부터는 그냥 나중에 수동으로 하는 거루...
-                    if (await Sync(set))
+                    if (await Sync(set, token))
                     {
                         continue;
                     }
@@ -251,8 +251,8 @@ namespace Bot
             // 인자로 비트맵셋 ID를 주었을 때: 19293ls 2929ls ...
             foreach (Match arg in Regex.Matches(string.Join(" ", Args), @"(\d+)([^\s]*)"))
             {
-                Set set = await Requests.GetSetFromAPIAsync(Convert.ToInt32(arg.Groups[1].Value))
-                    ?? await Requests.GetSetFromDBAsync(Convert.ToInt32(arg.Groups[1].Value));
+                Set set = await Requests.GetSetFromAPIAsync(Convert.ToInt32(arg.Groups[1].Value), token)
+                    ?? await Requests.GetSetFromDBAsync(Convert.ToInt32(arg.Groups[1].Value), token);
                 if (set == null)
                 {
                     Failures.Add(arg.Groups[1].Value);
@@ -270,7 +270,7 @@ namespace Bot
                         set.SyncOption |= SyncOption.KeepSyncedAt;
                     }
                 }
-                if (!await Sync(set))
+                if (!await Sync(set, token))
                 {
                     Failures.Add(arg.Groups[1].Value);
                 }
@@ -297,7 +297,7 @@ namespace Bot
                 var page = 1;
                 do
                 {
-                    var ids = await OsuLegacyClient.Context.GrabSetIDFromBeatmapListAsync(r, page);
+                    var ids = await OsuLegacyClient.Context.GrabSetIDFromBeatmapListAsync(r, page, token);
                     if (!ids.Any())
                     {
                         break;
@@ -305,7 +305,7 @@ namespace Bot
 
                     foreach (var id in ids)
                     {
-                        var set = await Requests.GetSetFromAPIAsync(id);
+                        var set = await Requests.GetSetFromAPIAsync(id, token);
                         if (set == null)
                         {
                             // ID NOT FOUND BUT CONTINUE
@@ -324,7 +324,7 @@ namespace Bot
                             break;
                         }
 
-                        var saved = await Requests.GetSetFromDBAsync(id);
+                        var saved = await Requests.GetSetFromDBAsync(id, token);
                         // 랭크 상태가 다르거나, 수정 날짜가 다르면 업데이트
                         if ((
                                 (set.StatusId > 0 && (saved == null || (saved.UpdatedAt < set.InfoChangedAt || saved.StatusId != set.StatusId)))
@@ -339,7 +339,7 @@ namespace Bot
             }
             while (bucket.Any())
             {
-                if (!await Sync(bucket.Pop()))
+                if (!await Sync(bucket.Pop(), token))
                 {
                     // 동기화에 실패한 비트맵을 다음 번에 다시 확인해 보아야 한다.
                     lastCheckTime = Settings.LastCheckTime;
@@ -356,11 +356,11 @@ namespace Bot
         /// <param name="skipDownload"></param>
         /// <param name="keepSynced"></param>
         /// <returns></returns>
-        private static async Task<bool> Sync(Set set)
+        private static async Task<bool> Sync(Set set, CancellationToken token = default)
         {
             try
             {
-                var path = await OsuLegacyClient.Context.DownloadBeatmapsetAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload));
+                var path = await OsuLegacyClient.Context.DownloadBeatmapsetAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload), token);
                 Log.Write(set.SetId + " DOWNLOADED");
 
                 var local = Requests.GetSetFromLocal(set.SetId, path);
@@ -443,7 +443,7 @@ namespace Bot
             }
             catch (Exception e) when (e is HttpRequestException || e is OperationCanceledException)
             {
-                return await Sync(set);
+                return await Sync(set, token);
             }
             catch (EntryPointNotFoundException e)
             {
