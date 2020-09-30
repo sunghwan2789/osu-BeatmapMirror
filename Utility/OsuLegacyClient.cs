@@ -29,8 +29,6 @@ namespace Utility
         public string UserName => GetCookie(COOKIE_USER_NAME);
         public bool IsAuthenticated => !string.IsNullOrEmpty(UserName);
 
-        public static OsuLegacyClient Context { get; } = new OsuLegacyClient();
-
         public OsuLegacyClient()
         {
             CookieContainer = new CookieContainer();

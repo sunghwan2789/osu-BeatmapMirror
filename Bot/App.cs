@@ -21,14 +21,23 @@ namespace Bot
         private string[] Args { get; }
         private IHostApplicationLifetime ApplicationLifetime { get; }
         private ILogger Logger { get; }
+        private OsuLegacyClient OsuLegacyClient { get; }
+        private Requests Requests { get; }
 
         private List<string> Failures { get; } = new List<string>();
 
-        public App(CommandLineArgs commandLineArgs, IHostApplicationLifetime applicationLifetime, ILogger<App> logger)
+        public App(
+            CommandLineArgs commandLineArgs,
+            IHostApplicationLifetime applicationLifetime,
+            ILogger<App> logger,
+            OsuLegacyClient osuLegacyClient,
+            Requests requests)
         {
             Args = commandLineArgs.Args;
             ApplicationLifetime = applicationLifetime;
             Logger = logger;
+            OsuLegacyClient = osuLegacyClient;
+            Requests = requests;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,15 +70,15 @@ namespace Bot
             }
         }
 
-        private static async Task LoginAsync(CancellationToken token = default)
+        private async Task LoginAsync(CancellationToken token = default)
         {
             for (var tries = 5; tries > 0; tries -= 1)
             {
                 if (string.IsNullOrEmpty(Settings.Session)
-                    ? await OsuLegacyClient.Context.LoginAsync(Settings.OsuId, Settings.OsuPw, token)
-                    : await OsuLegacyClient.Context.LoginAsync(Settings.Session, token))
+                    ? await OsuLegacyClient.LoginAsync(Settings.OsuId, Settings.OsuPw, token)
+                    : await OsuLegacyClient.LoginAsync(Settings.Session, token))
                 {
-                    Settings.Session = OsuLegacyClient.Context.Session;
+                    Settings.Session = OsuLegacyClient.Session;
                     return;
                 }
                 else
@@ -297,7 +306,7 @@ namespace Bot
                 var page = 1;
                 do
                 {
-                    var ids = await OsuLegacyClient.Context.GrabSetIDFromBeatmapListAsync(r, page, token);
+                    var ids = await OsuLegacyClient.GrabSetIDFromBeatmapListAsync(r, page, token);
                     if (!ids.Any())
                     {
                         break;
@@ -356,11 +365,11 @@ namespace Bot
         /// <param name="skipDownload"></param>
         /// <param name="keepSynced"></param>
         /// <returns></returns>
-        private static async Task<bool> Sync(Set set, CancellationToken token = default)
+        private async Task<bool> Sync(Set set, CancellationToken token = default)
         {
             try
             {
-                var path = await OsuLegacyClient.Context.DownloadBeatmapsetAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload), token);
+                var path = await OsuLegacyClient.DownloadBeatmapsetAsync(set.SetId, null, set.SyncOption.HasFlag(SyncOption.SkipDownload), token);
                 Log.Write(set.SetId + " DOWNLOADED");
 
                 var local = Requests.GetSetFromLocal(set.SetId, path);
@@ -461,7 +470,7 @@ namespace Bot
             return false;
         }
 
-        private static void Register(Set set)
+        private void Register(Set set)
         {
             using (var conn = DB.Connect())
             using (var tr = conn.BeginTransaction())

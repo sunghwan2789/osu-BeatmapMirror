@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Console;
 using System.Threading.Tasks;
+using Utility;
 
 namespace Bot
 {
@@ -25,6 +26,8 @@ namespace Bot
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton(new CommandLineArgs { Args = args });
+                    services.AddSingleton<OsuLegacyClient>();
+                    services.AddSingleton<Requests>();
                     services.AddHostedService<App>();
                 });
     }

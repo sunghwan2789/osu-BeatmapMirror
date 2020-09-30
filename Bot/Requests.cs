@@ -13,13 +13,20 @@ namespace Bot
 {
     internal class Requests
     {
+        private OsuLegacyClient OsuLegacyClient { get; }
+
+        public Requests(OsuLegacyClient osuLegacyClient)
+        {
+            OsuLegacyClient = osuLegacyClient;
+        }
+
         /// <summary>
         /// osu! API를 통해 기본 정보(랭크 상태, 비트맵의 ID와 이름, 갱신 날짜)를 가져옴.
         /// 여기서 기본 정보는 <code>LastUpdate, Status, Creator, CreatorId, Beatmaps[i].BeatmapID, Beatmaps[i].Version</code>입니다.
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static async Task<Set> GetSetFromAPIAsync(int id, CancellationToken token = default)
+        public async Task<Set> GetSetFromAPIAsync(int id, CancellationToken token = default)
         {
             DateTime ConvertAPIDateTimeToLocal(DateTime dateTime)
             {
@@ -35,7 +42,7 @@ namespace Bot
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
             var inited = false;
-            foreach (JObject i in await OsuLegacyClient.Context.GetBeatmapsAPIAsync("s=" + id, token))
+            foreach (JObject i in await OsuLegacyClient.GetBeatmapsAPIAsync("s=" + id, token))
             {
                 var rankedAt = i.Value<DateTime?>("approved_date");
                 if (rankedAt != null)
@@ -115,7 +122,7 @@ namespace Bot
         /// </summary>
         /// <param name="id">맵셋 ID</param>
         /// <returns></returns>
-        public static async Task<Set> GetSetFromDBAsync(int id, CancellationToken token = default)
+        public async Task<Set> GetSetFromDBAsync(int id, CancellationToken token = default)
         {
             Set set = null;
             //TODO last_update가 approved_date보다 최신이면 keep_synced로 업데이트 하기
@@ -186,7 +193,7 @@ namespace Bot
         /// </summary>
         /// <param name="path">맵셋 파일 경로</param>
         /// <returns>Set</returns>
-        public static Set GetSetFromLocal(int id, string path)
+        public Set GetSetFromLocal(int id, string path)
         {
             var set = new Set { SetId = id };
             using (var fs = File.OpenRead(path))
